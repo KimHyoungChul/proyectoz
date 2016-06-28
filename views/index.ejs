@@ -6,21 +6,21 @@
 
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/kurento.css">
-
+    <script src="/socket.io/socket.io.js"></script>
     <script src="bower_components/adapter.js/adapter.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/kurento-utils/js/kurento-utils.js"></script>
     <script src="js/index.js"></script>
-    <title>test</title>
+    <title>Primer Demo</title>
 </head>
 <body>
     <div class="container">
         <div class="row">
             <div class="col-md-12 texto-centrado">
                 <hr/>
-                <a id="btn-presenter" href="#" class="btn btn-primary">Presenter</a>
-                <a id="btn-viewer" href="#" class="btn btn-default">Viewer</a>
+                <a id="btn-presenter" href="#" class="btn btn-primary">Tutor</a>
+                <a id="btn-viewer" href="#" class="btn btn-default">Oyente</a>
                 <a id="btn-finalizar" href="#" class="btn btn-danger">Detener transmision</a>
                 <hr/>
             </div>
@@ -29,6 +29,34 @@
             <div class="col-md-6 col-md-offset-3 texto-centrado">
                 <div id="video-div">
                     <video id="video" autoplay width="600px" height="440px"></video>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 texto-centrado">
+
+                <div class="panel panel-default chatbox">
+                    <div class="panel-body">
+                        <ul id="messages">
+
+                        </ul>
+
+                    </div>
+                </div>
+        </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 texto-centrado">
+
+                <div class="panel panel-default chatbox">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-10"><input id="m"></div>
+                            <div class="col-md-2"><a id="btn" href="#" class="btn btn-success">Enviar</a></div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>

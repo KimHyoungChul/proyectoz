@@ -7,6 +7,15 @@ var path = require('path');
 var url = require('url');
 
 var app = express();
+var http = require('http').Server(app);
+var io = require("socket.io")(http);
+var http = require('http');
+//make sure you keep this order
+var app = express();
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+
+
 
 //configurar express app
 app.use(express.static(path.join(__dirname, 'public')));
@@ -35,7 +44,7 @@ var direcciones = {
 
 var app_url = url.parse(direcciones.app_location);
 
-var app_server = app.listen(app_url.port, function() {
+var app_server = server.listen(app_url.port, function() {
     console.log('Escuchando en http://localhost:' + app_url.port);
 });
 
@@ -44,6 +53,14 @@ var websocketServer = new ws.Server({
     server : app_server,
     path : '/ws'
 });
+
+io.on('connection', function(socket){
+    console.log('papazon');
+    socket.on('chat message', function(msg){
+        io.emit('chat message', msg);
+    });
+});
+
 
 //manejo de mensajes websocket
 websocketServer.on('connection', function(ws) {

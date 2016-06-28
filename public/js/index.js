@@ -8,6 +8,21 @@ $(document).ready(function () {
 	$("#btn-presenter").click(presenter);
 	$("#btn-viewer").click(viewer);
 	$("#btn-finalizar").click(stop);
+	$('#btn').click(function(){
+		console.log('hey');
+		socket.emit('chat message', $('#m').val());
+		$('#m').val('');
+
+		return false;
+	});
+	
+});
+
+var socket = io();
+
+
+socket.on('chat message', function(msg){
+	$('#messages').append($('<li>').text(msg));
 });
 
 $(window).on('beforeunload', function() {
