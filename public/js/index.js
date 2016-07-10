@@ -1,13 +1,16 @@
-var ws = new WebSocket('ws://' + location.host + '/ws');
+var ws = new WebSocket('wss://' + location.host + '/ws');
 var video;
 var webRtcPeer;
 
 $(document).ready(function () {
+	//kurento stuff
 	video = $("#video").get(0);
 
 	$("#btn-presenter").click(presenter);
 	$("#btn-viewer").click(viewer);
 	$("#btn-finalizar").click(stop);
+
+	//chat events
 	$('#btn').click(function(){
 		console.log('hey');
 		socket.emit('chat message', $('#m').val());
@@ -15,16 +18,16 @@ $(document).ready(function () {
 
 		return false;
 	});
-	
 });
 
+//chat stuff
 var socket = io();
-
 
 socket.on('chat message', function(msg){
 	$('#messages').append($('<li>').text(msg));
 });
 
+//kurento stuff
 $(window).on('beforeunload', function() {
 	ws.close();
 });

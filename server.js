@@ -1,21 +1,14 @@
 //dependencias fuertes
 var express = require('express');
-var ws = require('ws');
+var ws      = require('ws');
 var kurento = require('kurento-client');
+var https   = require('https');
+var app     = express();
+
 //utils
-var path = require('path');
-var url = require('url');
-
-var app = express();
-var http = require('http').Server(app);
-var io = require("socket.io")(http);
-var http = require('http');
-//make sure you keep this order
-var app = express();
-var server = http.createServer(app);
-var io = require('socket.io').listen(server);
-
-
+var path    = require('path');
+var url     = require('url');
+var fs      = require('fs');
 
 //configurar express app
 app.use(express.static(path.join(__dirname, 'public')));
@@ -38,14 +31,23 @@ var noPresenterMessage = 'No hay un presentador...';
 
 //inicializando servidor
 var direcciones = {
-    app_location : "https://localhost:8443",
+    app_location : "https://localhost:8443/",
     kurento_location : "ws://localhost:8888/kurento"
 };
+
+//para https
+var credenciales = {
+    key:  fs.readFileSync('keys/server.key'),
+    cert: fs.readFileSync('keys/server.crt')
+};
+
+var server = https.createServer(credenciales,app);
+var io = require('socket.io').listen(server);
 
 var app_url = url.parse(direcciones.app_location);
 
 var app_server = server.listen(app_url.port, function() {
-    console.log('Escuchando en http://localhost:' + app_url.port);
+    console.log('Escuchando en https://localhost:' + app_url.port + '/');
 });
 
 //inicializando websocket listener
@@ -54,13 +56,13 @@ var websocketServer = new ws.Server({
     path : '/ws'
 });
 
-io.on('connection', function(socket){
+//manejo de mensajeria del chat
+io.on('connection', function(socket) {
     console.log('papazon');
-    socket.on('chat message', function(msg){
+    socket.on('chat message', function(msg) {
         io.emit('chat message', msg);
     });
 });
-
 
 //manejo de mensajes websocket
 websocketServer.on('connection', function(ws) {
