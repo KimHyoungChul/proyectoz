@@ -25,7 +25,7 @@ app.get('/', function(req,res) {
 var idCounter = 0;
 var candidatesQueue = {};
 var kurentoClient = null;
-var presenter = null;
+var presenters = {};
 var viewers = [];
 var noPresenterMessage = 'No hay un presentador...';
 
@@ -97,13 +97,15 @@ websocketServer.on('connection', function(ws) {
                 ws.send(JSON.stringify({
                     id : 'presenterResponse',
                     response : 'accepted',
-                    sdpAnswer : sdpAnswer
+                    sdpAnswer : sdpAnswer,
+                    presenter_id : sessionId
                 }));
             });
             break;
 
             case 'viewer':
-            startViewer(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
+            var presenter_id = message.presenter_id;
+            startViewer(sessionId, presenter_id, ws, message.sdpOffer, function(error, sdpAnswer) {
                 if (error) {
                     return ws.send(JSON.stringify({
                         id : 'viewerResponse',
@@ -164,18 +166,15 @@ function getKurentoClient(callback) {
 function startPresenter(sessionId, ws, sdpOffer, callback) {
     clearCandidatesQueue(sessionId);
 
-    if (presenter !== null) {
-        stop(sessionId);
-        return callback("Another user is currently acting as presenter. Try again later ...");
-    }
 
     presenter = {
         id : sessionId,
         pipeline : null,
         webRtcEndpoint : null
-    }
+    };
+    
 
-    getKurentoClient(function(error, kurentoClient) {
+        getKurentoClient(function(error, kurentoClient) {
         if (error) {
             stop(sessionId);
             return callback(error);
@@ -245,20 +244,22 @@ function startPresenter(sessionId, ws, sdpOffer, callback) {
                         stop(sessionId);
                         return callback(error);
                     }
+                    presenters[sessionId] = presenter;
+                    
                 });
             });
         });
     });
 }
 
-function startViewer(sessionId, ws, sdpOffer, callback) {
+function startViewer(sessionId, presenter_id, ws, sdpOffer, callback) {
     clearCandidatesQueue(sessionId);
 
-    if (presenter === null) {
+    if (presenters === {}) {
         stop(sessionId);
         return callback(noPresenterMessage);
     }
-
+    var presenter = presenters[presenter_id];
     presenter.pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
         if (error) {
             stop(sessionId);

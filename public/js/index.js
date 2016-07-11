@@ -112,10 +112,11 @@ function onOfferPresenter(error, offerSdp) {
 
 function onOfferViewer(error, offerSdp) {
 	if (error) return onError(error)
-
+	var presenter_id = $('#presenter-input').val()
 	var message = {
 		id : 'viewer',
-		sdpOffer : offerSdp
+		sdpOffer : offerSdp,
+		presenter_id :  presenter_id
 	};
 
 	sendMessage(message);
@@ -135,12 +136,13 @@ function onIceCandidate(candidate) {
 function presenterResponse(message) {
 	if (message.response != 'accepted') {
 		var errorMsg = message.message ? message.message : 'Unknow error';
-
+		
 		console.warn('Call not accepted for the following reason: ' + errorMsg);
 
 		dispose();
 	}
 	else {
+		$('#presenter-id').html('ID de tutoria:' + message.presenter_id);
 		webRtcPeer.processAnswer(message.sdpAnswer);
 	}
 }
