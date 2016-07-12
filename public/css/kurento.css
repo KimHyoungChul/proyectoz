@@ -7,16 +7,33 @@
 	width: 108%;
 }
 
-input {  padding: 10px; width: 100%; margin-right: .5%; }
+input {
+	padding: 10px;
+	width: 100%;
+	margin-right: .5%;
+}
 
+#messages {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
 
-#messages { list-style-type: none; margin: 0; padding: 0; }
-#messages li { padding: 5px 10px; }
-#messages li:nth-child(odd) { background: #eee; }
+#messages li {
+	padding: 5px 10px;
+}
+
+#messages li:nth-child(odd) {
+	background: #eee;
+}
 
 #video-div {
 	width: 600px;
 	height: 440px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
+}
+
+.right-side {
+	border-left: 1px dashed gray;
 }

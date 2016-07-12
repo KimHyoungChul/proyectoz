@@ -17,49 +17,54 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-md-12 texto-centrado">
-                <hr/>
-                <a id="btn-presenter" href="#" class="btn btn-primary">Tutor</a>
-                <a id="btn-viewer" href="#" class="btn btn-default">Oyente</a>
-                <a id="btn-finalizar" href="#" class="btn btn-danger">Detener transmision</a>
-                <input class="form-control" id="presenter-input" type="text">
-                <h3 id="presenter-id">
-
-                </h3>
-                <hr/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3 texto-centrado">
+            <div class="col-md-6 texto-centrado">
+                <div class="row">
+                    <hr/>
+                    <div class="col-md-4 texto-centrado">
+                        <a id="btn-presenter" href="#" class="btn btn-primary btn-block">Tutor</a>
+                        <br/>
+                        <h3 id="presenter-id"></h3>
+                    </div>
+                    <div class="col-md-4 texto-centrado">
+                        <div class="alert alert-warning">
+                            <a id="btn-viewer" href="#" class="btn btn-default btn-block">Oyente</a>
+                            <br>
+                            <!-- <label for="presenter-input">Presenter ID:</label> -->
+                            <input class="form-control" id="presenter-input" type="text">
+                        </div>
+                        <br>
+                    </div>
+                    <div class="col-md-4 texto-centrado">
+                        <a id="btn-finalizar" href="#" class="btn btn-danger btn-block">Detener transmision</a>
+                    </div>
+                </div>
                 <div id="video-div">
                     <video id="video" autoplay width="600px" height="440px"></video>
                 </div>
             </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3 texto-centrado">
-
-                <div class="panel panel-default chatbox">
-                    <div class="panel-body">
-                        <ul id="messages">
-
-                        </ul>
-
-                    </div>
-                </div>
-        </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3 texto-centrado">
-
-                <div class="panel panel-default chatbox">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-10"><input id="m"></div>
-                            <div class="col-md-2"><a id="btn" href="#" class="btn btn-success">Enviar</a></div>
+            <div class="col-md-5 col-md-offset-1 texto-centrado right-side">
+                <hr/>
+                <div class="row">
+                    <div class="col-md-12 texto-centrado">
+                        <div class="panel panel-default chatbox">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <input id="m">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a id="btn" href="#" class="btn btn-success btn-block">Enviar</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
+                    </div>
+                    <div class="col-md-12 texto-centrado">
+                        <div class="panel panel-default chatbox">
+                            <div class="panel-body">
+                                <ul id="messages"></ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

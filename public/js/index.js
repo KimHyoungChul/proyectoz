@@ -136,13 +136,13 @@ function onIceCandidate(candidate) {
 function presenterResponse(message) {
 	if (message.response != 'accepted') {
 		var errorMsg = message.message ? message.message : 'Unknow error';
-		
+
 		console.warn('Call not accepted for the following reason: ' + errorMsg);
 
 		dispose();
 	}
 	else {
-		$('#presenter-id').html('ID de tutoria:' + message.presenter_id);
+		$('#presenter-id').html('ID de tutoria: ' + message.presenter_id);
 		webRtcPeer.processAnswer(message.sdpAnswer);
 	}
 }
