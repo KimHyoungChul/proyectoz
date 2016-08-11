@@ -4,6 +4,82 @@ var ws      = require('ws');
 var kurento = require('kurento-client');
 var https   = require('https');
 var app     = express();
+var models = require('./models');
+
+// var Sequelize = require('sequelize');
+//
+// var sequelize = new Sequelize('proyectoz', 'postgres', '123batata', {
+//     host: 'localhost',
+//     dialect: 'postgres',
+//     freezeTableName: true,
+//     pool: {
+//         max: 5,
+//         min: 0,
+//         idle: 10000
+//     }
+// });
+//
+// var Usuario = sequelize.define('usuario', {
+//     email: {
+//         type: Sequelize.STRING
+//     },
+//     password:{
+//         type: Sequelize.STRING
+//     },
+//     nombre: {
+//         type: Sequelize.STRING
+//     },
+//     apellido: {
+//         type: Sequelize.STRING
+//     },
+//     genero: {
+//         type: Sequelize.CHAR
+//     },
+//     fecha_nacimiento: {
+//         type: Sequelize.DATEONLY
+//     }
+//
+// },{freezeTableName: true});
+//
+// var Intervalo = sequelize.define('intervalo',{
+//     hora_inicio: {
+//         type:Sequelize.TIME
+//     },
+//     hora_fin: {
+//         type:Sequelize.TIME
+//     }
+// },{freezeTableName: true});
+//
+// var Horario = sequelize.define('horario',{
+//      fecha_creacion: {
+//          type: Sequelize.DATEONLY
+//      }
+// },{freezeTableName: true});
+//
+//
+// var Solocitud = sequelize.define('solicitud',{
+//     titulo: {
+//         type: Sequelize.STRING
+//     },
+//     cuerpo: {
+//         type: Sequelize.STRING
+//     },
+//     estado: {
+//         type: Sequelize.STRING
+//     }
+// },{freezeTableName: true});
+//
+// Solocitud.hasOne(Horario,{as: 'horario', foreignKey: 'solicitud'});
+// Horario.hasMany(Intervalo,{as: 'intervalos', foreignKey: 'horario'});
+
+models.sequelize.sync({force: true}).then(function () {
+    // models.Usuario.create({
+    //     email: 'papadpapapa@lol.com'
+    // });
+});
+
+
+
 
 //utils
 var path    = require('path');
