@@ -31,13 +31,21 @@ db.solicitud.hasOne(db.sesion_tutoria,{as: 'sesion_tutoria', foreignKey: 'solici
 db.usuario.hasOne(db.tutor, {as: 'tutor', foreignKey: 'usuario'});
 db.tutor.hasOne(db.sesion_tutoria, {as: 'sesion_tutoria', foreignKey: 'tutor'});
 db.usuario.hasOne(db.estudiante, {as: 'tutor', foreignKey: 'usuario'});
-
+db.sesion_tutoria.hasOne(db.mensaje_sesion_tutoria, {as: 'mensaje_sesion_tutoria', foreignKey: 'sesion_tutoria'});
+db.sesion_tutoria.hasOne(db.mensaje_workspace, {as: 'mensaje_workspace', foreignKey: 'sesion_tutoria'});
+db.estudiante.hasOne(db.solicitud, {as: 'solicitud', foreignKey: 'estudiante'});
 db.evaluacion.belongsTo(db.sesion_tutoria, {as: 'evaluaciones', foreignKey: 'sesion_tutoria'});
 db.evaluacion.hasMany(db.opcion_evaluacion, {as: 'opciones', foreignKey: 'evaluacion'});
 db.sesion_tutoria.hasMany(db.recurso_workspace, {as: 'recursos', foreignKey: 'sesion_tutoria'});
 
+db.keyword.belongsToMany(db.tutor, {as: 'tutores', through: 'keyword_tutor', foreignKey: 'keyword'});
+db.tutor.belongsToMany(db.keyword, {as: 'keywords', through: 'keyword_tutor', foreignKey: 'tutor'});
+db.keyword.belongsToMany(db.solicitud, {as: 'solicitudes', through: 'keyword_solicitud', foreignKey: 'keyword'});
+db.solicitud.belongsToMany(db.estudiante, {as: 'estudiantes', through: db.integrante_solicitud, foreignKey: 'solicitud'});
+db.estudiante.belongsToMany(db.solicitud, {as: 'solicitudes', through: db.integrante_solicitud, foreignKey: 'estudiante'});
 db.estudiante.belongsToMany(db.opcion_evaluacion, {as: 'respuestas', through: 'respuesta_evaluacion', foreignKey: 'estudiante'});
 db.opcion_evaluacion.belongsToMany(db.estudiante, {as: 'estudiantes', through: 'respuesta_evaluacion', foreignKey: 'respuesta'});
+
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
