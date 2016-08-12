@@ -6,81 +6,6 @@ var https   = require('https');
 var app     = express();
 var models = require('./models');
 
-// var Sequelize = require('sequelize');
-//
-// var sequelize = new Sequelize('proyectoz', 'postgres', '123batata', {
-//     host: 'localhost',
-//     dialect: 'postgres',
-//     freezeTableName: true,
-//     pool: {
-//         max: 5,
-//         min: 0,
-//         idle: 10000
-//     }
-// });
-//
-// var Usuario = sequelize.define('usuario', {
-//     email: {
-//         type: Sequelize.STRING
-//     },
-//     password:{
-//         type: Sequelize.STRING
-//     },
-//     nombre: {
-//         type: Sequelize.STRING
-//     },
-//     apellido: {
-//         type: Sequelize.STRING
-//     },
-//     genero: {
-//         type: Sequelize.CHAR
-//     },
-//     fecha_nacimiento: {
-//         type: Sequelize.DATEONLY
-//     }
-//
-// },{freezeTableName: true});
-//
-// var Intervalo = sequelize.define('intervalo',{
-//     hora_inicio: {
-//         type:Sequelize.TIME
-//     },
-//     hora_fin: {
-//         type:Sequelize.TIME
-//     }
-// },{freezeTableName: true});
-//
-// var Horario = sequelize.define('horario',{
-//      fecha_creacion: {
-//          type: Sequelize.DATEONLY
-//      }
-// },{freezeTableName: true});
-//
-//
-// var Solocitud = sequelize.define('solicitud',{
-//     titulo: {
-//         type: Sequelize.STRING
-//     },
-//     cuerpo: {
-//         type: Sequelize.STRING
-//     },
-//     estado: {
-//         type: Sequelize.STRING
-//     }
-// },{freezeTableName: true});
-//
-// Solocitud.hasOne(Horario,{as: 'horario', foreignKey: 'solicitud'});
-// Horario.hasMany(Intervalo,{as: 'intervalos', foreignKey: 'horario'});
-
-models.sequelize.sync({force: true}).then(function () {
-    // models.Usuario.create({
-    //     email: 'papadpapapa@lol.com'
-    // });
-});
-
-
-
-
 //utils
 var path    = require('path');
 var url     = require('url');
@@ -122,100 +47,103 @@ var io = require('socket.io').listen(server);
 
 var app_url = url.parse(direcciones.app_location);
 
-var app_server = server.listen(app_url.port, function() {
-    console.log('Escuchando en https://localhost:' + app_url.port + '/');
-});
+//inicializando aplicacion cuando el modelo se haya sincronizado
+models.sequelize.sync({force: true}).then(function () {
 
-//inicializando websocket listener
-var websocketServer = new ws.Server({
-    server : app_server,
-    path : '/ws'
-});
-
-//manejo de mensajeria del chat
-io.on('connection', function(socket) {
-    console.log('papazon');
-    socket.on('chat message', function(msg) {
-        io.emit('chat message', msg);
-    });
-});
-
-//manejo de mensajes websocket
-websocketServer.on('connection', function(ws) {
-
-    var sessionId = nextUniqueId();
-    console.log('Connection received with sessionId ' + sessionId);
-
-    ws.on('error', function(error) {
-        console.log('Connection ' + sessionId + ' error');
-        stop(sessionId);
+    //inicializando
+    var app_server = server.listen(app_url.port, function() {
+        console.log('Escuchando en https://localhost:' + app_url.port + '/');
     });
 
-    ws.on('close', function() {
-        console.log('Connection ' + sessionId + ' closed');
-        stop(sessionId);
+    //inicializando websocket listener
+    var websocketServer = new ws.Server({
+        server : app_server,
+        path : '/ws'
     });
 
-    ws.on('message', function(_message) {
-        var message = JSON.parse(_message);
-        console.log('Connection ' + sessionId + ' received message ', message);
+    //manejo de mensajeria del chat
+    io.on('connection', function(socket) {
+        socket.on('chat message', function(msg) {
+            io.emit('chat message', msg);
+        });
+    });
 
-        switch (message.id) {
-            case 'presenter':
-            startPresenter(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
-                if (error) {
-                    return ws.send(JSON.stringify({
-                        id : 'presenterResponse',
-                        response : 'rejected',
-                        message : error
-                    }));
-                }
-                ws.send(JSON.stringify({
-                    id : 'presenterResponse',
-                    response : 'accepted',
-                    sdpAnswer : sdpAnswer,
-                    presenter_id : sessionId
-                }));
-            });
-            break;
+    //manejo de mensajes websocket
+    websocketServer.on('connection', function(ws) {
 
-            case 'viewer':
-            var presenter_id = message.presenter_id;
-            startViewer(sessionId, presenter_id, ws, message.sdpOffer, function(error, sdpAnswer) {
-                if (error) {
-                    return ws.send(JSON.stringify({
-                        id : 'viewerResponse',
-                        response : 'rejected',
-                        message : error
-                    }));
-                }
+        var sessionId = nextUniqueId();
+        console.log('Connection received with sessionId ' + sessionId);
 
-                ws.send(JSON.stringify({
-                    id : 'viewerResponse',
-                    response : 'accepted',
-                    sdpAnswer : sdpAnswer
-                }));
-            });
-            break;
-
-            case 'stop':
+        ws.on('error', function(error) {
+            console.log('Connection ' + sessionId + ' error');
             stop(sessionId);
-            break;
+        });
 
-            case 'onIceCandidate':
-            onIceCandidate(sessionId, message.candidate);
-            break;
+        ws.on('close', function() {
+            console.log('Connection ' + sessionId + ' closed');
+            stop(sessionId);
+        });
 
-            default:
-            ws.send(JSON.stringify({
-                id : 'error',
-                message : 'Invalid message ' + message
-            }));
-            break;
-        }
+        ws.on('message', function(_message) {
+            var message = JSON.parse(_message);
+            console.log('Connection ' + sessionId + ' received message ', message);
+
+            switch (message.id) {
+                case 'presenter':
+                startPresenter(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
+                    if (error) {
+                        return ws.send(JSON.stringify({
+                            id : 'presenterResponse',
+                            response : 'rejected',
+                            message : error
+                        }));
+                    }
+                    ws.send(JSON.stringify({
+                        id : 'presenterResponse',
+                        response : 'accepted',
+                        sdpAnswer : sdpAnswer,
+                        presenter_id : sessionId
+                    }));
+                });
+                break;
+
+                case 'viewer':
+                var presenter_id = message.presenter_id;
+                startViewer(sessionId, presenter_id, ws, message.sdpOffer, function(error, sdpAnswer) {
+                    if (error) {
+                        return ws.send(JSON.stringify({
+                            id : 'viewerResponse',
+                            response : 'rejected',
+                            message : error
+                        }));
+                    }
+
+                    ws.send(JSON.stringify({
+                        id : 'viewerResponse',
+                        response : 'accepted',
+                        sdpAnswer : sdpAnswer
+                    }));
+                });
+                break;
+
+                case 'stop':
+                stop(sessionId);
+                break;
+
+                case 'onIceCandidate':
+                onIceCandidate(sessionId, message.candidate);
+                break;
+
+                default:
+                ws.send(JSON.stringify({
+                    id : 'error',
+                    message : 'Invalid message ' + message
+                }));
+                break;
+            }
+        });
     });
 });
-
 
 function nextUniqueId() {
     idCounter++;

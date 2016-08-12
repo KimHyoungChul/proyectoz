@@ -3,8 +3,6 @@
 var fs        = require("fs");
 var path      = require("path");
 var Sequelize = require("sequelize");
-var env       = process.env.NODE_ENV || "development";
-//var config    = require(path.join(__dirname, '..', 'config', 'config.json'))[env];
 var sequelize = new Sequelize('proyectoz', 'postgres', '123batata', {
     host: 'localhost',
     dialect: 'postgres',
@@ -15,10 +13,10 @@ var sequelize = new Sequelize('proyectoz', 'postgres', '123batata', {
         idle: 10000
     }
 });
-var db        = {};
 
-fs
-    .readdirSync(__dirname)
+var db = {};
+
+fs  .readdirSync(__dirname)
     .filter(function(file) {
         return (file.indexOf(".") !== 0) && (file !== "index.js");
     })
@@ -26,14 +24,9 @@ fs
         var model = sequelize.import(path.join(__dirname, file));
         db[model.name] = model;
     });
-db['horario'].hasMany(db['intervalo'],{as: 'intervalos', foreignKey: 'horario'});
-db['horario'].hasOne(db['solicitud'],{as: 'solictud', foreignKey: 'horario'});
 
-// Object.keys(db).forEach(function(modelName) {
-//     if ("associate" in db[modelName]) {
-//         db[modelName].associate(db);
-//     }
-// });
+db.horario.hasMany(db.intervalo,{as: 'intervalos', foreignKey: 'horario'});
+db.horario.hasOne(db.solicitud,{as: 'solictud', foreignKey: 'horario'});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

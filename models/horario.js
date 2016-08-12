@@ -5,14 +5,13 @@
 
 module.exports = function(sequelize, DataTypes) {
     var Horario = sequelize.define('horario',{
-            fecha_creacion: {
-                type: DataTypes.DATEONLY,
-                allowNull: false
-            }
-        }, {
-            freezeTableName: true
+        fecha_creacion: {
+            type: DataTypes.DATEONLY,
+            allowNull: false
         }
-    );
+    }, {
+        freezeTableName: true
+    });
 
     return Horario;
 };

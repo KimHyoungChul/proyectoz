@@ -4,32 +4,34 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-        var Usuario = sequelize.define('usuario', {
+    var Usuario = sequelize.define('usuario', {
         email: {
             type: DataTypes.STRING(50),
-            allowNUll: false
+            allowNull: false
         },
         password:{
             type: DataTypes.STRING(50),
-            allowNUll: false
+            allowNull: false
         },
         nombre: {
             type: DataTypes.STRING(50),
-            allowNUll: false
+            allowNull: false
         },
         apellido: {
             type: DataTypes.STRING(50),
-            allowNUll: false
+            allowNull: false
         },
         genero: {
             type: DataTypes.CHAR(1),
-            allowNUll: false
+            allowNull: false
         },
         fecha_nacimiento: {
             type: DataTypes.DATEONLY,
-            allowNUll: false
+            allowNull: false
         }
-    },{freezeTableName: true});
+    },{
+        freezeTableName: true
+    });
 
     return Usuario;
 };
