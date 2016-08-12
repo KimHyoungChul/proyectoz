@@ -27,7 +27,9 @@ fs  .readdirSync(__dirname)
 
 db.horario.hasMany(db.intervalo,{as: 'intervalos', foreignKey: 'horario'});
 db.horario.hasOne(db.solicitud,{as: 'solictud', foreignKey: 'horario'});
-
+db.solicitud.hasOne(db.sesion_tutoria,{as: 'sesion_tutoria', foreignKey: 'solicitud'});
+db.usuario.hasOne(db.tutor, {as: 'tutor', foreignKey: 'usuario'});
+db.tutor.hasOne(db.sesion_tutoria, {as: 'sesion_tutoria', foreignKey: 'tutor'});
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
