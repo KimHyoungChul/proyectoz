@@ -30,6 +30,16 @@ db.horario.hasOne(db.solicitud,{as: 'solictud', foreignKey: 'horario'});
 db.solicitud.hasOne(db.sesion_tutoria,{as: 'sesion_tutoria', foreignKey: 'solicitud'});
 db.usuario.hasOne(db.tutor, {as: 'tutor', foreignKey: 'usuario'});
 db.tutor.hasOne(db.sesion_tutoria, {as: 'sesion_tutoria', foreignKey: 'tutor'});
+db.sesion_tutoria.hasOne(db.mensaje_sesion_tutoria, {as: 'mensaje_sesion_tutoria', foreignKey: 'sesion_tutoria'});
+db.sesion_tutoria.hasOne(db.mensaje_workspace, {as: 'mensaje_workspace', foreignKey: 'sesion_tutoria'});
+db.estudiante.hasOne(db.solicitud, {as: 'solicitud', foreignKey: 'estudiante'});
+db.keyword.belongsToMany(db.tutor, {as: 'tutores', through: 'keyword_tutor', foreignKey: 'keyword'});
+db.tutor.belongsToMany(db.keyword, {as: 'keywords', through: 'keyword_tutor', foreignKey: 'tutor'});
+db.keyword.belongsToMany(db.solicitud, {as: 'solicitudes', through: 'keyword_solicitud', foreignKey: 'keyword'});
+db.solicitud.belongsToMany(db.estudiante, {as: 'estudiantes', through: db.integrante_solicitud, foreignKey: 'solicitud'});
+db.estudiante.belongsToMany(db.solicitud, {as: 'solicitudes', through: db.integrante_solicitud, foreignKey: 'estudiante'});
+
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
