@@ -2,7 +2,7 @@
   "name": "entregable",
   "version": "0.0.5",
   "scripts": {
-    "postinstall": "cd public && bower install bootstrap",
+    "postinstall": "cd public && bower install",
     "start": "supervisor server.js"
   },
   "dependencies": {

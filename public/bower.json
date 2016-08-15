@@ -1,24 +1,25 @@
 {
-    "name": "test",
-    "description": "60% entregable pre-proyecto",
-    "authors": [
-        "Manuel Saleta <saletamanuel@gmail.com>",
-        "Cesar Garcia <mrcesar9402@gmail.com>"
-    ],
-    "main": "index.html",
-    "moduleType": [
-        "globals"
-    ],
-    "ignore": [
-        "**/.*",
-        "node_modules",
-        "bower_components",
-        "test",
-        "tests"
-    ],
-    "dependencies": {
-        "adapter.js": "v0.2.9",
-        "bootstrap": "~3.3.0",
-        "kurento-utils": "master"
-    }
+  "name": "test",
+  "description": "60% entregable pre-proyecto",
+  "authors": [
+    "Manuel Saleta <saletamanuel@gmail.com>",
+    "Cesar Garcia <mrcesar9402@gmail.com>"
+  ],
+  "main": "index.html",
+  "moduleType": [
+    "globals"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "adapter.js": "v0.2.9",
+    "bootstrap": "~3.3.0",
+    "kurento-utils": "master",
+    "materialize": "^0.97.7"
+  }
 }
