@@ -6,8 +6,8 @@ var express = require('express');
 var router  = express.Router();
 
 module.exports = function (modules) {
-    router.get('/get1', function(req, res) {
-        res.send('get1');
+    router.get('/solicitud/crear/', function(req, res) {
+        res.render('test');
     });
 
     return router;
