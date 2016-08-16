@@ -28,9 +28,9 @@ fs  .readdirSync(__dirname)
 db.horario.hasMany(db.intervalo,{as: 'intervalos', foreignKey: 'horario'});
 db.horario.hasOne(db.solicitud,{as: 'solictud', foreignKey: 'horario'});
 db.solicitud.hasOne(db.sesion_tutoria,{as: 'sesion_tutoria', foreignKey: 'solicitud'});
-db.usuario.hasOne(db.tutor, {as: 'tutor', foreignKey: 'usuario'});
+db.usuario.hasOne(db.tutor, {as: 'Tutor', foreignKey: 'usuario'});
+db.usuario.hasOne(db.estudiante, {as: 'Estudiante', foreignKey: 'usuario'});
 db.tutor.hasOne(db.sesion_tutoria, {as: 'sesion_tutoria', foreignKey: 'tutor'});
-db.usuario.hasOne(db.estudiante, {as: 'tutor', foreignKey: 'usuario'});
 db.sesion_tutoria.hasOne(db.mensaje_sesion_tutoria, {as: 'mensaje_sesion_tutoria', foreignKey: 'sesion_tutoria'});
 db.sesion_tutoria.hasOne(db.mensaje_workspace, {as: 'mensaje_workspace', foreignKey: 'sesion_tutoria'});
 db.estudiante.hasOne(db.solicitud, {as: 'solicitud', foreignKey: 'estudiante'});

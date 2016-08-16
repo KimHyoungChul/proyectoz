@@ -1,5 +1,6 @@
 //dependencias fuertes
 var express = require('express');
+var bodyParser = require('body-parser');
 var https   = require('https');
 var app     = express();
 var _models  = require('./models');
@@ -14,6 +15,8 @@ var fs      = require('fs');
 //inicializando express app
 //ubicacion de archivos estaticos
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 //declarando motor de templates
 app.set('view engine', 'ejs');
 //ubicacion de vistas
@@ -52,10 +55,40 @@ _models.sequelize.sync({force: true}).then(function () {
     var modules = {
         kurento: _kurento,
         io:      _io,
-        models:  _models
+        models:  _models,
+        express: app
     };
 
     //inicializando rutas
-    app.use('/',require('./modules/routers/manejador_templates.js')(modules));
-    app.use('/',require('./modules/routers/manejador_formularios.js')(modules));
+    require('./modules/routers/manejador_templates.js')(modules);
+    require('./modules/routers/manejador_formularios.js')(modules);
+
+    _models.usuario.create({
+        email: 'usuario1@usuario1.com',
+        password: 'usuario1',
+        nombre: 'usuario1',
+        apellido: 'usuario1',
+        genero: 'M',
+        fecha_nacimiento: new Date('12-15-1996')
+    }).then(function(usuario) {
+        var estudiante = _models.estudiante.create({
+            institucion: 'IPISA'
+        }).then(function(est) {
+            usuario.setEstudiante(est);
+        });
+    });
+    _models.usuario.create({
+        email: 'usuario2@usuario2.com',
+        password: 'usuario2',
+        nombre: 'usuario2',
+        apellido: 'usuario2',
+        genero: 'M',
+        fecha_nacimiento: new Date('12-15-1996')
+    }).then(function(usuario) {
+        var tutor = _models.tutor.create({
+            ocupacion: 'Estudiante'
+        }).then(function(tut) {
+            usuario.setTutor(tut);
+        });
+    });
 });

@@ -2,13 +2,14 @@
  * Created by forte on 15/08/16.
  */
 
-var express = require('express');
-var router  = express.Router();
-
 module.exports = function (modules) {
-    router.get('/solicitud/crear/', function(req, res) {
-        res.render('test');
+    var app = modules.express;
+
+    app.get('/solicitud/crear/', function(req, res) {
+        res.render('crear_solicitud');
     });
 
-    return router;
+    app.get('/keyword/crear/', function(req, res) {
+        res.render('crear_keyword');
+    });
 };

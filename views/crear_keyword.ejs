@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/materialize/dist/css/materialize.min.css">
+    <meta charset="UTF-8">
+    <title>ProyectoZ</title>
+</head>
+<body>
+<% include nav.ejs %>
+<div class="container">
+    <div class="row">
+        <p>Creando Keyword</p>
+        <form class="col s12" action="/keyword/crear/" method="post">
+            <div class="row">
+                <div class="input-field col s6">
+                    <input placeholder="C#" id="texto-keyword" class="validate" type="text" length="140" name="texto">
+                    <label for="texto-keyword">Tema</label>
+                </div>
+                <div class="col s6">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                        <i class="material-icons small right">send</i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/materialize/dist/js/materialize.min.js">
+</script>
+</body>
+</html>
