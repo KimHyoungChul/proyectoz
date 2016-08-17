@@ -12,4 +12,12 @@ module.exports = function (modules) {
     app.get('/keyword/crear/', function(req, res) {
         res.render('crear_keyword');
     });
+
+    app.get('/estudiantes/crear/', function(req, res) {
+        res.render('crear_estudiante');
+    });
+
+    app.get('/tutores/crear/', function(req, res){
+       res.render('crear_tutor');
+    });
 };

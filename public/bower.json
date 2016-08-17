@@ -20,6 +20,7 @@
     "adapter.js": "v0.2.9",
     "bootstrap": "~3.3.0",
     "kurento-utils": "master",
-    "materialize": "^0.97.7"
+    "materialize": "^0.97.7",
+    "jquery-validation": "^1.15.1"
   }
 }
