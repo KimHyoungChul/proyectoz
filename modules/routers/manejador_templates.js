@@ -4,9 +4,14 @@
 
 module.exports = function (modules) {
     var app = modules.express;
+    var models = modules.models;
 
     app.get('/solicitud/crear/', function(req, res) {
-        res.render('crear_solicitud');
+        models.keyword.findAll().then(function (_keywords) {
+            res.render('crear_solicitud', {
+                keywords: _keywords
+            });
+        });
     });
 
     app.get('/keyword/crear/', function(req, res) {

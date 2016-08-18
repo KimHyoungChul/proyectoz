@@ -20,6 +20,8 @@
     "adapter.js": "v0.2.9",
     "bootstrap": "~3.3.0",
     "kurento-utils": "master",
-    "materialize": "^0.97.7"
+    "materialize": "^0.97.7",
+    "fullcalendar": "^2.9.1",
+    "jquery-ui": "^1.12.0"
   }
 }
