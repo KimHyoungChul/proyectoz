@@ -1,5 +1,6 @@
 //dependencias fuertes
 var express = require('express');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 var https   = require('https');
 var app     = express();
@@ -14,9 +15,16 @@ var fs      = require('fs');
 
 //inicializando express app
 //ubicacion de archivos estaticos
+app.use(session({
+    secret: 'salabantruska',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 //declarando motor de templates
 app.set('view engine', 'ejs');
 //ubicacion de vistas
@@ -86,7 +94,8 @@ _models.sequelize.sync({force: true}).then(function () {
         fecha_nacimiento: new Date('12-15-1996')
     }).then(function(usuario) {
         var tutor = _models.tutor.create({
-            ocupacion: 'Estudiante'
+            ocupacion: 'Estudiante',
+            autorizado: false
         }).then(function(tut) {
             usuario.setTutor(tut);
         });

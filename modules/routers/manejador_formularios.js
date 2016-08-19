@@ -51,12 +51,66 @@ module.exports = function (modules) {
             fecha_nacimiento: req.body.fecha_nacimiento
         }).then(function(usuario) {
             models.tutor.create({
-                ocupacion: req.body.ocupacion
+                ocupacion: req.body.ocupacion,
+                autorizado: false
             }).then(function(tut) {
                 usuario.setTutor(tut);
                 res.redirect(303,'/keyword/crear/');
             });
         });
 
+    });
+
+    app.post('/login/', function(req, res) {
+        console.log('sdfs');
+        var response = {};
+        res.contentType('json');
+        models.usuario.findAll({
+            where: {
+                email: req.body.email
+            }
+        }).then(function(usuario){
+            if(usuario.length > 0 && usuario[0].password === req.body.password){
+                response.status = 0;
+                var user = {
+                  id: usuario[0].id
+                };
+                models.tutor.findAll({
+                    where:{
+                        usuario: usuario[0].id
+                    }
+                }).then(function (tutor) {
+                    if(tutor.length > 0){
+                        console.log('klk');
+                        user.autorizado = tutor[0].autorizado;
+                        user.tipo = 'tutor';
+                        req.session.usuario = user;
+                        response.status = 0;
+                        res.send(JSON.stringify(response));
+                    }
+                });
+                models.estudiante.findAll({
+                    where:{
+                        usuario: usuario[0].id
+                    }
+                }).then(function (estudiante) {
+                    if(estudiante.length > 0){
+                        console.log('klk');
+                        user.autorizado = false;
+                        user.tipo = 'estudiante';
+                        req.session.usuario = user;
+                        response.status = 0;
+                        res.send(JSON.stringify(response));
+                    }
+                });
+
+            }
+            else{
+                response.status = -1;
+                res.send(JSON.stringify( response ));
+            }
+
+        });
+        
     });
 };

@@ -20,4 +20,13 @@ module.exports = function (modules) {
     app.get('/tutores/crear/', function(req, res){
        res.render('crear_tutor');
     });
+
+    app.get('/login/', function(req, res) {
+        res.render('login');
+    });
+
+    app.get('/', function(req, res) {
+        console.log(req.session);
+        res.render('basic');
+    });
 };
