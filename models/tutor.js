@@ -8,6 +8,10 @@ module.exports = function(sequelize, DataTypes) {
         ocupacion: {
             type: DataTypes.STRING(100),
             allowNull: false
+        },
+        autorizado:{
+            type: DataTypes.BOOLEAN,
+            allowNull: false
         }
     }, {
         freezeTableName: true
