@@ -1,33 +1,29 @@
 /**
  * Created by forte on 15/08/16.
  */
-var Promise = require('bluebird');
 var moment  = require('moment');
 moment.locale('es');
 
 module.exports = function (modules) {
     var app = modules.express;
     var models = modules.models;
+    var Sequelize = modules.models.Sequelize;
 
     app.post('/solicitud/crear/', function(req, res) {
         //crear horario
         models.horario.create({
             fecha_creacion: new Date()
         }).then(function (nuevoHorario) {
-            //parsear arreglo de intervalos
-            var horario = JSON.parse(req.body.horario);
             //arreglo de intervalos transformados
             var intervalos = [];
             //transformar horas a formato indicado para persistir
-            horario.forEach(function(intervalo) {
+            JSON.parse(req.body.horario).forEach(function(intervalo) {
                 var inicio    = moment(intervalo.start);
-                var fin       = moment(intervalo.end);
-                var dia       = inicio.format('dddd');
 
                 intervalos.push({
                     hora_inicio: inicio.format('LTS'),
-                    hora_fin:    fin.format('LTS'),
-                    dia:         dia,
+                    hora_fin:    moment(intervalo.end).format('LTS'),
+                    dia:         inicio.format('dddd'),
                     horario:     nuevoHorario.get('id')
                 });
             });
@@ -42,14 +38,51 @@ module.exports = function (modules) {
                     horario: nuevoHorario.get('id')
                 }).then(function(nuevaSolicitud) {
                     //obtener correos
-                    //obtener id de cada correo valido (excluyendo el usuario loqueado si esta seteado)
-                    //crear agregar cada integrante a la solicitud
-                    res.send('ya');
+                    var correos = [];
+                    JSON.parse(req.body.integrantes).forEach(function(integ) {
+                        correos.push(integ.tag);
+                    });
+                    //obtener id de cada correo valido
+                    //TODO excluir el usuario logueado
+                    models.usuario.findAll({
+                        attributes: ['id'],
+                        where: {
+                            email: {
+                                $in: correos
+                            }
+                        }
+                    }).then(function(usuarioses) {
+                        //obtener arreglo de id de usuarios
+                        var ids = [];
+                        usuarioses.forEach(function(user) {
+                            ids.push(user.get('id'));
+                        });
+                        //obtener estudiantes de los usuarios de los correos del paso anterior
+                        models.estudiante.findAll({
+                            attributes: ['id'],
+                            where: {
+                                usuario: {
+                                    $in: ids
+                                }
+                            }
+                        }).then(function (estudianteses) {
+                            //crear arreglo de instancias a guardar
+                            var integrantes_solicitud = [];
+                            estudianteses.forEach(function(estud) {
+                               integrantes_solicitud.push({
+                                   estudiante: estud.get('id'),
+                                   solicitud: nuevaSolicitud.get('id')
+                               }) ;
+                            });
+                            //guardar estudiantes como integrante de la solicitud de tutoria
+                            models.integrante_solicitud.bulkCreate(integrantes_solicitud).then(function() {
+                                res.send('ya');
+                            });
+                        });
+                    });
                 });
             });
         });
-
-        res.send('ya');
     });
 
     app.post('/keyword/crear/', function(req, res) {

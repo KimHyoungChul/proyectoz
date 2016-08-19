@@ -39,7 +39,7 @@ var credenciales = {
 var server = https.createServer(credenciales,app);
 
 //inicializando aplicacion luego que los modelos se 'sincronizan'
-_models.sequelize.sync().then(function () {
+_models.sequelize.sync({force: true}).then(function () {
 
     //inicializando
     var app_server = server.listen(app_url.port, function() {
@@ -64,9 +64,9 @@ _models.sequelize.sync().then(function () {
     require('./modules/routers/manejador_formularios.js')(modules);
 
     _models.usuario.findOrCreate({
-        where: {email: 'usuario1@usuario1.com'},
+        where: {email: 'u1@u1.u1'},
         defaults: {
-            email: 'usuario1@usuario1.com',
+            email: 'u1@u1.u1',
             password: 'usuario1',
             nombre: 'usuario1',
             apellido: 'usuario1',
@@ -83,9 +83,9 @@ _models.sequelize.sync().then(function () {
         });
     });
     _models.usuario.findOrCreate({
-        where: {email: 'usuario3@usuario3.com'},
+        where: {email: 'u3@u3.u3'},
         defaults: {
-            email: 'usuario3@usuario3.com',
+            email: 'u3@u3.u3',
             password: 'usuario3',
             nombre: 'usuario3',
             apellido: 'usuario3',
@@ -94,7 +94,7 @@ _models.sequelize.sync().then(function () {
         }
     }).spread(function(user,created) {
         _models.estudiante.findOrCreate({
-            where: {id: 1},
+            where: {id: 2},
             defaults: {
                 institucion: 'PASPLAND',
                 usuario: user.get('id')
@@ -102,9 +102,9 @@ _models.sequelize.sync().then(function () {
         });
     });
     _models.usuario.findOrCreate({
-        where: {email: 'usuario2@usuario2.com'},
+        where: {email: 'u2@u2.u2'},
         defaults: {
-            email: 'usuario2@usuario2.com',
+            email: 'u2@u2.u2',
             password: 'usuario2',
             nombre: 'usuario2',
             apellido: 'usuario2',
