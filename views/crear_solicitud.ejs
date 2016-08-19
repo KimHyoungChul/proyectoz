@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="/bower_components/materialize/dist/css/materialize.min.css">
+    <link href="/bower_components/materialize/dist/css/materialize.min.css" rel="stylesheet">
     <link href='/bower_components/fullcalendar/dist/fullcalendar.min.css' rel='stylesheet' />
+    <link href='/css/custom.css' rel='stylesheet' />
 
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
     <script src="/bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
     <script src='/bower_components/moment/moment.js'></script>
     <script src='/bower_components/fullcalendar/dist/fullcalendar.js'></script>
+    <script src='/bower_components/fullcalendar/dist/lang/es.js'></script>
     <meta charset="UTF-8">
     <title>ProyectoZ</title>
 </head>
@@ -20,28 +22,45 @@
         <h3>Creando Solicitud</h3>
         <form id="nueva_solicitud" action="/solicitud/crear/" method="post">
             <input id="input_horario" type="hidden" name="horario">
+            <input id="input_integrantes" type="hidden" name="integrantes">
             <div class="col s6">
-                <select multiple id="keyword_select" name="keywords">
-                    <option value="" disabled selected>Elige tus keywords</option>
-                    <% keywords.forEach(function (keyword) {%>
-                    <option value="<%= keyword.get('id') %>"><%= keyword.get('texto') %></option>
-                    <% }); %>
-                </select>
-                <label for="keyword_select">Materialize Multiple Select</label>
+                <div class="input-field">
+                    <input placeholder="Necesito aprender SQL" id="input_titulo" class="validate" type="text" length="140" name="titulo">
+                    <label for="input_titulo">Titulo</label>
+                </div>
+                <div class="input-field">
+                    <textarea id="input_cuerpo" placeholder="Necesito aprender SQL porque tengo una tarea sobre..." class="materialize-textarea validate" length="300" name="cuerpo"></textarea>
+                    <label for="input_cuerpo">Titulo</label>
+                </div>
             </div>
             <div class="col s6">
-                <button class="btn waves-effect waves-light" type="submit" name="submit" value="submit">Enviar
-                    <i class="material-icons right">send</i>
-                </button>
+                <!--<div class="input-field">-->
+                <div id="integrantes" class="chips">
+                </div>
+                <div class="">
+                    <select multiple id="keyword_select" name="keywords">
+                        <option value="" disabled selected>Elige tus keywords</option>
+                        <% keywords.forEach(function (keyword) {%>
+                        <option value="<%= keyword.get('id') %>"><%= keyword.get('texto') %></option>
+                        <% }); %>
+                    </select>
+                    <label for="keyword_select">Materialize Multiple Select</label>
+                </div>
             </div>
             <div class="col s12">
-                <a id="calendar_btn" class="btn waves-effect waves-light" href="#">Mostrar Calendario
+                <span id="calendar_btn" class="btn waves-effect waves-light" href="#">Mostrar Calendario
                     <i class="material-icons right">cloud</i>
-                </a>
+                </span>
+                <div id="calendar_div" class="col s12">
+                    <div id='calendar'></div>
+                    <div style='clear:both'></div>
+                </div>
             </div>
-            <div id="calendar_div" class="col s12">
-                <div id='calendar'></div>
-                <div style='clear:both'></div>
+            <div class="col s12">
+                <br>
+                <button class="btn-large waves-effect waves-light" type="submit" name="submit" value="submit">Enviar
+                    <i class="material-icons right">send</i>
+                </button>
             </div>
         </form>
     </div>

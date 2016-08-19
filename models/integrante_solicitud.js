@@ -10,6 +10,7 @@ module.exports = function(sequelize, DataTypes) {
     var Integrante_solicitud = sequelize.define('integrante_solicitud',{
         estado: {
             type: DataTypes.STRING(10),
+            defaultValue: 'pendiente',
             values: ['pendiente', 'aceptado', 'rechazado'],
             allowNull: false
         }

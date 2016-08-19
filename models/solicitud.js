@@ -15,6 +15,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         estado: {
             type: DataTypes.STRING(10),
+            defaultValue: 'pendiente',
             values: ['pendiente','aceptada'],
             allowNull: false
         },

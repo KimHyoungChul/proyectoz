@@ -6,6 +6,8 @@
     "start": "supervisor server.js"
   },
   "dependencies": {
+    "async": "^2.0.1",
+    "bluebird": "^3.4.1",
     "ejs": "^2.4.2",
     "express": "~4.12.4",
     "kurento-client": "Kurento/kurento-client-js",

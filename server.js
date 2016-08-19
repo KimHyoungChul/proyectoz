@@ -77,10 +77,28 @@ _models.sequelize.sync().then(function () {
         _models.estudiante.findOrCreate({
             where: {id: 1},
             defaults: {
-                institucion: 'IPISA'
+                institucion: 'IPISA',
+                usuario: user.get('id')
             }
-        }).spread(function(est,created) {
-            user.setEstudiante(est);
+        });
+    });
+    _models.usuario.findOrCreate({
+        where: {email: 'usuario3@usuario3.com'},
+        defaults: {
+            email: 'usuario3@usuario3.com',
+            password: 'usuario3',
+            nombre: 'usuario3',
+            apellido: 'usuario3',
+            genero: 'F',
+            fecha_nacimiento: new Date('11-6-1993')
+        }
+    }).spread(function(user,created) {
+        _models.estudiante.findOrCreate({
+            where: {id: 1},
+            defaults: {
+                institucion: 'PASPLAND',
+                usuario: user.get('id')
+            }
         });
     });
     _models.usuario.findOrCreate({
@@ -97,10 +115,9 @@ _models.sequelize.sync().then(function () {
         _models.tutor.findOrCreate({
             where: {id: 1},
             defaults: {
-                ocupacion: 'Estudiante'
+                ocupacion: 'Estudiante',
+                usuario: user.get('id')
             }
-        }).spread(function(tutor,created) {
-            user.setTutor(tutor);
         });
     });
 });
