@@ -48,18 +48,27 @@ module.exports = function (modules) {
                                 $in: keywords
                             }
                         }
-                    }).then(function(solicitudes) {
+                    }).then(function(raw_solicitudes) {
                         //transformar objeto de cross-table a arreglo de solicitudes
                         //luego eliminando duplicados del arreglo
-                        solicitudes = solicitudes.map(function(sol){
+                        solicitudes_ids = raw_solicitudes.map(function(sol){
                             return sol.solicitud;
                         }).filter(function(elem, index, array) {
                                 return array.indexOf(elem) === index;
                             }
                         );
-                        res.render('ver_solicitudes',{
-                            data: JSON.stringify(solicitudes)
-                            // data: JSON.stringify(keywords)
+
+                        //buscar datos de las solicitudes encontradas
+                        models.solicitud.findAll({
+                            where: {
+                                id: {
+                                    $in: solicitudes_ids
+                                }
+                            }
+                        }).then(function(_solicitudes) {
+                            res.render('ver_solicitudes',{
+                                solicitudes: _solicitudes
+                            });
                         });
                     });
                 });
