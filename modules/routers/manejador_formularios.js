@@ -2,7 +2,6 @@
  * Created by forte on 15/08/16.
  */
 var moment  = require('moment');
-moment.locale('es');
 
 module.exports = function (modules) {
     var app = modules.express;
@@ -18,12 +17,9 @@ module.exports = function (modules) {
             var intervalos = [];
             //transformar horas a formato indicado para persistir
             JSON.parse(req.body.horario).forEach(function(intervalo) {
-                var inicio    = moment(intervalo.start);
-
                 intervalos.push({
-                    hora_inicio: inicio.format('LTS'),
-                    hora_fin:    moment(intervalo.end).format('LTS'),
-                    dia:         inicio.format('dddd'),
+                    hora_inicio: intervalo.start,
+                    hora_fin:    intervalo.end,
                     horario:     nuevoHorario.get('id')
                 });
             });
@@ -37,46 +33,60 @@ module.exports = function (modules) {
                     estudiante: 1,
                     horario: nuevoHorario.get('id')
                 }).then(function(nuevaSolicitud) {
-                    //obtener correos
-                    var correos = [];
-                    JSON.parse(req.body.integrantes).forEach(function(integ) {
-                        correos.push(integ.tag);
-                    });
-                    //obtener id de cada correo valido
-                    //TODO excluir el usuario logueado
-                    models.usuario.findAll({
-                        attributes: ['id'],
+                    //obtener keywords
+                    var keyword_ids = req.body.keywords.map(function(keyword) { return parseInt(keyword) });
+                    models.keyword.findAll({
                         where: {
-                            email: {
-                                $in: correos
+                            id: {
+                                $in: keyword_ids
                             }
                         }
-                    }).then(function(usuarioses) {
-                        //obtener arreglo de id de usuarios
-                        var ids = [];
-                        usuarioses.forEach(function(user) {
-                            ids.push(user.get('id'));
+                    }).then(function(keywords) {
+                        keywords.forEach(function(keyword) {
+                            nuevaSolicitud.addKeyword(keyword);
                         });
-                        //obtener estudiantes de los usuarios de los correos del paso anterior
-                        models.estudiante.findAll({
+
+                        //obtener correos
+                        var correos = [];
+                        JSON.parse(req.body.integrantes).forEach(function(integ) {
+                            correos.push(integ.tag);
+                        });
+                        //obtener id de cada correo valido
+                        //TODO excluir el usuario logueado
+                        models.usuario.findAll({
                             attributes: ['id'],
                             where: {
-                                usuario: {
-                                    $in: ids
+                                email: {
+                                    $in: correos
                                 }
                             }
-                        }).then(function (estudianteses) {
-                            //crear arreglo de instancias a guardar
-                            var integrantes_solicitud = [];
-                            estudianteses.forEach(function(estud) {
-                               integrantes_solicitud.push({
-                                   estudiante: estud.get('id'),
-                                   solicitud: nuevaSolicitud.get('id')
-                               }) ;
+                        }).then(function(usuarioses) {
+                            //obtener arreglo de id de usuarios
+                            var ids = [];
+                            usuarioses.forEach(function(user) {
+                                ids.push(user.get('id'));
                             });
-                            //guardar estudiantes como integrante de la solicitud de tutoria
-                            models.integrante_solicitud.bulkCreate(integrantes_solicitud).then(function() {
-                                res.send('ya');
+                            //obtener estudiantes de los usuarios de los correos del paso anterior
+                            models.estudiante.findAll({
+                                attributes: ['id'],
+                                where: {
+                                    usuario: {
+                                        $in: ids
+                                    }
+                                }
+                            }).then(function (estudianteses) {
+                                //crear arreglo de instancias a guardar
+                                var integrantes_solicitud = [];
+                                estudianteses.forEach(function(estud) {
+                                    integrantes_solicitud.push({
+                                        estudiante: estud.get('id'),
+                                        solicitud: nuevaSolicitud.get('id')
+                                    }) ;
+                                });
+                                //guardar estudiantes como integrante de la solicitud de tutoria
+                                models.integrante_solicitud.bulkCreate(integrantes_solicitud).then(function() {
+                                    res.send('ya');
+                                });
                             });
                         });
                     });
@@ -117,6 +127,22 @@ module.exports = function (modules) {
 
     });
 
+    app.post('/tutores/agregar_keyword/', function(req, res) {
+        var keywords = req.body.keywords.map(function(keyword) { return parseInt(keyword) });
+        var tutorId  = parseInt(req.body.tutor);
+
+        models.tutor.find({
+            where: { id: tutorId }
+        }).then(function(tutorEncontrado) {
+            keywords.forEach(function (keyword) {
+               tutorEncontrado.addKeyword(keyword);
+            });
+
+            res.send('ya');
+        });
+
+    });
+
     app.post('/tutores/crear/', function(req, res) {
         console.log(req.body.password);
         models.usuario.create({
@@ -153,7 +179,7 @@ module.exports = function (modules) {
                   id: usuario[0].id
                 };
                 models.tutor.findAll({
-                    where:{
+                    where: {
                         usuario: usuario[0].id
                     }
                 }).then(function (tutor) {
@@ -161,13 +187,14 @@ module.exports = function (modules) {
                         console.log('klk');
                         user.autorizado = tutor[0].autorizado;
                         user.tipo = 'tutor';
+                        user.id = tutor[0].id;
                         req.session.usuario = user;
                         response.status = 0;
                         res.send(JSON.stringify(response));
                     }
                 });
                 models.estudiante.findAll({
-                    where:{
+                    where: {
                         usuario: usuario[0].id
                     }
                 }).then(function (estudiante) {
@@ -175,19 +202,17 @@ module.exports = function (modules) {
                         console.log('klk');
                         user.autorizado = false;
                         user.tipo = 'estudiante';
+                        user.id = estudiante[0].id;
                         req.session.usuario = user;
                         response.status = 0;
                         res.send(JSON.stringify(response));
                     }
                 });
-
             }
-            else{
+            else {
                 response.status = -1;
                 res.send(JSON.stringify( response ));
             }
-
         });
-        
     });
 };

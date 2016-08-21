@@ -47,7 +47,7 @@ var credenciales = {
 var server = https.createServer(credenciales,app);
 
 //inicializando aplicacion luego que los modelos se 'sincronizan'
-_models.sequelize.sync({force: true}).then(function () {
+_models.sequelize.sync().then(function () {
 
     //inicializando
     var app_server = server.listen(app_url.port, function() {
@@ -124,6 +124,7 @@ _models.sequelize.sync({force: true}).then(function () {
             where: {id: 1},
             defaults: {
                 ocupacion: 'Estudiante',
+                autorizado: false,
                 usuario: user.get('id')
             }
         });

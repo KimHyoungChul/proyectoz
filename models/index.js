@@ -38,9 +38,10 @@ db.evaluacion.belongsTo(db.sesion_tutoria, {as: 'evaluaciones', foreignKey: 'ses
 db.evaluacion.hasMany(db.opcion_evaluacion, {as: 'opciones', foreignKey: 'evaluacion'});
 db.sesion_tutoria.hasMany(db.recurso_workspace, {as: 'recursos', foreignKey: 'sesion_tutoria'});
 
-db.keyword.belongsToMany(db.tutor, {as: 'tutores', through: 'keyword_tutor', foreignKey: 'keyword'});
-db.tutor.belongsToMany(db.keyword, {as: 'keywords', through: 'keyword_tutor', foreignKey: 'tutor'});
-db.keyword.belongsToMany(db.solicitud, {as: 'solicitudes', through: 'keyword_solicitud', foreignKey: 'keyword'});
+db.keyword.belongsToMany(db.tutor, {as: 'Tutores', through: 'keyword_tutor', foreignKey: 'keyword'});
+db.tutor.belongsToMany(db.keyword, {as: 'Keywords', through: 'keyword_tutor', foreignKey: 'tutor'});
+db.keyword.belongsToMany(db.solicitud, {as: 'Solicitudes', through: 'keyword_solicitud', foreignKey: 'keyword'});
+db.solicitud.belongsToMany(db.keyword, {as: 'Keywords', through: 'keyword_solicitud', foreignKey: 'solicitud'});
 db.solicitud.belongsToMany(db.estudiante, {as: 'estudiantes', through: db.integrante_solicitud, foreignKey: 'solicitud'});
 db.estudiante.belongsToMany(db.solicitud, {as: 'solicitudes', through: db.integrante_solicitud, foreignKey: 'estudiante'});
 db.estudiante.belongsToMany(db.opcion_evaluacion, {as: 'respuestas', through: 'respuesta_evaluacion', foreignKey: 'estudiante'});

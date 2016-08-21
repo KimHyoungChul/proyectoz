@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/bower_components/materialize/dist/css/materialize.min.css" rel="stylesheet">
+    <link href='/css/custom.css' rel='stylesheet' />
+
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
+    <meta charset="UTF-8">
+    <title>ProyectoZ</title>
+</head>
+<body>
+<% include nav.ejs %>
+<div class="container">
+    <div class="row">
+        <h3>Agregando keyword a un tutor</h3>
+        <form id="nueva_solicitud" action="/tutores/agregar_keyword/" method="post">
+            <div class="col s6">
+                <div class="input-field">
+                    <select id="keyword_select" name="tutor">
+                        <option value="" disabled selected>Elegir tutor</option>
+                        <% tutores.forEach(function (tutor) {%>
+                        <option value="<%= tutor.get('id') %>">
+                            <%= tutor.get('id') + " : " + tutor.get('id') %>
+                        </option>
+                        <% }); %>
+                    </select>
+                    <label for="keyword_select">Elegir tutor</label>
+                </div>
+            </div>
+            <div class="col s6">
+                <div class="input-field">
+                    <select multiple id="keyword_select" name="keywords">
+                        <option value="" disabled selected>Elige tus keywords</option>
+                        <% keywords.forEach(function (keyword) {%>
+                        <option value="<%= keyword.get('id') %>"><%= keyword.get('texto') %></option>
+                        <% }); %>
+                    </select>
+                    <label for="keyword_select">Elegir Keywords</label>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="col s12">
+                <br>
+                <button class="btn-large waves-effect waves-light" type="submit" name="submit" value="submit">
+                    Enviar <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/js/custom.js"></script>
+</body>
+</html>
