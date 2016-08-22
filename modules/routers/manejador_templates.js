@@ -15,6 +15,54 @@ module.exports = function (modules) {
         });
     });
 
+    app.get('/solicitud/ver/:sol_id/', function(req, res) {
+        var solicitud_id = parseInt(req.params.sol_id);
+
+        if(solicitud_id) {
+            //obtener solicitud con el id especificado
+            models.solicitud.find({
+                where: {id: solicitud_id}
+            }).then(function (solicitudEncontrada) {
+                solicitudEncontrada.getHorario().then(function(horarioEncontrado) {
+                    horarioEncontrado.getIntervalos().then(function(intervalosEncontrados) {
+                        solicitudEncontrada.getKeywords().then(function(keywordsEncontrados) {
+                            res.render('ver_solicitud', {
+                                solicitud: solicitudEncontrada,
+                                keywords: keywordsEncontrados,
+                                intervalos: intervalosEncontrados
+                            });
+                        });
+                    });
+                });
+            })
+        }
+    });
+
+    app.get('/solicitud/crear_tutoria/:sol_id/', function(req, res) {
+        var solicitud_id = parseInt(req.params.sol_id);
+
+        if(solicitud_id) {
+            //obtener solicitud con el id especificado
+            models.solicitud.find({
+                where: {id: solicitud_id}
+            }).then(function (solicitudEncontrada) {
+                solicitudEncontrada.getHorario().then(function(horarioEncontrado) {
+                    horarioEncontrado.getIntervalos({
+                        attributes: [['hora_inicio','start'],['hora_fin','end']]
+                    }).then(function(intervalosEncontrados) {
+                        solicitudEncontrada.getKeywords().then(function(keywordsEncontrados) {
+                            res.render('crear_tutoria', {
+                                solicitud: solicitudEncontrada,
+                                keywords: keywordsEncontrados,
+                                intervalos: intervalosEncontrados
+                            });
+                        });
+                    });
+                });
+            })
+        }
+    });
+
     app.get('/keyword/crear/', function(req, res) {
         res.render('crear_keyword');
     });

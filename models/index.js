@@ -25,8 +25,8 @@ fs  .readdirSync(__dirname)
         db[model.name] = model;
     });
 
-db.horario.hasMany(db.intervalo,{as: 'intervalo', foreignKey: 'horario'});
-db.horario.hasOne(db.solicitud,{as: 'solictud', foreignKey: 'horario'});
+db.horario.hasMany(db.intervalo,{as: 'Intervalos', foreignKey: 'horario'});
+db.solicitud.belongsTo(db.horario,{as: 'Horario', foreignKey: 'horario'});
 db.solicitud.hasOne(db.sesion_tutoria,{as: 'sesion_tutoria', foreignKey: 'solicitud'});
 db.usuario.hasOne(db.tutor, {as: 'Tutor', foreignKey: 'usuario'});
 db.usuario.hasOne(db.estudiante, {as: 'Estudiante', foreignKey: 'usuario'});

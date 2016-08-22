@@ -13,6 +13,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         estado: {
             type: DataTypes.STRING(10),
+            defaultValue: 'futura',
             values: ['futura', 'en-proceso', 'realizada', 'cancelada'],
             allowNull: false
         }

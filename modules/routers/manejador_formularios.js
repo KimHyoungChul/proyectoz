@@ -94,6 +94,10 @@ module.exports = function (modules) {
             });
         });
     });
+    app.post('/solicitud/crear_tutoria/', function(req, res) {
+        console.log(req.body);
+        res.send('ya');
+    });
 
     app.post('/keyword/crear/', function(req, res) {
         //Capitalizar texto de keyword

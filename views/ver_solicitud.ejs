@@ -13,20 +13,9 @@
         <h3>Ver Solicitudes</h3>
         <div class="col s12">
             <div class="col s6">
-                <% solicitudes.forEach(function(sol) {  %>
-                <div class="card green darken-4">
-                    <div class="card-content white-text">
-                        <span class="card-title">
-                            <%= sol.titulo %>
-                        </span>
-                        <p><%= sol.cuerpo %></p>
-                    </div>
-                    <div class="card-action">
-                        <a href="/solicitud/ver/<%= sol.id %>/">Ver Detalles</a>
-                        <a href="/solicitud/crear_tutoria/<%= sol.id %>/">Ofrecer Tutoria</a>
-                    </div>
-                </div>
-                <% }); %>
+                <p><%= JSON.stringify(solicitud) %></p>
+                <p><%= JSON.stringify(keywords) %></p>
+                <p><%= JSON.stringify(intervalos) %></p>
             </div>
         </div>
     </div>
