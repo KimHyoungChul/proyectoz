@@ -158,7 +158,6 @@ module.exports = function (modules) {
                     }
                 }).then(function (tutor) {
                     if(tutor.length > 0){
-                        console.log('klk');
                         user.autorizado = tutor[0].autorizado;
                         user.tipo = 'tutor';
                         req.session.usuario = user;
@@ -172,7 +171,6 @@ module.exports = function (modules) {
                     }
                 }).then(function (estudiante) {
                     if(estudiante.length > 0){
-                        console.log('klk');
                         user.autorizado = false;
                         user.tipo = 'estudiante';
                         req.session.usuario = user;

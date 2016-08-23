@@ -10,7 +10,7 @@ var data = {
     idCounter: 0,
     candidatesQueue: {},
     kurentoClient: null,
-    presenters: {},
+    presenters: [],
     viewers: [],
     noPresenterMessage: 'No hay un presentador...'
 };
@@ -26,25 +26,28 @@ var initializer = function(app_server,direcciones) {
     websocketServer.on('connection', function(ws) {
 
         var sessionId = nextUniqueId();
+        var esTutor = false;
+        var tutoria;
         console.log('Connection received with sessionId ' + sessionId);
 
         ws.on('error', function(error) {
             console.log('Connection ' + sessionId + ' error');
-            stop(sessionId);
+            stop(sessionId,esTutor,tutoria);
         });
 
         ws.on('close', function() {
             console.log('Connection ' + sessionId + ' closed');
-            stop(sessionId);
+            stop(sessionId,esTutor,tutoria);
         });
 
         ws.on('message', function(_message) {
             var message = JSON.parse(_message);
-            console.log('Connection ' + sessionId + ' received message ', message);
+            console.log('Connection ' + sessionId + ' received message ', message, message.presenter_id);
 
             switch (message.id) {
                 case 'presenter':
-                    startPresenter(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
+                    console.log("La sesion es: "+ sessionId);
+                    startPresenter(sessionId,message.sesion_id, ws, message.sdpOffer, function(error, sdpAnswer) {
                         if (error) {
                             return ws.send(JSON.stringify({
                                 id : 'presenterResponse',
@@ -52,6 +55,8 @@ var initializer = function(app_server,direcciones) {
                                 message : error
                             }));
                         }
+                        esTutor = true;
+                        tutoria = message.sesion_id;
                         ws.send(JSON.stringify({
                             id : 'presenterResponse',
                             response : 'accepted',
@@ -72,6 +77,9 @@ var initializer = function(app_server,direcciones) {
                             }));
                         }
 
+                        esTutor = false;
+                        tutoria = presenter_id;
+
                         ws.send(JSON.stringify({
                             id : 'viewerResponse',
                             response : 'accepted',
@@ -81,7 +89,7 @@ var initializer = function(app_server,direcciones) {
                     break;
 
                 case 'stop':
-                    stop(sessionId);
+                    stop(sessionId, esTutor, tutoria);
                     break;
 
                 case 'onIceCandidate':
@@ -120,13 +128,14 @@ var initializer = function(app_server,direcciones) {
         });
     }
 
-    function startPresenter(sessionId, ws, sdpOffer, callback) {
+    function startPresenter(sessionId,presenterId, ws, sdpOffer, callback) {
         clearCandidatesQueue(sessionId);
 
         data.presenter = {
             id : sessionId,
             pipeline : null,
-            webRtcEndpoint : null
+            webRtcEndpoint : null,
+            viewers: []
         };
         
         getKurentoClient(function(error, kurentoClient) {
@@ -199,7 +208,8 @@ var initializer = function(app_server,direcciones) {
                             stop(sessionId);
                             return callback(error);
                         }
-                        data.presenters[sessionId] = data.presenter;
+                        data.presenters[presenterId] = data.presenter;
+                        console.log('Presentador creado sesion: '+ presenterId);
 
                     });
                 });
@@ -209,21 +219,24 @@ var initializer = function(app_server,direcciones) {
 
     function startViewer(sessionId, presenter_id, ws, sdpOffer, callback) {
         clearCandidatesQueue(sessionId);
-
+        
         if (data.presenters === {}) {
             stop(sessionId);
             return callback(data.noPresenterMessage);
         }
+        console.log('Presentador con sesion: '+ presenter_id);
         var presenter = data.presenters[presenter_id];
         presenter.pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
             if (error) {
                 stop(sessionId);
                 return callback(error);
             }
-            data.viewers[sessionId] = {
+            var viewer = {
                 "webRtcEndpoint" : webRtcEndpoint,
                 "ws" : ws
-            }
+            };
+            data.presenters[presenter_id].viewers[sessionId] = viewer;
+            data.viewers[sessionId] = viewer;
 
             if (presenter === null) {
                 stop(sessionId);
@@ -283,9 +296,9 @@ var initializer = function(app_server,direcciones) {
         }
     }
 
-    function stop(sessionId) {
-        if (data.presenter !== null && data.presenter.id == sessionId) {
-            for (var i in data.viewers) {
+    function stop(sessionId, esTutor, tutoria) {
+        if (esTutor) {
+            for (var i in data.presenters[tutoria].viewers) {
                 var viewer = data.viewers[i];
                 if (viewer.ws) {
                     viewer.ws.send(JSON.stringify({
@@ -293,13 +306,18 @@ var initializer = function(app_server,direcciones) {
                     }));
                 }
             }
-            data.presenter.pipeline.release();
-            data.presenter = null;
-            data.viewers = [];
+            console.log("Borrando presentador con tutoria: " + tutoria );
+            data.presenters[tutoria].pipeline.release();
+            data.presenters[tutoria].id = null;
+            data.presenters[tutoria].pipeline = null;
+            data.presenters[tutoria].webRtcEndpoint = null;
+
 
         } else if (data.viewers[sessionId]) {
             data.viewers[sessionId].webRtcEndpoint.release();
             delete data.viewers[sessionId];
+            console.log('Borrando viewer del presentador: ' + data.presenters[tutoria]);
+            delete data.presenters[tutoria].viewers[sessionId];
         }
 
         clearCandidatesQueue(sessionId);
@@ -309,15 +327,15 @@ var initializer = function(app_server,direcciones) {
         var candidate = kurento.getComplexType('IceCandidate')(_candidate);
 
         if (data.presenter && data.presenter.id === sessionId && data.presenter.webRtcEndpoint) {
-            console.info('Sending presenter candidate');
+            //console.info('Sending presenter candidate');
             data.presenter.webRtcEndpoint.addIceCandidate(candidate);
         }
         else if (data.viewers[sessionId] && data.viewers[sessionId].webRtcEndpoint) {
-            console.info('Sending viewer candidate');
+           // console.info('Sending viewer candidate');
             data.viewers[sessionId].webRtcEndpoint.addIceCandidate(candidate);
         }
         else {
-            console.info('Queueing candidate');
+            //console.info('Queueing candidate');
             if (!data.candidatesQueue[sessionId]) {
                 data.candidatesQueue[sessionId] = [];
             }
