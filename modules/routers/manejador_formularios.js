@@ -95,8 +95,14 @@ module.exports = function (modules) {
         });
     });
     app.post('/solicitud/crear_tutoria/', function(req, res) {
-        console.log(req.body);
-        res.send('ya');
+        models.sesion_tutoria.create({
+            fecha: req.body.fecha,
+            hora_inicio: req.body.hora,
+            solicitud: req.body.solicitud_id,
+            tutor: req.session.usuario.id
+        }).then(function(sesion_creada) {
+            res.redirect(303,'/');
+        });
     });
 
     app.post('/keyword/crear/', function(req, res) {

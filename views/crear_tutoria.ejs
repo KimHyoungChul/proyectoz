@@ -49,7 +49,7 @@
         </div>
         <div class="col s4">
             <form id="nueva_solicitud" action="/solicitud/crear_tutoria/" method="post">
-                <input type="hidden" name="solicitud" value="<%= solicitud.id %>">
+                <input type="hidden" name="solicitud_id" value="<%= solicitud.id %>">
                 <ul class="collection">
                     <li class="collection-item">
                         <div class="input-field">
@@ -61,8 +61,8 @@
                     <li class="collection-item">
                         <div class="input-field">
                             <i class="material-icons prefix">today</i>
-                            <input id="fecha" type="date" class="datepicker" name="fecha" required>
-                            <label for="fecha">Fecha</label>
+                            <input id="datepicker" type="date" class="datepicker" name="fecha" required>
+                            <label for="datepicker">Fecha</label>
                         </div>
                     </li>
                 </ul>

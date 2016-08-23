@@ -12,11 +12,12 @@ $(document).ready(function() {
         $("#calendar").fullCalendar('render');
     });
     //inicializacion de calendario fullcalendar
-    $('#timepicker').pickatime({
+    var timepicker = $("#timepicker");
+    timepicker.pickatime({
         autoclose: false
     });
-
-    $("#fecha").pickadate({
+    var datepicker = $("#datepicker");
+    datepicker.pickadate({
         selectMonths: true
     });
 
@@ -32,6 +33,11 @@ $(document).ready(function() {
         allDaySlot: false,
         slotLabelFormat: 'h A',
         slotDuration: '01:00:00',
-        events: eventos
+        events: eventos,
+        eventClick: function(calEvent, jsEvent, view) {
+            // alert('Event: ' + calEvent.title);
+            // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+            // alert('View: ' + view.name);
+        }
     });
 });
