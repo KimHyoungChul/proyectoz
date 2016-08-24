@@ -57,12 +57,15 @@ var initializer = function(app_server,direcciones) {
                         }
                         esTutor = true;
                         tutoria = message.sesion_id;
-                        ws.send(JSON.stringify({
-                            id : 'presenterResponse',
-                            response : 'accepted',
-                            sdpAnswer : sdpAnswer,
-                            presenter_id : sessionId
-                        }));
+                        if(ws.readyState === 1){
+                            ws.send(JSON.stringify({
+                                id : 'presenterResponse',
+                                response : 'accepted',
+                                sdpAnswer : sdpAnswer,
+                                presenter_id : sessionId
+                            }));
+                        }
+
                     });
                     break;
 
@@ -130,12 +133,15 @@ var initializer = function(app_server,direcciones) {
 
     function startPresenter(sessionId,presenterId, ws, sdpOffer, callback) {
         clearCandidatesQueue(sessionId);
-
+        var viewers = [];
+        if(data.presenters[presenterId]){
+            viewers = data.presenters[presenterId].viewers;
+        }
         data.presenter = {
             id : sessionId,
             pipeline : null,
             webRtcEndpoint : null,
-            viewers: []
+            viewers: viewers
         };
         
         getKurentoClient(function(error, kurentoClient) {
@@ -183,10 +189,13 @@ var initializer = function(app_server,direcciones) {
 
                     webRtcEndpoint.on('OnIceCandidate', function(event) {
                         var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
-                        ws.send(JSON.stringify({
-                            id : 'iceCandidate',
-                            candidate : candidate
-                        }));
+                        if(ws.readyState === 1){
+                            ws.send(JSON.stringify({
+                                id : 'iceCandidate',
+                                candidate : candidate
+                            }));
+                        }
+
                     });
 
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
@@ -209,6 +218,17 @@ var initializer = function(app_server,direcciones) {
                             return callback(error);
                         }
                         data.presenters[presenterId] = data.presenter;
+                        data.presenters[presenterId].viewers.forEach(function (viewer) {
+                            if (viewer.ws && viewer.ws.readyState === 1) {
+                                viewer.ws.send(JSON.stringify({
+                                    id : 'resumeSession'
+                                }));
+                            }
+                        });
+                        // for (var i in data.presenters[presenterId].viewers) {
+                        //     var viewer = data.viewers[i];
+                        //    
+                        // }
                         console.log('Presentador creado sesion: '+ presenterId);
 
                     });
@@ -222,10 +242,28 @@ var initializer = function(app_server,direcciones) {
         
         if (data.presenters === {}) {
             stop(sessionId);
-            return callback(data.noPresenterMessage);
         }
         console.log('Presentador con sesion: '+ presenter_id);
         var presenter = data.presenters[presenter_id];
+        if(!presenter || !presenter.pipeline){
+            var viewer = {
+                "webRtcEndpoint" : null,
+                "ws" : ws,
+                "pendiente" : true
+                
+            };
+            if(presenter){
+                data.presenters[presenter_id].viewers[sessionId] = viewer;
+            }
+            else{
+                data.presenters[presenter_id] = {
+                    viewers: [viewer]
+                }
+            }
+
+            return callback(data.noPresenterMessage);
+
+        }
         presenter.pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
             if (error) {
                 stop(sessionId);
@@ -296,21 +334,27 @@ var initializer = function(app_server,direcciones) {
         }
     }
 
-    function stop(sessionId, esTutor, tutoria) {
+    function stop(sessionId, esTutor, tutoria, terminar = false) {
         if (esTutor) {
-            for (var i in data.presenters[tutoria].viewers) {
-                var viewer = data.viewers[i];
+            data.presenters[tutoria].viewers.forEach(function (viewer) {
                 if (viewer.ws) {
-                    viewer.ws.send(JSON.stringify({
-                        id : 'stopCommunication'
-                    }));
+                    console.log('Enviando mensaje a' + viewer.ws);
+                    if(viewer.ws.readyState === 1){
+                        viewer.ws.send(JSON.stringify({
+                            id : terminar ? 'stopCommunication' : 'halt'
+                        }));
+                    }
+
                 }
-            }
+            });
             console.log("Borrando presentador con tutoria: " + tutoria );
-            data.presenters[tutoria].pipeline.release();
+            data.presenters[tutoria].webRtcEndpoint.release();
+            if(data.presenters[tutoria].pipeline){
+                data.presenters[tutoria].pipeline.release();
+            }
             data.presenters[tutoria].id = null;
             data.presenters[tutoria].pipeline = null;
-            data.presenters[tutoria].webRtcEndpoint = null;
+
 
 
         } else if (data.viewers[sessionId]) {

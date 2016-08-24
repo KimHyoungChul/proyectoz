@@ -53,6 +53,14 @@ ws.onmessage = function (message) {
 		case 'iceCandidate':
 			webRtcPeer.addIceCandidate(parsedMessage.candidate)
 			break;
+		case 'resumeSession':
+			console.error('Esta vivo!');
+			viewer();
+			break;
+		case 'halt':
+			console.error('Se murio');
+			webRtcPeer = null;
+			break;
 		default:
 			console.error('Unrecognized message', parsedMessage);
 	}
