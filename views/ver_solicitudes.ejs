@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/materialize/dist/css/materialize.min.css">
+    <meta charset="UTF-8">
+    <title>ProyectoZ</title>
+</head>
+<body>
+<% include nav.ejs %>
+<div class="container">
+    <div class="row">
+        <h3>Ver Solicitudes</h3>
+        <div class="col s12">
+            <div class="col s6">
+                <% solicitudes.forEach(function(sol) {  %>
+                <div class="card green darken-4">
+                    <div class="card-content white-text">
+                        <span class="card-title">
+                            <%= sol.titulo %>
+                        </span>
+                        <p><%= sol.cuerpo %></p>
+                    </div>
+                    <div class="card-action">
+                        <a href="/solicitud/ver/<%= sol.id %>/">Ver Detalles</a>
+                        <a href="/solicitud/crear_tutoria/<%= sol.id %>/">Ofrecer Tutoria</a>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/materialize/dist/js/materialize.min.js">
+</script>
+</body>
+</html>

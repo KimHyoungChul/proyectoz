@@ -124,6 +124,7 @@ _models.sequelize.sync().then(function () {
             where: {id: 1},
             defaults: {
                 ocupacion: 'Estudiante',
+                autorizado: false,
                 usuario: user.get('id')
             }
         });

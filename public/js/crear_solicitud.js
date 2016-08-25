@@ -22,6 +22,7 @@ $(document).ready(function() {
         lang: 'es',
         defaultView: 'agendaWeek',
         selectable: true,
+        timezone: 'America/Santo_Domingo',
         selectHelper: true,
         allDaySlot: false,
         slotLabelFormat: 'h A',
@@ -45,7 +46,6 @@ $(document).ready(function() {
         //agregar intervalos como campo de formulario
         var intervalos = [];
         var raw_eventos = $("#calendar").fullCalendar('clientEvents');
-
         raw_eventos.forEach(function (e) {
             intervalos.push({
                 start: e.start,

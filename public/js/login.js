@@ -19,8 +19,6 @@ $(document).ready(function () {
                 required: true,
                 minlength: 5
             }
-
-
         }
     });
     $('#btn-login').on('click', function () {
