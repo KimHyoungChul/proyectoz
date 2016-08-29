@@ -46,11 +46,16 @@ module.exports = function (modules) {
             models.solicitud.find({
                 where: {id: solicitud_id}
             }).then(function (solicitudEncontrada) {
+                //buscar horario de solicitud encontrada
                 solicitudEncontrada.getHorario().then(function(horarioEncontrado) {
+                    //buscar intervalos del horario encontrado
+                    //cambiar nombre de atributos para ajustar a especificaciones de fullcalendar
                     horarioEncontrado.getIntervalos({
                         attributes: [['hora_inicio','start'],['hora_fin','end']]
                     }).then(function(intervalosEncontrados) {
+                        //buscar keywords de la solicitud encontrada
                         solicitudEncontrada.getKeywords().then(function(keywordsEncontrados) {
+                            //enviar datos encontrados para ser mostrados en la vista
                             res.render('crear_tutoria', {
                                 solicitud: solicitudEncontrada,
                                 keywords: keywordsEncontrados,
@@ -60,6 +65,24 @@ module.exports = function (modules) {
                     });
                 });
             })
+        }
+    });
+
+    app.get('/sesion/crear_evaluacion/:ses_id/', function(req, res) {
+        var sesion_id = parseInt(req.params.ses_id);
+
+        if(!isNaN(sesion_id)) {
+            //obtener sesion con el id especificado
+            models.sesion_tutoria.find({
+                where: {id: sesion_id}
+            }).then(function (sesionEncontrada) {
+                res.render('crear_evaluacion', {
+                    sesion: sesionEncontrada
+                });
+            });
+        }
+        else {
+            res.redirect(303,'/');
         }
     });
 

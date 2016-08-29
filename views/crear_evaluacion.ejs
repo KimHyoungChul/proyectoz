@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/bower_components/materialize/dist/css/materialize.min.css" rel="stylesheet">
+    <link href="/bower_components/materialize-clockpicker/dist/css/materialize.clockpicker.css" rel="stylesheet">
+    <link href='/bower_components/fullcalendar/dist/fullcalendar.min.css' rel='stylesheet' />
+    <link href='/css/custom.css' rel='stylesheet' />
+
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
+    <script src="/bower_components/materialize-clockpicker/dist/js/materialize.clockpicker.js"></script>
+    <script src='/bower_components/moment/moment.js'></script>
+    <script src='/bower_components/fullcalendar/dist/fullcalendar.js'></script>
+    <script src='/bower_components/fullcalendar/dist/lang/es.js'></script>
+    <meta charset="UTF-8">
+    <title>ProyectoZ</title>
+</head>
+<body>
+<% include nav.ejs %>
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <br>
+            <form id="nueva_solicitud" action="/sesion/crear_evaluacion/" method="post">
+                <div class="row">
+                    <input type="hidden" name="sesion_id" value="<%= sesion.id %>">
+                    <div class="input-field col s11">
+                        <textarea id="input_encabezado" placeholder="Escribe aqui el encabezado de la pregunta" class="materialize-textarea validate" length="300" name="encabezado" required></textarea>
+                        <label for="input_encabezado">Encabezado</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s7">
+                        <div class="row">
+                            <h4>Respuestas</h4>
+                            <a id="btn_agregar_respuesta" class="btn waves-effect waves-light text-center">
+                                <i class="material-icons left">library_add</i>
+                                Agregar respuesta
+                            </a>
+                        </div>
+                        <div class="row">
+                            <div id="div_respuestas">
+                                <div class="respuesta">
+                                    <div class="input-field col s11">
+                                        <!--<label for="respuesta_pregunta">Encabezado</label>-->
+                                        <textarea id="respuesta_pregunta" name="respuestas" placeholder="Texto de la respuesta" class="materialize-textarea" length="140" required></textarea>
+                                    </div>
+                                    <div class="col s1 text-center">
+                                        <br>
+                                        <br>
+                                        <a class="btn waves-effect waves-light btn_eliminar_respuesta">
+                                            <i class="material-icons">delete</i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="respuesta">
+                                    <div class="input-field col s11">
+                                        <!--<label for="respuesta_pregunta">Encabezado</label>-->
+                                        <textarea id="respuesta_pregunta" name="respuestas" placeholder="Texto de la respuesta" class="materialize-textarea" length="140" required/></textarea>
+                                    </div>
+                                    <div class="col s1 text-center">
+                                        <br>
+                                        <br>
+                                        <a class="btn waves-effect waves-light btn_eliminar_respuesta">
+                                            <i class="material-icons">delete</i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="div_respuesta_correcta" class="col s4 offset-s1">
+                        <h5>Respuesta Correcta</h5>
+                        <p>
+                            <input class="with-gap" name="respuesta_correcta" type="radio" id="resp_1" value="1" checked/>
+                            <label for="resp_1">Pregunta #1</label>
+                        </p>
+                        <p>
+                            <input class="with-gap" name="respuesta_correcta" type="radio" id="resp_2" value="2" />
+                            <label for="resp_2">Pregunta #2</label>
+                        </p>
+                    </div>
+                </div>
+                <br>
+                <button class="btn-large waves-effect waves-light" type="submit" name="submit" value="submit">
+                    Crear evaluacion
+                    <i class="material-icons right">send</i>
+                </button>
+            </form>
+        </div>
+    </div>
+    <div id="div_respuesta_dummy" class="respuesta hide">
+        <div class="input-field  col s11">
+            <!--<label for="respuesta_pregunta">Encabezado</label>-->
+            <textarea id="respuesta_pregunta" name="respuestas" placeholder="Texto de la respuesta" type="text" class="materialize-textarea" length="140" rows="1" required/></textarea>
+        </div>
+        <div class="col s1 text-center">
+            <br>
+            <br>
+            <a class="btn waves-effect waves-light btn_eliminar_respuesta">
+                <i class="material-icons">delete</i>
+            </a>
+        </div>
+    </div>
+    <p id="respuesta_correcta_dummy" class="hide">
+        <input class="with-gap" name="respuesta_correcta" type="radio"/>
+        <label></label>
+    </p>
+</div>
+<script src="/js/custom.js"></script>
+<script src="/js/crear_evaluacion.js"></script>
+</body>
+</html>

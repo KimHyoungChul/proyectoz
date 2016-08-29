@@ -117,6 +117,10 @@ module.exports = function (modules) {
         });
     });
 
+    app.post('/sesion/crear_evaluacion/', function(req, res) {
+        res.send(JSON.stringify(req.body));
+    });
+
     app.post('/estudiantes/crear/', function(req, res) {
         console.log(req.body.password);
         models.usuario.create({
