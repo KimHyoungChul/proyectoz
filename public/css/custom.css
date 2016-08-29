@@ -1,3 +1,9 @@
 textarea {
     resize: none;
 }
+
+.scroll_respuestas {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

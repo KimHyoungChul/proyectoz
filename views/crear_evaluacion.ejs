@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s7">
+                    <div class="col s9">
                         <div class="row">
                             <h4>Respuestas</h4>
                             <a id="btn_agregar_respuesta" class="btn waves-effect waves-light text-center">
@@ -40,14 +40,13 @@
                                 Agregar respuesta
                             </a>
                         </div>
-                        <div class="row">
+                        <div class="row scroll_respuestas">
                             <div id="div_respuestas">
                                 <div class="respuesta">
-                                    <div class="input-field col s11">
-                                        <!--<label for="respuesta_pregunta">Encabezado</label>-->
+                                    <div class="input-field col s10">
                                         <textarea id="respuesta_pregunta" name="respuestas" placeholder="Texto de la respuesta" class="materialize-textarea" length="140" required></textarea>
                                     </div>
-                                    <div class="col s1 text-center">
+                                    <div class="col s2 text-center">
                                         <br>
                                         <br>
                                         <a class="btn waves-effect waves-light btn_eliminar_respuesta">
@@ -56,11 +55,10 @@
                                     </div>
                                 </div>
                                 <div class="respuesta">
-                                    <div class="input-field col s11">
-                                        <!--<label for="respuesta_pregunta">Encabezado</label>-->
+                                    <div class="input-field col s10">
                                         <textarea id="respuesta_pregunta" name="respuestas" placeholder="Texto de la respuesta" class="materialize-textarea" length="140" required/></textarea>
                                     </div>
-                                    <div class="col s1 text-center">
+                                    <div class="col s2 text-center">
                                         <br>
                                         <br>
                                         <a class="btn waves-effect waves-light btn_eliminar_respuesta">
@@ -71,16 +69,13 @@
                             </div>
                         </div>
                     </div>
-                    <div id="div_respuesta_correcta" class="col s4 offset-s1">
+                    <div id="div_respuesta_correcta" class="col s3">
                         <h5>Respuesta Correcta</h5>
-                        <p>
-                            <input class="with-gap" name="respuesta_correcta" type="radio" id="resp_1" value="1" checked/>
-                            <label for="resp_1">Pregunta #1</label>
-                        </p>
-                        <p>
-                            <input class="with-gap" name="respuesta_correcta" type="radio" id="resp_2" value="2" />
-                            <label for="resp_2">Pregunta #2</label>
-                        </p>
+                        <select id="select_respuesta" name="respuesta_correcta" required>
+                            <option value="0" disabled selected>Choose your option</option>
+                            <option value="1">Pregunta #1</option>
+                            <option value="2">Pregunta #2</option>
+                        </select>
                     </div>
                 </div>
                 <br>
@@ -92,11 +87,10 @@
         </div>
     </div>
     <div id="div_respuesta_dummy" class="respuesta hide">
-        <div class="input-field  col s11">
-            <!--<label for="respuesta_pregunta">Encabezado</label>-->
+        <div class="input-field  col s10">
             <textarea id="respuesta_pregunta" name="respuestas" placeholder="Texto de la respuesta" type="text" class="materialize-textarea" length="140" rows="1" required/></textarea>
         </div>
-        <div class="col s1 text-center">
+        <div class="col s2 text-center">
             <br>
             <br>
             <a class="btn waves-effect waves-light btn_eliminar_respuesta">
@@ -104,10 +98,7 @@
             </a>
         </div>
     </div>
-    <p id="respuesta_correcta_dummy" class="hide">
-        <input class="with-gap" name="respuesta_correcta" type="radio"/>
-        <label></label>
-    </p>
+    <option id="respuesta_correcta_dummy" class="hide"></option>
 </div>
 <script src="/js/custom.js"></script>
 <script src="/js/crear_evaluacion.js"></script>
