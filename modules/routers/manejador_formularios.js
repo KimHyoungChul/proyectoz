@@ -118,7 +118,43 @@ module.exports = function (modules) {
     });
 
     app.post('/sesion/crear_evaluacion/', function(req, res) {
-        res.send(JSON.stringify(req.body));
+        var respuestas = req.body.respuestas;
+
+        if(respuestas.length >= 2) {
+            //crear evaluacion
+            models.evaluacion.create({
+                encabezado: req.body.encabezado
+            }).then(function(newEvaluacion) {
+                //crear la opcion que es la correcta
+                //obtener indice de la respuesta correcta en arreglo proveniente de formulario
+                var i = parseInt(req.body.respuesta_correcta) - 1;
+                var texto_opcion_correcta = respuestas[i];
+                respuestas.splice(i,1);
+                models.opcion_evaluacion.create({
+                    texto_opcion: texto_opcion_correcta,
+                    evaluacion: newEvaluacion.id
+                }).then(function(opcionCreada) {
+                    //asignar opcion correcta a evaluacion
+                    newEvaluacion.set('respuesta_correcta',opcionCreada.id).save().then(function(evaluacion) {
+                        //transformar arreglo de evaluaciones a nuevo arreglo
+                        var opciones = respuestas.map(function(item) {
+                            return {
+                                texto_opcion: item,
+                                evaluacion: evaluacion.id
+                            };
+                        });
+                        //crear opciones restantes
+                        models.opcion_evaluacion.bulkCreate(opciones).then(function() {
+                            //devolver respuesta
+                            res.redirect(303,'/');
+                        })
+                    });
+                });
+            });
+        }
+        else {
+            res.redirect(303,'/');
+        }
     });
 
     app.post('/estudiantes/crear/', function(req, res) {

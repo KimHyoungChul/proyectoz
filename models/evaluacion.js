@@ -9,6 +9,11 @@ module.exports = function(sequelize, DataTypes) {
         encabezado: {
             type: DataTypes.STRING(300),
             allowNull: false
+        },
+        respuesta_correcta: {
+            type: DataTypes.INTEGER,
+            model: "Opcion_evaluacion",
+            key: "id"
         }
     }, {
         freezeTableName: true
