@@ -4,7 +4,7 @@
 }
 
 .chatbox{
-	width: 108%;
+	width: 100%;
 }
 
 input {
@@ -25,15 +25,4 @@ input {
 
 #messages li:nth-child(odd) {
 	background: #eee;
-}
-
-#video-div {
-	width: 600px;
-	height: 440px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-}
-
-.right-side {
-	border-left: 1px dashed gray;
 }

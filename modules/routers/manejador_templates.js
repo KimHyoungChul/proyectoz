@@ -203,7 +203,7 @@ module.exports = function (modules) {
         res.render('login');
     });
 
-    app.get('/sesion/:id', function(req, res) {
+    app.get('/sesion/:id/', function(req, res) {
         console.log(req.params.id);
         var opciones = {
             todavia: false,
@@ -215,28 +215,31 @@ module.exports = function (modules) {
                 id: parseInt(req.params.id)
             }
         }).then(function (sesiones) {
-            if (sesiones.length > 0){
+            if (sesiones.length > 0) {
                 var sesion = sesiones[0];
-                var view;
                 var usuario = req.session.usuario;
-                if(usuario.tipo === 'tutor'){
-                    view = 'sesion_presentador';
-                    opciones.presentador = true;
-                }
-                else{
-                    view = 'sesion_oyente';
-                }
-                if (sesion.fecha <= new Date()){
 
+                if (sesion.fecha <= new Date()){
                     opciones.sesion = sesion.id;
                 }
-                else{
+                else {
                     opciones.todavia = true;
                 }
-                res.render(view,opciones);
+
+                if(usuario.tipo === 'tutor'){
+                    opciones.presentador = true;
+                    //preparar evaluaciones
+                    sesion.getEvaluaciones().then(function(evaluacionesEncontradas) {
+                        opciones.evaluaciones = evaluacionesEncontradas;
+                        res.render('sesion_presentador',opciones);
+                    });
+                }
+                else{
+                    res.render('sesion_oyente',opciones);
+                }
             }
-            else{
-                res.render(view,opciones);
+            else {
+                res.redirect(303,'/');
             }
         });
     });
