@@ -61,6 +61,9 @@ ws.onmessage = function (message) {
 			console.error('Se murio');
 			webRtcPeer = null;
 			break;
+		case 'incomingQuestion':
+			alert(parsedMessage.evaluacion + " : " + parsedMessage.mensaje);
+			break;
 		default:
 			console.error('Unrecognized message', parsedMessage);
 	}

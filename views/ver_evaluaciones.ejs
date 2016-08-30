@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/materialize/dist/css/materialize.min.css">
+    <meta charset="UTF-8">
+    <title>ProyectoZ</title>
+</head>
+<body>
+<% include nav.ejs %>
+<div class="container">
+    <div class="row">
+        <h3>Evaluaciones de sesion #<%= sesion.id %></h3>
+        <div class="col s12">
+            <div class="col s6">
+                <% evaluaciones.forEach(function(ev) {  %>
+                <div class="card green darken-4">
+                    <div class="card-content white-text">
+                        <span class="card-title">
+                            <%= ev.encabezado %>
+                        </span>
+                    </div>
+                    <div class="card-action">
+                        <a href="/sesion/<%= sesion.id %>/lanzar_evaluacion/<%= ev.id %>/">Lanzar Evaluacion</a>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/materialize/dist/js/materialize.min.js">
+</script>
+</body>
+</html>

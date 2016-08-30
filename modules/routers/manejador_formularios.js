@@ -118,12 +118,13 @@ module.exports = function (modules) {
     });
 
     app.post('/sesion/crear_evaluacion/', function(req, res) {
+        var sesion_id = parseInt(req.body.sesion_id);
         var respuestas = req.body.respuestas;
-
         if(respuestas.length >= 2) {
             //crear evaluacion
             models.evaluacion.create({
-                encabezado: req.body.encabezado
+                encabezado: req.body.encabezado,
+                sesion_tutoria: sesion_id
             }).then(function(newEvaluacion) {
                 //crear la opcion que es la correcta
                 //obtener indice de la respuesta correcta en arreglo proveniente de formulario

@@ -6,6 +6,7 @@ module.exports = function (modules) {
     var app = modules.express;
     var models = modules.models;
     var Sequelize = modules.models.Sequelize;
+    var kurento = modules.kurento;
 
     app.get('/solicitud/crear/', function(req, res) {
         models.keyword.findAll().then(function (_keywords) {
@@ -65,6 +66,43 @@ module.exports = function (modules) {
                     });
                 });
             })
+        }
+    });
+
+    app.get('/sesion/:ses_id/lanzar_evaluacion/:ev_id/', function(req, res) {
+        var sesion_id = parseInt(req.params.ses_id);
+        var ev_id = parseInt(req.params.ev_id);
+
+        //enviar mensaje a cada websocket de oyente conectado a sesion_id
+        kurento.data.presenters[sesion_id].viewers.forEach(function(viewer) {
+            viewer.ws.send(JSON.stringify({
+                id: 'incomingQuestion',
+                evaluacion: ev_id,
+                mensaje: 'lanzamiento de evaluacion fue exitoso'
+            }));
+        });
+
+        res.send("ya");
+    });
+
+    app.get('/sesion/ver_evaluaciones/:ses_id/', function(req, res) {
+        var sesion_id = parseInt(req.params.ses_id);
+
+        if(!isNaN(sesion_id)) {
+            //obtener sesion con el id especificado
+            models.sesion_tutoria.find({
+                where: {id: sesion_id}
+            }).then(function (sesionEncontrada) {
+                sesionEncontrada.getEvaluaciones().then(function (evaluacionesEncontradas) {
+                    res.render('ver_evaluaciones', {
+                        sesion: sesionEncontrada,
+                        evaluaciones: evaluacionesEncontradas
+                    });
+                });
+            });
+        }
+        else {
+            res.redirect(303,'/');
         }
     });
 
