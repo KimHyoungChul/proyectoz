@@ -1,6 +1,12 @@
 var ws = new WebSocket('wss://' + location.host + '/ws');
 var video;
 var webRtcPeer;
+//chat stuff
+var socket = io();
+
+socket.on('chat message', function(msg){
+	$('#messages').append($('<li>').text(msg));
+});
 
 $(document).ready(function () {
 	//kurento stuff
@@ -17,13 +23,25 @@ $(document).ready(function () {
 
 		return false;
 	});
-});
 
-//chat stuff
-var socket = io();
+	//view events
+	$(".btn_lanzar_pregunta").click(function(e) {
+		e.preventDefault();
 
-socket.on('chat message', function(msg){
-	$('#messages').append($('<li>').text(msg));
+		var sesion_id = $(this).attr("sesion");
+		var evaluacion_id = $(this).attr("evaluacion");
+        var url = "/sesion/"+sesion_id+"/lanzar_evaluacion/"+evaluacion_id+"/";
+        $.get(url,function(message) {
+           var parsedMessage = JSON.parse(message);
+
+            if(parsedMessage.status === 'ok') {
+                alert("Pregunta Enviada");
+            }
+            else {
+                alert("Inconvenientes con enviar pregunta");
+            }
+        });
+	});
 });
 
 //kurento stuff

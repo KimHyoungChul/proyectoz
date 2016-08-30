@@ -7,7 +7,9 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link href="/bower_components/materialize/dist/css/materialize.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/kurento.css">
+    <link rel="stylesheet" href="/css/kurento.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/custom.css" rel="stylesheet">
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/bower_components/adapter.js/adapter.js"></script>
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
@@ -16,7 +18,7 @@
     <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
     <script src="/bower_components/kurento-utils/js/kurento-utils.js"></script>
     <script src="/js/presentador.js"></script>
-    <title>Primer Demo</title>
+    <title>ProyectoZ</title>
 </head>
 <body>
     <div class="container">
@@ -31,12 +33,26 @@
                     <video id="video" width="400px" height="285px" autoplay></video>
                 </div>
                 <div class="row">
-                    <ul class="collection with-header hoverable">
-                        <li class="collection-header"><h5>Preguntas</h5></li>
-                        <li class="collection-item"><div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">send</i></a></div></li>
-                        <li class="collection-item"><div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">send</i></a></div></li>
-                        <li class="collection-item"><div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">send</i></a></div></li>
-                        <li class="collection-item"><div>Alvin<a href="#!" class="secondary-content"><i class="material-icons">send</i></a></div></li>
+                    <ul class="collapsible" data-collapsible="accordion">
+                        <% evaluaciones.forEach(function(eval) { %>
+                        <li>
+                            <div class="collapsible-header truncate">
+                                <i class="material-icons left">question_answer</i><%= eval.encabezado %>
+                            </div>
+                            <div class="collapsible-body">
+                                <p><%= eval.encabezado %></p>
+                                <p>
+                                    <a href="#"
+                                       class="btn waves-effect waves-light btn_lanzar_pregunta"
+                                       sesion="<%= sesion %>"
+                                       evaluacion="<%= eval.id %>"
+                                    >
+                                        Lanzar Pregunta<i class="material-icons right">send</i>
+                                    </a>
+                                </p>
+                            </div>
+                        </li>
+                        <% }); %>
                     </ul>
                 </div>
             </div>
@@ -64,7 +80,7 @@
                             </div>
                         </div>
                     </div>
-                    <input id="sesion-id" type="hidden" value=<%= sesion %>>
+                    <input id="sesion-id" type="hidden" value="<%= sesion %>">
                 </div>
             </div>
         </div>

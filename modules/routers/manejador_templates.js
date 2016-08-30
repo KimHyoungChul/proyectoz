@@ -45,7 +45,9 @@ module.exports = function (modules) {
         if(solicitud_id) {
             //obtener solicitud con el id especificado
             models.solicitud.find({
-                where: {id: solicitud_id}
+                where: {
+                    id: solicitud_id
+                }
             }).then(function (solicitudEncontrada) {
                 //buscar horario de solicitud encontrada
                 solicitudEncontrada.getHorario().then(function(horarioEncontrado) {
@@ -72,17 +74,31 @@ module.exports = function (modules) {
     app.get('/sesion/:ses_id/lanzar_evaluacion/:ev_id/', function(req, res) {
         var sesion_id = parseInt(req.params.ses_id);
         var ev_id = parseInt(req.params.ev_id);
-
-        //enviar mensaje a cada websocket de oyente conectado a sesion_id
-        kurento.data.presenters[sesion_id].viewers.forEach(function(viewer) {
-            viewer.ws.send(JSON.stringify({
-                id: 'incomingQuestion',
-                evaluacion: ev_id,
-                mensaje: 'lanzamiento de evaluacion fue exitoso'
-            }));
+        //buscar evaluacion
+        models.evaluacion.find({
+            where: {
+                id: ev_id
+            }
+        }).then(function(evaluacion) {
+            //buscar opciones evaluacion
+            evaluacion.getOpciones().then(function(opcionesEvaluacion) {
+                //enviar mensaje a cada websocket de oyente conectado a sesion_id
+                kurento.data.presenters[sesion_id].viewers.forEach(function (viewer) {
+                    if(viewer.ws.readyState === 1) {
+                        viewer.ws.send(JSON.stringify({
+                            id: 'incomingQuestion',
+                            data: {
+                                evaluacion: JSON.stringify(evaluacion),
+                                opciones: JSON.stringify(opcionesEvaluacion)
+                            },
+                            mensaje: 'lanzamiento de evaluacion fue exitoso'
+                        }));
+                    }
+                });
+                //enviar respuesta
+                res.send(JSON.stringify({status: 'ok',message:'pretty neat'}));
+            });
         });
-
-        res.send("ya");
     });
 
     app.get('/sesion/ver_evaluaciones/:ses_id/', function(req, res) {

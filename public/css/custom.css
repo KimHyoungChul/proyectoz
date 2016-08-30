@@ -7,3 +7,8 @@ textarea {
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+.center-align {
+    display: block;
+    margin: auto auto auto auto;
+}

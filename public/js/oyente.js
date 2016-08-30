@@ -1,6 +1,12 @@
+//kurento stuff
 var ws = new WebSocket('wss://' + location.host + '/ws');
 var video;
 var webRtcPeer;
+
+//node app stuff
+var question_modal;
+var question_title;
+var question_radio_choices;
 
 $(document).ready(function () {
 	//kurento stuff
@@ -16,6 +22,11 @@ $(document).ready(function () {
 
 		return false;
 	});
+
+    //node app stuff
+    question_modal = $("#question_modal_div");
+    question_title = $("#question_title");
+    question_radio_choices = $("#question_choices_div");
 });
 
 ws.onopen = function (e) {
@@ -62,15 +73,28 @@ ws.onmessage = function (message) {
 			webRtcPeer = null;
 			break;
 		case 'incomingQuestion':
-			alert(parsedMessage.evaluacion + " : " + parsedMessage.mensaje);
+			// alert(parsedMessage.evaluacion + " : " + parsedMessage.mensaje + "\n" + parsedMessage.opciones);
+            mostrarEvaluacion(parsedMessage.data.evaluacion,parsedMessage.data.opciones);
 			break;
 		default:
 			console.error('Unrecognized message', parsedMessage);
 	}
 };
 
+//node app stuff
+function mostrarEvaluacion(raw_evaluacion,raw_opciones) {
+    var evaluacion = JSON.parse(raw_evaluacion);
+    var opciones = JSON.parse(raw_opciones);
+    //cambiar texto de modal
+    //crear radio buttons de opciones
+    //abrir modal
+    //manejar salida de formulario con ajax
+    question_title.text(evaluacion.encabezado);
+    question_radio_choices.html(opciones[0].texto_opcion);
+    question_modal.openModal();
+}
 
-
+//kurento stuff
 function viewer() {
 	if (!webRtcPeer) {
 

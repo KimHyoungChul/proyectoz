@@ -4,20 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/kurento.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">-->
+    <link href="/bower_components/materialize/dist/css/materialize.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/kurento.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/custom.css" rel="stylesheet">
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/bower_components/adapter.js/adapter.js"></script>
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <!--<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>-->
+    <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
     <script src="/bower_components/kurento-utils/js/kurento-utils.js"></script>
-    <% if (presentador){%>
-    <script src="/js/presentador.js"></script>
-    <%}
-    else{%>
     <script src="/js/oyente.js"></script>
-    <%}%>
-    <title>Primer Demo</title>
+    <title>ProyectoZ</title>
 </head>
 <body>
     <div class="container">
@@ -78,6 +79,15 @@
                     <input id="sesion-id" type="hidden" value=<%= sesion %>>
                 </div>
             </div>
+        </div>
+    </div>
+    <div id="question_modal_div" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            <h4 id="question_title">Modal Header</h4>
+            <div id="question_choices_div">Loren ipsum bla bla...</div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
         </div>
     </div>
     <% }%>
