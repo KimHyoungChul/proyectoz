@@ -166,8 +166,9 @@ module.exports = function (modules) {
                     view = 'sesion_oyente';
                 }
                 if (sesion.fecha <= new Date()){
-
                     opciones.sesion = sesion.id;
+                    opciones.nombre = req.session.usuario.nombre;
+                    opciones.email = req.session.usuario.email;
                 }
                 else{
                     opciones.todavia = true;

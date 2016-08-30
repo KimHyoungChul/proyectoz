@@ -9,12 +9,29 @@ $(document).ready(function () {
 	$("#btn-finalizar").click(stop);
 
 	//chat events
+	var chatInfo = {
+		sesion: $('#sesion-id').val(),
+		nombre: $('#nombre').val(),
+		email: $('#email').val()
+	};
+
 	$('#btn').click(function(){
-		console.log('hey');
-		socket.emit('chat message', $('#m').val());
+		chatInfo.mensaje = $('#m').val();
+		socket.emit('chat message', JSON.stringify(chatInfo));
 		$('#m').val('');
 
 		return false;
+	});
+	//chat stuff
+	var socket = io();
+	
+	socket.emit('inicializando', JSON.stringify(chatInfo));
+	socket.on('chat message', function(msg){
+		var recibido = JSON.parse(msg);
+		$('#messages').append($('<li>').text(recibido.nombre + ' : ' + recibido.mensaje));
+		var element = document.getElementById("mensajes");
+		element.scrollTop = element.scrollHeight;
+		console.log(msg);
 	});
 });
 
@@ -23,12 +40,6 @@ ws.onopen = function (e) {
 	viewer();
 };
 
-//chat stuff
-var socket = io();
-
-socket.on('chat message', function(msg){
-	$('#messages').append($('<li>').text(msg));
-});
 
 //kurento stuff
 $(window).on('beforeunload', function() {

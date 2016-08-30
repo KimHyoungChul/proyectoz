@@ -186,7 +186,9 @@ module.exports = function (modules) {
             if(usuario.length > 0 && usuario[0].password === req.body.password){
                 response.status = 0;
                 var user = {
-                  id: usuario[0].id
+                  id: usuario[0].id,
+                  nombre: usuario[0].nombre + ' ' + usuario[0].apellido,
+                  email: usuario[0].email
                 };
                 models.tutor.findAll({
                     where: {
@@ -194,6 +196,7 @@ module.exports = function (modules) {
                     }
                 }).then(function (tutor) {
                     if(tutor.length > 0){
+                        console.log(tutor);
                         user.autorizado = tutor[0].autorizado;
                         user.tipo = 'tutor';
                         user.id = tutor[0].id;

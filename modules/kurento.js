@@ -42,7 +42,7 @@ var initializer = function(app_server,direcciones) {
 
         ws.on('message', function(_message) {
             var message = JSON.parse(_message);
-            console.log('Connection ' + sessionId + ' received message ', message, message.presenter_id);
+            //console.log('Connection ' + sessionId + ' received message ', message, message.presenter_id);
 
             switch (message.id) {
                 case 'presenter':
