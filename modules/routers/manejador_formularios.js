@@ -158,6 +158,35 @@ module.exports = function (modules) {
         }
     });
 
+    app.post('/sesion/responder_evaluacion/', function(req, res) {
+        //convertir de formato json a entero usable en creacion de nuevo objeto
+        var respuesta_elegida = parseInt(req.body.respuesta);
+        //solo proseguir si es un usuario estudiante quien hizo el HTTP POST
+        if("usuario" in req.session && req.session.usuario.tipo === 'estudiante') {
+            //seguir si la respuesta es un id legitimo
+            if (!isNaN(respuesta_elegida)) {
+                //obtener identificador de usuario en sesion
+                var id_estudiante = req.session.usuario.id;
+                //crear nueva respuesta a evaluacion
+                models.respuesta_evaluacion.create({
+                    estudiante: id_estudiante,
+                    respuesta: respuesta_elegida
+                }).then(function (respuestaCreada) {
+                    //enviar respuesta de submission
+                    res.send(JSON.stringify({status: 'success', mensaje: 'todo nitido'}));
+                });
+            }
+            else {
+                //enviar respuesta de submission
+                res.send(JSON.stringify({status: 'fail', mensaje: 'identificador de opcion de pregunta no valida'}));
+            }
+        }
+        else {
+            //enviar respuesta de submission
+            res.send(JSON.stringify({status: 'fail', mensaje: 'no se ha iniciado sesion'}));
+        }
+    });
+
     app.post('/estudiantes/crear/', function(req, res) {
         console.log(req.body.password);
         models.usuario.create({

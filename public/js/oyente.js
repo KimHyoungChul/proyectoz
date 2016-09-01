@@ -14,19 +14,51 @@ $(document).ready(function () {
 
 	$("#btn-finalizar").click(stop);
 
-	//chat events
-	$('#btn').click(function(){
-		console.log('hey');
-		socket.emit('chat message', $('#m').val());
-		$('#m').val('');
-
-		return false;
-	});
-
     //node app stuff
     question_modal = $("#question_modal_div");
     question_title = $("#question_title");
     question_radio_choices = $("#question_choices_div");
+
+    //node app events
+    $("form#form_pregunta").submit(function(e) {
+        e.preventDefault();
+
+        var sesion_id = $(this).find("input[name=sesion]").val();
+        var respuesta = question_radio_choices.find("input[type=radio]:checked").val();
+
+        if(respuesta) {
+            $.post({
+                url: '/sesion/responder_evaluacion/',
+                data: {
+                    sesion: sesion_id,
+                    respuesta: respuesta
+                },
+                success: function (raw_answer) {
+                    var respuesta = JSON.parse(raw_answer);
+
+                    if (respuesta.status === 'success') {
+                        question_modal.closeModal();
+                    }
+                    else {
+                        alert('Hubo un error al enviar la respuesta: ' + respuesta.mensaje);
+                    }
+                }
+            });
+        }
+        else {
+            alert('Por favor elige una opcion y envia tu respuesta');
+        }
+    });
+
+    //chat events
+    $('#btn').click(function(){
+        console.log('hey');
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+
+        return false;
+    });
+
 });
 
 ws.onopen = function (e) {
@@ -86,12 +118,35 @@ function mostrarEvaluacion(raw_evaluacion,raw_opciones) {
     var evaluacion = JSON.parse(raw_evaluacion);
     var opciones = JSON.parse(raw_opciones);
     //cambiar texto de modal
+	question_title.text(evaluacion.encabezado);
+    //borrar contenido de posible evaluacion anterior
+    question_radio_choices.html("");
     //crear radio buttons de opciones
+    opciones.forEach(function(op) {
+        //crear nuevo id de radio button
+        var radio_id = "resp_"+op.id;
+        //crear elementos radio button con el formato de materializecss
+        var p = $("<p>");
+        //crear input para radio button con atributos necesarios
+        var input = $("<input>",{
+            class: 'with-gap',
+            type: 'radio',
+            name: 'respuesta',
+            value: op.id,
+            id: radio_id
+        });
+        //crear label del radio button
+        var label = $("<label>", {
+			for: radio_id,
+			class: 'black-text'
+		}).html(op.texto_opcion);
+        //agregar elementos al DOM en su lugar correspondiente
+        p.append(input).append(label);
+        question_radio_choices.append(p);
+    });
+    // //manejar salida de formulario con ajax
     //abrir modal
-    //manejar salida de formulario con ajax
-    question_title.text(evaluacion.encabezado);
-    question_radio_choices.html(opciones[0].texto_opcion);
-    question_modal.openModal();
+    question_modal.openModal({ dismissible: false });
 }
 
 //kurento stuff

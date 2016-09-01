@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">-->
     <link href="/bower_components/materialize/dist/css/materialize.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/kurento.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/custom.css" rel="stylesheet">
@@ -14,7 +13,6 @@
     <script src="/bower_components/adapter.js/adapter.js"></script>
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
     <script src="/bower_components/jquery-ui/jquery-ui.min.js"></script>
-    <!--<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>-->
     <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
     <script src="/bower_components/kurento-utils/js/kurento-utils.js"></script>
     <script src="/js/oyente.js"></script>
@@ -39,7 +37,6 @@
                         <div class="alert alert-warning">
                             <a id="btn-viewer" href="#" class="btn btn-default btn-block">Oyente</a>
                             <br>
-                            <!-- <label for="presenter-input">Presenter ID:</label> -->
                             <input class="form-control" id="presenter-input" type="text">
                         </div>
                         <br>
@@ -76,18 +73,23 @@
                             </div>
                         </div>
                     </div>
-                    <input id="sesion-id" type="hidden" value=<%= sesion %>>
+                    <input id="sesion-id" type="hidden" value="<%= sesion %>" />
                 </div>
             </div>
         </div>
     </div>
-    <div id="question_modal_div" class="modal modal-fixed-footer">
+    <div id="question_modal_div" class="modal bottom-sheet">
         <div class="modal-content">
-            <h4 id="question_title">Modal Header</h4>
-            <div id="question_choices_div">Loren ipsum bla bla...</div>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+            <h5 id="question_title">Modal Header</h5>
+            <div class="row">
+                <form id="form_pregunta" action="/sesion/responder_evaluacion/" method="post">
+                    <input type="hidden" name="sesion" value="<%= sesion %>" />
+                    <div id="question_choices_div" class="col s8"></div>
+                    <div class="col s4">
+                        <button type="submit" class="waves-effect waves-green btn btn-large">Enviar Respuesta</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     <% }%>
