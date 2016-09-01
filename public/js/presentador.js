@@ -1,12 +1,6 @@
 var ws = new WebSocket('wss://' + location.host + '/ws');
 var video;
 var webRtcPeer;
-//chat stuff
-var socket = io();
-
-socket.on('chat message', function(msg){
-	$('#messages').append($('<li>').text(msg));
-});
 
 $(document).ready(function () {
 	//kurento stuff
@@ -16,12 +10,30 @@ $(document).ready(function () {
 	$("#btn-finalizar").click(stop);
 
 	//chat events
+	var chatInfo = {
+		sesion: $('#sesion-id').val(),
+		nombre: $('#nombre').val(),
+		email: $('#email').val()
+	};
+
 	$('#btn').click(function(){
-		console.log('hey');
-		socket.emit('chat message', $('#m').val());
+		chatInfo.mensaje = $('#m').val();
+		socket.emit('chat message', JSON.stringify(chatInfo));
 		$('#m').val('');
 
 		return false;
+	});
+	//chat stuff
+	var socket = io();
+
+	console.log($('#nombre').val());
+	socket.emit('inicializando', JSON.stringify(chatInfo));
+	socket.on('chat message', function(msg){
+		var recibido = JSON.parse(msg);
+		$('#messages').append($('<li>').text(recibido.nombre + ' : ' + recibido.mensaje));
+		var element = document.getElementById("mensajes");
+		element.scrollTop = element.scrollHeight;
+		console.log(msg);
 	});
 
 	//view events
@@ -44,6 +56,9 @@ $(document).ready(function () {
 	});
 });
 
+
+
+
 //kurento stuff
 $(window).on('beforeunload', function() {
 	ws.close();
@@ -65,7 +80,7 @@ ws.onmessage = function (message) {
 			dispose();
 			break;
 		case 'iceCandidate':
-			webRtcPeer.addIceCandidate(parsedMessage.candidate)
+			webRtcPeer.addIceCandidate(parsedMessage.candidate);
 			break;
 		default:
 			console.error('Unrecognized message', parsedMessage);

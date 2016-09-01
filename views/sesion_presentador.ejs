@@ -56,13 +56,13 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-md-5 col-md-offset-1 texto-centrado">
+            <div class="col-md-5 col-md-offset-1 texto-centrado right-side">
                 <hr/>
                 <div class="row">
                     <div class="col-md-12 texto-centrado">
                         <div class="panel panel-default chatbox">
                             <div class="panel-body">
-                                <div class="row">
+                                <div class="row" >
                                     <div class="col-md-9">
                                         <input id="m">
                                     </div>
@@ -74,13 +74,16 @@
                         </div>
                     </div>
                     <div class="col-md-12 texto-centrado">
-                        <div class="panel panel-default chatbox">
+                        <div id="mensajes" class="panel panel-default chatbox" style="height: 400px; overflow: auto">
                             <div class="panel-body">
                                 <ul id="messages"></ul>
                             </div>
                         </div>
                     </div>
-                    <input id="sesion-id" type="hidden" value="<%= sesion %>">
+                    <input id="sesion-id" type="hidden" value=<%= sesion %>>
+                    <input id="nombre" type="hidden" value="<%= nombre %>">
+                    <input id="email" type="hidden" value=<%= email %>>
+
                 </div>
             </div>
         </div>

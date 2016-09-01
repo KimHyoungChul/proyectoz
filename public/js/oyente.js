@@ -1,18 +1,38 @@
-//kurento stuff
 var ws = new WebSocket('wss://' + location.host + '/ws');
 var video;
 var webRtcPeer;
-
-//node app stuff
-var question_modal;
-var question_title;
-var question_radio_choices;
 
 $(document).ready(function () {
 	//kurento stuff
 	video = $("#video").get(0);
 
 	$("#btn-finalizar").click(stop);
+
+	//chat events
+	var chatInfo = {
+		sesion: $('#sesion-id').val(),
+		nombre: $('#nombre').val(),
+		email: $('#email').val()
+	};
+
+	$('#btn').click(function(){
+		chatInfo.mensaje = $('#m').val();
+		socket.emit('chat message', JSON.stringify(chatInfo));
+		$('#m').val('');
+
+		return false;
+	});
+	//chat stuff
+	var socket = io();
+	
+	socket.emit('inicializando', JSON.stringify(chatInfo));
+	socket.on('chat message', function(msg){
+		var recibido = JSON.parse(msg);
+		$('#messages').append($('<li>').text(recibido.nombre + ' : ' + recibido.mensaje));
+		var element = document.getElementById("mensajes");
+		element.scrollTop = element.scrollHeight;
+		console.log(msg);
+	});
 
     //node app stuff
     question_modal = $("#question_modal_div");
@@ -49,16 +69,6 @@ $(document).ready(function () {
             alert('Por favor elige una opcion y envia tu respuesta');
         }
     });
-
-    //chat events
-    $('#btn').click(function(){
-        console.log('hey');
-        socket.emit('chat message', $('#m').val());
-        $('#m').val('');
-
-        return false;
-    });
-
 });
 
 ws.onopen = function (e) {
@@ -66,12 +76,6 @@ ws.onopen = function (e) {
 	viewer();
 };
 
-//chat stuff
-var socket = io();
-
-socket.on('chat message', function(msg){
-	$('#messages').append($('<li>').text(msg));
-});
 
 //kurento stuff
 $(window).on('beforeunload', function() {

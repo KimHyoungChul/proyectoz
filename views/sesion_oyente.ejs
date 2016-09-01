@@ -37,6 +37,7 @@
                         <div class="alert alert-warning">
                             <a id="btn-viewer" href="#" class="btn btn-default btn-block">Oyente</a>
                             <br>
+                            <!-- <label for="presenter-input">Presenter ID:</label> -->
                             <input class="form-control" id="presenter-input" type="text">
                         </div>
                         <br>
@@ -67,13 +68,15 @@
                         </div>
                     </div>
                     <div class="col-md-12 texto-centrado">
-                        <div class="panel panel-default chatbox">
+                        <div id="mensajes" class="panel panel-default chatbox">
                             <div class="panel-body">
                                 <ul id="messages"></ul>
                             </div>
                         </div>
                     </div>
                     <input id="sesion-id" type="hidden" value="<%= sesion %>" />
+                    <input id="nombre" type="hidden" value="<%= nombre %>">
+                    <input id="email" type="hidden" value=<%= email %>>
                 </div>
             </div>
         </div>
