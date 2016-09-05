@@ -20,23 +20,26 @@
 </head>
 <body>
     <div class="container">
-    <% if (todavia) { %>
-        <p>Falta tiempo para iniciar la tutoria</p>
-    <%} else { %>
+        <% if (todavia) { %>
         <div class="row">
-            <div class="col s6">
+            <p>Falta tiempo para iniciar la tutoria</p>
+        </div>
+        <%} else { %>
+        <div class="row">
+            <hr />
+            <div class="col s5">
                 <div id="video-div-oyente">
-                    <video id="video" autoplay width="600px" height="440px"></video>
+                    <video id="video" autoplay></video>
                 </div>
             </div>
-            <div class="col s6 offset-s1 text-center right-side">
+            <div class="col s5 offset-s1 text-center right-side">
                 <br />
                 <div class="row">
                     <div class="col s9">
                         <input id="m">
                     </div>
                     <div class="col s3">
-                        <a id="btn" href="#" class="btn btn-success btn-block">Enviar</a>
+                        <a id="btn" href="#" class="btn">Enviar</a>
                     </div>
                 </div>
                 <div class="row">
@@ -53,21 +56,33 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div id="question_modal_div" class="modal bottom-sheet">
-        <div class="modal-content">
-            <h5 id="question_title">Modal Header</h5>
-            <div class="row">
-                <form id="form_pregunta" action="/sesion/responder_evaluacion/" method="post">
-                    <input type="hidden" name="sesion" value="<%= sesion %>" />
-                    <div id="question_choices_div" class="col s8"></div>
-                    <div class="col s4">
-                        <button type="submit" class="waves-effect waves-green btn btn-large">Enviar Respuesta</button>
-                    </div>
-                </form>
+        <div class="row">
+            <div id="pizarra" class="col s12">
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
             </div>
         </div>
+        <div id="question_modal_div" class="modal bottom-sheet">
+            <div class="modal-content">
+                <h5 id="question_title">Modal Header</h5>
+                <div class="row">
+                    <form id="form_pregunta" action="/sesion/responder_evaluacion/" method="post">
+                        <input type="hidden" name="sesion" value="<%= sesion %>" />
+                        <div id="question_choices_div" class="col s8"></div>
+                        <div class="col s4">
+                            <button type="submit" class="waves-effect waves-green btn btn-large">Enviar Respuesta</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <% } %>
     </div>
-    <% } %>
 </body>
 </html>

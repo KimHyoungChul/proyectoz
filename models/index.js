@@ -3,16 +3,27 @@
 var fs        = require("fs");
 var path      = require("path");
 var Sequelize = require("sequelize");
-var sequelize = new Sequelize('proyectoz', 'postgres', '123batata', {
-    host: 'localhost',
-    dialect: 'postgres',
-    freezeTableName: true,
-    pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
-    }
-});
+var sequelize;
+
+if (process.env.DATABASE_URL) {
+    // the application is executed on Heroku ... use the postgres database
+    sequelize = new Sequelize(process.env.DATABASE_URL, {
+        dialect: 'postgres',
+        freezeTableName: true
+    });
+} else {
+    // the application is executed on the local machine ... use mysql
+    sequelize = new Sequelize('proyectoz', 'postgres', '123batata',{
+        host: 'localhost',
+        dialect: 'postgres',
+        freezeTableName: true,
+        pool: {
+            max: 5,
+            min: 0,
+            idle: 10000
+        }
+    });
+}
 
 var db = {};
 

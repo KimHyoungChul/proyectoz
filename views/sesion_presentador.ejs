@@ -19,68 +19,78 @@
     <title>ProyectoZ</title>
 </head>
 <body>
-    <div class="container">
     <% if (todavia) { %>
+    <div class="row">
         <p>Falta tiempo para iniciar la tutoria</p>
+    </div>
     <% } else { %>
+    <div class="container">
         <div class="row">
-            <div class="col-md-6">
-                <h3 id="presenter-id"></h3>
-                <div id="video-div-presentador" class="row">
-                    <video id="video" width="400px" height="285px" autoplay></video>
+                <hr />
+            <div id="video-div-presentador" class="col s4">
+                <video id="video" autoplay></video>
+            </div>
+            <div id="div_mensajes" class="col s8">
+                <div class="col s12 text-center">
+                    <div class="col s9">
+                        <input id="m">
+                    </div>
+                    <div class="col s3">
+                        <a id="btn" href="#" class="waves-effect waves-light btn">
+                            Enviar <i class="material-icons right">send</i>
+                        </a>
+                    </div>
                 </div>
+                <div class="col s12">
+                    <div id="mensajes" class="chatbox">
+                        <ul id="messages"></ul>
+                    </div>
+                </div>
+                <input id="sesion-id" type="hidden" value=<%= sesion %>>
+                <input id="nombre" type="hidden" value="<%= nombre %>">
+                <input id="email" type="hidden" value=<%= email %>>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s5">
                 <div class="row">
-                    <ul class="collapsible" data-collapsible="accordion">
-                        <% evaluaciones.forEach(function(eval) { %>
-                        <li>
-                            <div class="collapsible-header truncate">
-                                <i class="material-icons left">question_answer</i><%= eval.encabezado %>
-                            </div>
-                            <div class="collapsible-body">
-                                <p><%= eval.encabezado %></p>
-                                <p>
-                                    <a href="#"
-                                       class="btn waves-effect waves-light btn_lanzar_pregunta"
-                                       sesion="<%= sesion %>"
-                                       evaluacion="<%= eval.id %>"
-                                    >
-                                        Lanzar Pregunta<i class="material-icons right">send</i>
-                                    </a>
-                                </p>
-                            </div>
-                        </li>
-                        <% }); %>
-                    </ul>
+                    <div id="presentador_preguntas">
+                        <div>
+                            <ul class="collapsible" data-collapsible="accordion">
+                                <% evaluaciones.forEach(function(eval) { %>
+                                <li>
+                                    <div class="collapsible-header truncate">
+                                        <i class="material-icons left">question_answer</i><%= eval.encabezado %>
+                                    </div>
+                                    <div class="collapsible-body">
+                                        <p><%= eval.encabezado %></p>
+                                        <p>
+                                            <a href="#"
+                                               class="btn waves-effect waves-light btn_lanzar_pregunta"
+                                               sesion="<%= sesion %>"
+                                               evaluacion="<%= eval.id %>"
+                                            >
+                                                Lanzar Pregunta<i class="material-icons right">send</i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </li>
+                                <% }); %>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-5 col-md-offset-1 texto-centrado right-side">
-                <hr/>
-                <div class="row">
-                    <div class="col-md-12 texto-centrado">
-                        <div class="panel panel-default chatbox">
-                            <div class="panel-body">
-                                <div class="row" >
-                                    <div class="col-md-9">
-                                        <input id="m">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <a id="btn" href="#" class="btn btn-success btn-block">Enviar</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 texto-centrado">
-                        <div id="mensajes" class="panel panel-default chatbox" style="height: 400px; overflow: auto">
-                            <div class="panel-body">
-                                <ul id="messages"></ul>
-                            </div>
-                        </div>
-                    </div>
-                    <input id="sesion-id" type="hidden" value=<%= sesion %>>
-                    <input id="nombre" type="hidden" value="<%= nombre %>">
-                    <input id="email" type="hidden" value=<%= email %>>
-                </div>
+            <div id="pizarra" class="col s6 offset-s1">
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
             </div>
         </div>
     </div>

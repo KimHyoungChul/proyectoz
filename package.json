@@ -1,17 +1,23 @@
 {
-  "name": "entregable",
-  "version": "0.0.5",
+  "name": "proyectoZ",
+  "version": "0.5.0",
+  "engines": {
+    "node": "6.2.2"
+  },
   "scripts": {
     "postinstall": "cd public && bower install",
-    "start": "supervisor server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "async": "^2.0.1",
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
+    "bower": "^1.7.9",
+    "cookie-parser": "^1.4.3",
     "ejs": "^2.4.2",
     "express": "~4.12.4",
     "express-session": "^1.14.0",
+    "http": "0.0.0",
     "kurento-client": "Kurento/kurento-client-js",
     "minimist": "^1.1.1",
     "moment": "^2.14.1",

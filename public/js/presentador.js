@@ -6,7 +6,7 @@ $(document).ready(function () {
 	//kurento stuff
 	video = $("#video").get(0);
 
-	presenter();
+	// presenter();
 	$("#btn-finalizar").click(stop);
 
 	//chat events
@@ -56,13 +56,14 @@ $(document).ready(function () {
 	});
 });
 
-
-
-
 //kurento stuff
 $(window).on('beforeunload', function() {
 	ws.close();
 });
+
+ws.onopen = function(e) {
+    presenter();
+}
 
 ws.onmessage = function (message) {
 	var parsedMessage = JSON.parse(message.data);
@@ -87,7 +88,6 @@ ws.onmessage = function (message) {
 	}
 };
 
-
 function presenter() {
 	if (!webRtcPeer) {
 
@@ -103,8 +103,6 @@ function presenter() {
 		});
 	}
 }
-
-
 
 function stop() {
 	if (webRtcPeer) {
@@ -129,8 +127,6 @@ function onOfferPresenter(error, offerSdp) {
 	sendMessage(message);
 }
 
-
-
 function onIceCandidate(candidate) {
 	console.log('Local candidate' + JSON.stringify(candidate));
 
@@ -151,7 +147,6 @@ function presenterResponse(message) {
 		dispose();
 	}
 	else {
-		$('#presenter-id').html('ID de tutoria: ' + message.presenter_id);
 		webRtcPeer.processAnswer(message.sdpAnswer);
 	}
 }

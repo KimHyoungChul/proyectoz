@@ -98,7 +98,7 @@ ws.onmessage = function (message) {
 			dispose();
 			break;
 		case 'iceCandidate':
-			webRtcPeer.addIceCandidate(parsedMessage.candidate)
+			webRtcPeer.addIceCandidate(parsedMessage.candidate);
 			break;
 		case 'resumeSession':
 			console.error('Esta vivo!');
@@ -109,7 +109,6 @@ ws.onmessage = function (message) {
 			webRtcPeer = null;
 			break;
 		case 'incomingQuestion':
-			// alert(parsedMessage.evaluacion + " : " + parsedMessage.mensaje + "\n" + parsedMessage.opciones);
             mostrarEvaluacion(parsedMessage.data.evaluacion,parsedMessage.data.opciones);
 			break;
 		default:

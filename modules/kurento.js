@@ -65,7 +65,6 @@ var initializer = function(app_server,direcciones) {
                                 presenter_id : sessionId
                             }));
                         }
-
                     });
                     break;
 
@@ -132,6 +131,11 @@ var initializer = function(app_server,direcciones) {
     }
 
     function startPresenter(sessionId,presenterId, ws, sdpOffer, callback) {
+        //TODO PONER TIMEOUT FUNCTION POR AQUI
+        //messages to keep alive
+        // setTimeout(function() {
+        // },30000);
+
         clearCandidatesQueue(sessionId);
         var viewers = [];
         if(data.presenters[presenterId]){
@@ -225,12 +229,7 @@ var initializer = function(app_server,direcciones) {
                                 }));
                             }
                         });
-                        // for (var i in data.presenters[presenterId].viewers) {
-                        //     var viewer = data.viewers[i];
-                        //    
-                        // }
                         console.log('Presentador creado sesion: '+ presenterId);
-
                     });
                 });
             });
@@ -335,6 +334,7 @@ var initializer = function(app_server,direcciones) {
     }
 
     function stop(sessionId, esTutor, tutoria, terminar = false) {
+        
         if (esTutor) {
             data.presenters[tutoria].viewers.forEach(function (viewer) {
                 if (viewer.ws) {
@@ -344,7 +344,6 @@ var initializer = function(app_server,direcciones) {
                             id : terminar ? 'stopCommunication' : 'halt'
                         }));
                     }
-
                 }
             });
             console.log("Borrando presentador con tutoria: " + tutoria );
@@ -354,8 +353,6 @@ var initializer = function(app_server,direcciones) {
             }
             data.presenters[tutoria].id = null;
             data.presenters[tutoria].pipeline = null;
-
-
 
         } else if (data.viewers[sessionId]) {
             data.viewers[sessionId].webRtcEndpoint.release();
