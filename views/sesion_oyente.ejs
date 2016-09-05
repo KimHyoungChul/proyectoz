@@ -20,63 +20,36 @@
 </head>
 <body>
     <div class="container">
-        <%if (todavia) { %>
+    <% if (todavia) { %>
         <p>Falta tiempo para iniciar la tutoria</p>
-        <%}
-        else{ %>
+    <%} else { %>
         <div class="row">
-            <div class="col-md-6 texto-centrado">
-                <div class="row">
-                    <hr/>
-                    <div class="col-md-4 texto-centrado">
-                        <a id="btn-presenter" href="#" class="btn btn-primary btn-block">Tutor</a>
-                        <br/>
-                        <h3 id="presenter-id"></h3>
-                    </div>
-                    <div class="col-md-4 texto-centrado">
-                        <div class="alert alert-warning">
-                            <a id="btn-viewer" href="#" class="btn btn-default btn-block">Oyente</a>
-                            <br>
-                            <!-- <label for="presenter-input">Presenter ID:</label> -->
-                            <input class="form-control" id="presenter-input" type="text">
-                        </div>
-                        <br>
-                    </div>
-                    <div class="col-md-4 texto-centrado">
-                        <a id="btn-finalizar" href="#" class="btn btn-danger btn-block">Detener transmision</a>
-                    </div>
-                </div>
-                <div id="video-div">
+            <div class="col s6">
+                <div id="video-div-oyente">
                     <video id="video" autoplay width="600px" height="440px"></video>
                 </div>
             </div>
-            <div class="col-md-5 col-md-offset-1 texto-centrado right-side">
-                <hr/>
+            <div class="col s6 offset-s1 text-center right-side">
+                <br />
                 <div class="row">
-                    <div class="col-md-12 texto-centrado">
-                        <div class="panel panel-default chatbox">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-md-9">
-                                        <input id="m">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <a id="btn" href="#" class="btn btn-success btn-block">Enviar</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col s9">
+                        <input id="m">
                     </div>
-                    <div class="col-md-12 texto-centrado">
+                    <div class="col s3">
+                        <a id="btn" href="#" class="btn btn-success btn-block">Enviar</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
                         <div id="mensajes" class="panel panel-default chatbox">
                             <div class="panel-body">
                                 <ul id="messages"></ul>
                             </div>
                         </div>
+                        <input id="sesion-id" type="hidden" value="<%= sesion %>" />
+                        <input id="nombre" type="hidden" value="<%= nombre %>" />
+                        <input id="email" type="hidden" value=<%= email %> />
                     </div>
-                    <input id="sesion-id" type="hidden" value="<%= sesion %>" />
-                    <input id="nombre" type="hidden" value="<%= nombre %>">
-                    <input id="email" type="hidden" value=<%= email %>>
                 </div>
             </div>
         </div>
@@ -95,6 +68,6 @@
             </div>
         </div>
     </div>
-    <% }%>
+    <% } %>
 </body>
 </html>

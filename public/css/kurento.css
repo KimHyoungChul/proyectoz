@@ -27,3 +27,11 @@ input {
 #messages li:nth-child(odd) {
 	background: #eee;
 }
+
+#video-div-oyente {
+	background-color: red;
+}
+
+#video-div-presentador {
+	background-color: dodgerblue;
+}

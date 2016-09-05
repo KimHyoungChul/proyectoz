@@ -144,55 +144,53 @@ module.exports = function (modules) {
     });
 
     app.post('/sesion/crear_evaluacion/', function(req, res) {
-        console.log(req.body.respuesta_correcta);
-        res.redirect(303,'/');
-        // var sesion_id = parseInt(req.body.sesion_id);
-        // var respuestas = req.body.respuestas;
-        // //que hayan al menos dos respuestas indica que muy posiblemente
-        // //request provino desde el form, como deberia de ser
-        // if(respuestas.length >= 2) {
-        //     //crear evaluacion
-        //     models.evaluacion.create({
-        //         encabezado: req.body.encabezado,
-        //         sesion_tutoria: sesion_id
-        //     }).then(function(newEvaluacion) {
-        //         //crear la opcion que es la correcta
-        //         //verificar si se selecciono respuesta correcta en form
-        //         //obtener indice de la respuesta correcta en arreglo desde el form
-        //         var i;
-        //         if(req.body.respuesta_evaluacion) {
-        //             i = parseInt(req.body.respuesta_correcta) - 1;
-        //         }
-        //         else {
-        //             i = 0;
-        //         }
-        //         var texto_opcion_correcta = respuestas[i];
-        //         respuestas.splice(i,1);
-        //         models.opcion_evaluacion.create({
-        //             texto_opcion: texto_opcion_correcta,
-        //             evaluacion: newEvaluacion.id
-        //         }).then(function(opcionCreada) {
-        //             //asignar opcion correcta a evaluacion
-        //             newEvaluacion.set('respuesta_correcta',opcionCreada.id).save().then(function(evaluacion) {
-        //                 //transformar arreglo de evaluaciones a nuevo arreglo
-        //                 var opciones = respuestas.map(function(item) {
-        //                     return {
-        //                         texto_opcion: item,
-        //                         evaluacion: evaluacion.id
-        //                     };
-        //                 });
-        //                 //crear opciones restantes
-        //                 models.opcion_evaluacion.bulkCreate(opciones).then(function() {
-        //                     //devolver respuesta
-        //                     res.redirect(303,'/');
-        //                 })
-        //             });
-        //         });
-        //     });
-        // }
-        // else {
-        //     res.redirect(303,'/');
-        // }
+        var sesion_id = parseInt(req.body.sesion_id);
+        var respuestas = req.body.respuestas;
+        //que hayan al menos dos respuestas indica que muy posiblemente
+        //request provino desde el form, como deberia de ser
+        if(respuestas.length >= 2) {
+            //crear evaluacion
+            models.evaluacion.create({
+                encabezado: req.body.encabezado,
+                sesion_tutoria: sesion_id
+            }).then(function(newEvaluacion) {
+                //crear la opcion que es la correcta
+                //verificar si se selecciono respuesta correcta en form
+                //obtener indice de la respuesta correcta en arreglo desde el form
+                var i;
+                if(req.body.respuesta_evaluacion) {
+                    i = parseInt(req.body.respuesta_correcta) - 1;
+                }
+                else {
+                    i = 0;
+                }
+                var texto_opcion_correcta = respuestas[i];
+                respuestas.splice(i,1);
+                models.opcion_evaluacion.create({
+                    texto_opcion: texto_opcion_correcta,
+                    evaluacion: newEvaluacion.id
+                }).then(function(opcionCreada) {
+                    //asignar opcion correcta a evaluacion
+                    newEvaluacion.set('respuesta_correcta',opcionCreada.id).save().then(function(evaluacion) {
+                        //transformar arreglo de evaluaciones a nuevo arreglo
+                        var opciones = respuestas.map(function(item) {
+                            return {
+                                texto_opcion: item,
+                                evaluacion: evaluacion.id
+                            };
+                        });
+                        //crear opciones restantes
+                        models.opcion_evaluacion.bulkCreate(opciones).then(function() {
+                            //devolver respuesta
+                            res.redirect(303,'/');
+                        })
+                    });
+                });
+            });
+        }
+        else {
+            res.redirect(303,'/');
+        }
     });
 
     app.post('/sesion/responder_evaluacion/', function(req, res) {
