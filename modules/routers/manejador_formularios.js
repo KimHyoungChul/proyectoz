@@ -9,99 +9,125 @@ module.exports = function (modules) {
     var Sequelize = modules.models.Sequelize;
 
     app.post('/solicitud/crear/', function(req, res) {
-        //crear horario
-        models.horario.create({
-            fecha_creacion: new Date()
-        }).then(function (nuevoHorario) {
-            //arreglo de intervalos transformados
-            var intervalos = [];
-            //transformar horas a formato indicado para persistir
-            JSON.parse(req.body.horario).forEach(function(intervalo) {
-                intervalos.push({
-                    hora_inicio: intervalo.start,
-                    hora_fin:    intervalo.end,
-                    horario:     nuevoHorario.get('id')
+        if(req.session.usuario && req.session.usuario.tipo === 'estudiante') {
+            var estudiante_id = req.session.usuario.id;
+            //crear horario
+            models.horario.create({
+                fecha_creacion: new Date()
+            }).then(function (nuevoHorario) {
+                //arreglo de intervalos transformados
+                var intervalos = [];
+                //transformar horas a formato indicado para persistir
+                JSON.parse(req.body.horario).forEach(function(intervalo) {
+                    intervalos.push({
+                        hora_inicio: intervalo.start,
+                        hora_fin:    intervalo.end,
+                        horario:     nuevoHorario.get('id')
+                    });
                 });
-            });
-            //guardar intervalos
-            models.intervalo.bulkCreate(intervalos).then(function() {
-                //crear solicitud
-                models.solicitud.create({
-                    titulo: req.body.titulo,
-                    cuerpo: req.body.cuerpo,
-                    fechaRealizacion: new Date(),
-                    estudiante: 1,
-                    horario: nuevoHorario.get('id')
-                }).then(function(nuevaSolicitud) {
-                    //obtener keywords
-                    var keyword_ids = req.body.keywords.map(function(keyword) { return parseInt(keyword) });
-                    models.keyword.findAll({
-                        where: {
-                            id: {
-                                $in: keyword_ids
-                            }
+                //guardar intervalos
+                models.intervalo.bulkCreate(intervalos).then(function() {
+                    //crear solicitud
+                    models.solicitud.create({
+                        titulo: req.body.titulo,
+                        cuerpo: req.body.cuerpo,
+                        fechaRealizacion: new Date(),
+                        estudiante: estudiante_id,
+                        horario: nuevoHorario.get('id')
+                    }).then(function(nuevaSolicitud) {
+                        //obtener keywords
+                        var keyword_ids;
+                        var raw_keywords = req.body.keywords;
+                        //verificar si llego mas de un keyword
+                        if(raw_keywords instanceof Array) {
+                            keyword_ids = raw_keywords.map(function (keyword) {
+                                return parseInt(keyword)
+                            });
                         }
-                    }).then(function(keywords) {
-                        keywords.forEach(function(keyword) {
-                            nuevaSolicitud.addKeyword(keyword);
-                        });
-
-                        //obtener correos
-                        var correos = [];
-                        JSON.parse(req.body.integrantes).forEach(function(integ) {
-                            correos.push(integ.tag);
-                        });
-                        //obtener id de cada correo valido
-                        //TODO excluir el usuario logueado
-                        models.usuario.findAll({
-                            attributes: ['id'],
+                        else {
+                            var int_keyword = parseInt(raw_keywords);
+                            keyword_ids = [int_keyword];
+                        }
+                        models.keyword.findAll({
                             where: {
-                                email: {
-                                    $in: correos
+                                id: {
+                                    $in: keyword_ids
                                 }
                             }
-                        }).then(function(usuarioses) {
-                            //obtener arreglo de id de usuarios
-                            var ids = [];
-                            usuarioses.forEach(function(user) {
-                                ids.push(user.get('id'));
+                        }).then(function(keywords) {
+                            keywords.forEach(function(keyword) {
+                                nuevaSolicitud.addKeyword(keyword);
                             });
-                            //obtener estudiantes de los usuarios de los correos del paso anterior
-                            models.estudiante.findAll({
+
+                            //obtener correos
+                            var correos = [];
+                            JSON.parse(req.body.integrantes).forEach(function(integ) {
+                                if(integ.tag !== req.session.usuario.email) {
+                                    correos.push(integ.tag);
+                                }
+                            });
+                            //obtener id de cada correo valido
+                            //TODO excluir el usuario logueado
+                            models.usuario.findAll({
                                 attributes: ['id'],
                                 where: {
-                                    usuario: {
-                                        $in: ids
+                                    email: {
+                                        $in: correos
                                     }
                                 }
-                            }).then(function (estudianteses) {
-                                //crear arreglo de instancias a guardar
-                                var integrantes_solicitud = [];
-                                estudianteses.forEach(function(estud) {
-                                    integrantes_solicitud.push({
-                                        estudiante: estud.get('id'),
-                                        solicitud: nuevaSolicitud.get('id')
-                                    }) ;
+                            }).then(function(usuarioses) {
+                                //obtener arreglo de id de usuarios
+                                var ids = [];
+                                usuarioses.forEach(function(user) {
+                                    ids.push(user.get('id'));
                                 });
-                                //guardar estudiantes como integrante de la solicitud de tutoria
-                                models.integrante_solicitud.bulkCreate(integrantes_solicitud).then(function() {
-                                    res.send('ya');
+                                //obtener estudiantes de los usuarios de los correos del paso anterior
+                                models.estudiante.findAll({
+                                    attributes: ['id'],
+                                    where: {
+                                        usuario: {
+                                            $in: ids
+                                        }
+                                    }
+                                }).then(function (estudianteses) {
+                                    //crear arreglo de instancias a guardar
+                                    var integrantes_solicitud = [];
+                                    estudianteses.forEach(function(estud) {
+                                        integrantes_solicitud.push({
+                                            estudiante: estud.get('id'),
+                                            solicitud: nuevaSolicitud.get('id')
+                                        }) ;
+                                    });
+                                    //guardar estudiantes como integrante de la solicitud de tutoria
+                                    models.integrante_solicitud.bulkCreate(integrantes_solicitud).then(function() {
+                                        res.redirect(303,'/');
+                                    });
                                 });
                             });
                         });
                     });
                 });
             });
-        });
+        }
+        else {
+            res.redirect(303,'/');
+        }
     });
     app.post('/solicitud/crear_tutoria/', function(req, res) {
-        models.sesion_tutoria.create({
-            fecha: req.body.fecha,
-            hora_inicio: req.body.hora,
-            solicitud: req.body.solicitud_id,
-            tutor: req.session.usuario.id
-        }).then(function(sesion_creada) {
-            res.redirect(303,'/');
+        models.solicitud.find({
+            where: {id: req.body.solicitud_id}
+        }).then(function(solicitudEncontrada) {
+            solicitudEncontrada.estado = 'aceptada';
+            solicitudEncontrada.save().then(function(solicitudActualizada) {
+                models.sesion_tutoria.create({
+                    fecha: req.body.fecha,
+                    hora_inicio: req.body.hora,
+                    solicitud: solicitudActualizada.id,
+                    tutor: req.session.usuario.id
+                }).then(function(sesion_creada) {
+                    res.redirect(303,'/');
+                });
+            });
         });
     });
 
@@ -118,44 +144,55 @@ module.exports = function (modules) {
     });
 
     app.post('/sesion/crear_evaluacion/', function(req, res) {
-        var sesion_id = parseInt(req.body.sesion_id);
-        var respuestas = req.body.respuestas;
-        if(respuestas.length >= 2) {
-            //crear evaluacion
-            models.evaluacion.create({
-                encabezado: req.body.encabezado,
-                sesion_tutoria: sesion_id
-            }).then(function(newEvaluacion) {
-                //crear la opcion que es la correcta
-                //obtener indice de la respuesta correcta en arreglo proveniente de formulario
-                var i = parseInt(req.body.respuesta_correcta) - 1;
-                var texto_opcion_correcta = respuestas[i];
-                respuestas.splice(i,1);
-                models.opcion_evaluacion.create({
-                    texto_opcion: texto_opcion_correcta,
-                    evaluacion: newEvaluacion.id
-                }).then(function(opcionCreada) {
-                    //asignar opcion correcta a evaluacion
-                    newEvaluacion.set('respuesta_correcta',opcionCreada.id).save().then(function(evaluacion) {
-                        //transformar arreglo de evaluaciones a nuevo arreglo
-                        var opciones = respuestas.map(function(item) {
-                            return {
-                                texto_opcion: item,
-                                evaluacion: evaluacion.id
-                            };
-                        });
-                        //crear opciones restantes
-                        models.opcion_evaluacion.bulkCreate(opciones).then(function() {
-                            //devolver respuesta
-                            res.redirect(303,'/');
-                        })
-                    });
-                });
-            });
-        }
-        else {
-            res.redirect(303,'/');
-        }
+        console.log(req.body.respuesta_correcta);
+        res.redirect(303,'/');
+        // var sesion_id = parseInt(req.body.sesion_id);
+        // var respuestas = req.body.respuestas;
+        // //que hayan al menos dos respuestas indica que muy posiblemente
+        // //request provino desde el form, como deberia de ser
+        // if(respuestas.length >= 2) {
+        //     //crear evaluacion
+        //     models.evaluacion.create({
+        //         encabezado: req.body.encabezado,
+        //         sesion_tutoria: sesion_id
+        //     }).then(function(newEvaluacion) {
+        //         //crear la opcion que es la correcta
+        //         //verificar si se selecciono respuesta correcta en form
+        //         //obtener indice de la respuesta correcta en arreglo desde el form
+        //         var i;
+        //         if(req.body.respuesta_evaluacion) {
+        //             i = parseInt(req.body.respuesta_correcta) - 1;
+        //         }
+        //         else {
+        //             i = 0;
+        //         }
+        //         var texto_opcion_correcta = respuestas[i];
+        //         respuestas.splice(i,1);
+        //         models.opcion_evaluacion.create({
+        //             texto_opcion: texto_opcion_correcta,
+        //             evaluacion: newEvaluacion.id
+        //         }).then(function(opcionCreada) {
+        //             //asignar opcion correcta a evaluacion
+        //             newEvaluacion.set('respuesta_correcta',opcionCreada.id).save().then(function(evaluacion) {
+        //                 //transformar arreglo de evaluaciones a nuevo arreglo
+        //                 var opciones = respuestas.map(function(item) {
+        //                     return {
+        //                         texto_opcion: item,
+        //                         evaluacion: evaluacion.id
+        //                     };
+        //                 });
+        //                 //crear opciones restantes
+        //                 models.opcion_evaluacion.bulkCreate(opciones).then(function() {
+        //                     //devolver respuesta
+        //                     res.redirect(303,'/');
+        //                 })
+        //             });
+        //         });
+        //     });
+        // }
+        // else {
+        //     res.redirect(303,'/');
+        // }
     });
 
     app.post('/sesion/responder_evaluacion/', function(req, res) {
@@ -204,21 +241,27 @@ module.exports = function (modules) {
                 res.redirect(303,'/keyword/crear/');
             });
         });
-
     });
 
     app.post('/tutores/agregar_keyword/', function(req, res) {
-        var keywords = req.body.keywords.map(function(keyword) { return parseInt(keyword) });
         var tutorId  = parseInt(req.body.tutor);
 
+        var raw_keywords = req.body.keywords;
         models.tutor.find({
             where: { id: tutorId }
         }).then(function(tutorEncontrado) {
-            keywords.forEach(function (keyword) {
-               tutorEncontrado.addKeyword(keyword);
-            });
+            if(raw_keywords instanceof Array) {
+                var keywords = raw_keywords.map(function(keyword) { return parseInt(keyword) });
+                keywords.forEach(function (keyword) {
+                   tutorEncontrado.addKeyword(keyword);
+                });
+            }
+            else {
+                var int_keyword = parseInt(raw_keywords);
+                tutorEncontrado.addKeyword(int_keyword);
+            }
 
-            res.send('ya');
+            res.redirect(303,'/');
         });
 
     });

@@ -50,10 +50,16 @@ $(document).ready(function() {
                 btn_agregar.attr("disabled", true);
             }
         }
-        else {
-            //bloquear boton de agregar (se libera en otro sitio)
-        }
     });
 
     $('#select_respuesta').material_select();
+
+    $("form#nueva_evaluacion").submit(function(e) {
+        if(!confirm('Si no se selecciona nada, la primera opcion sera la correcta')) {
+            e.preventDefault();
+        }
+        else {
+            return true;
+        }
+    });
 });
