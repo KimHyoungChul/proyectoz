@@ -6,6 +6,7 @@ module.exports = function (modules) {
     var app = modules.express;
     var models = modules.models;
     var Sequelize = modules.models.Sequelize;
+    var async = modules.async;
 
     app.get('/solicitud/crear/', function(req, res) {
         models.keyword.findAll().then(function (_keywords) {
@@ -73,6 +74,40 @@ module.exports = function (modules) {
 
     app.get('/tutores/crear/', function(req, res){
         res.render('crear_tutor');
+    });
+
+    app.get('/tutores/mis-sesiones', function(req, res){
+        var usuario = req.session.usuario;
+        models.sesion_tutoria.findAll({
+            where:{
+                tutor: parseInt(usuario.id),
+                estado: 'futura'
+            }
+        }).then(function (sesiones) {
+            var listaSesiones =[];
+            async.each(sesiones, function (sesion, callback) {
+                models.solicitud.findAll({
+                    where: {
+                        id: sesion.solicitud
+                    }
+                }).then(function (solicitudes) {
+                    var result = {
+                        id: sesion.id,
+                        titulo: solicitudes[0].titulo
+                    };
+                    listaSesiones.push(result);
+                    callback()
+                });
+            }, function () {
+                res.render('sesiones_tutores',{
+                    sesiones: listaSesiones
+                });
+            });
+
+
+
+        });
+
     });
 
     app.get('/tutores/ver_solicitudes/', function(req, res){

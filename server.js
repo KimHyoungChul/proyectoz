@@ -7,7 +7,7 @@ var app     = express();
 var _models  = require('./models');
 var _kurento = require('./modules/kurento.js');
 var _io      = require('./modules/socket_io.js');
-
+var _async = require('async');
 //utils
 var path    = require('path');
 var url     = require('url');
@@ -64,7 +64,8 @@ _models.sequelize.sync().then(function () {
         kurento: _kurento,
         io:      _io,
         models:  _models,
-        express: app
+        express: app,
+        async: _async
     };
 
     //inicializando rutas
