@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/materialize/dist/css/materialize.min.css">
+    <link rel="stylesheet" href="/css/kurento.css">
+    <meta charset="UTF-8">
+    <title>ProyectoZ</title>
+</head>
+<body>
+<% include nav.ejs %>
+
+<div class="row">
+    <div class="col s6 offset-s6 ">
+
+        <div class="card-panel" style="padding-bottom: 0">
+            <div class="row" style="margin-bottom: 0">
+                    <div class="col s9">
+                        <input id="m" style="border:1px solid; height: 35px; border-color: #008080"/>
+                    </div>
+                    <div class="col s3">
+                        <button id="btn" class="btn waves-effect waves-light" style="height: 37px">Enviar
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+            </div>
+        </div>
+        <div id="mensajes"  class="card-panel" style="height: 400px; overflow: auto">
+            <div class="card-content">
+                <div class="panel-body">
+                    <ul id="messages"></ul>
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+</div>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/materialize/dist/js/materialize.min.js">
+</script>
+</body>
+</html>

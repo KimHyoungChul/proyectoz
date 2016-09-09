@@ -1,7 +1,8 @@
 /**
  * Created by forte on 15/08/16.
  */
-
+const aws = require('aws-sdk');
+const S3_BUCKET = 'pzworkspace';
 module.exports = function (modules) {
     var app = modules.express;
     var models = modules.models;
@@ -220,6 +221,59 @@ module.exports = function (modules) {
         console.log(req.session);
         res.render('basic');
     });
+
+    app.get('/workspace/:id', function (req, res) {
+        console.log(req.params.id);
+        var opciones = {
+            presentador: false
+        };
+        models.sesion_tutoria.findAll({
+            where:{
+                id: parseInt(req.params.id)
+            }
+        }).then(function (sesiones) {
+            if (sesiones.length > 0){
+                var sesion = sesiones[0];
+                if (sesion.estado !== 'futura'){
+                    res.redirect(303, '/');
+                }
+                var usuario = req.session.usuario;
+                opciones.presentador = usuario.tipo === 'tutor';
+
+                res.render('sesion_workspace',opciones);
+            }
+            else{
+                res.redirect(303, '/');
+            }
+        });
+    });
+
+    app.get('/sign-s3', function(req, res) {
+        aws.config.update({accessKeyId: 'AKIAJS7XTVBBNDSGZXXQ', secretAccessKey: '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'});
+        const s3 = new aws.S3();
+        const fileName = req.query['file-name'];
+        const fileType = req.query['file-type'];
+        const s3Params = {
+            Bucket: S3_BUCKET,
+            Key: fileName,
+            Expires: 60,
+            ContentType: fileType,
+            ACL: 'public-read'
+        };
+
+        s3.getSignedUrl('putObject', s3Params, function(err, data) {
+            if(err){
+                console.log(err);
+                return res.end();
+            }
+            const returnData = {
+                signedRequest: data,
+                url: 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+fileName
+            };
+        res.write(JSON.stringify(returnData));
+        res.end();
+});
+});
 };
 
 
