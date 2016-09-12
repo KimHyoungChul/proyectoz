@@ -10,6 +10,7 @@ $(document).ready(function() {
     var respuestas_correctas = $("#select_respuesta");
     var item_respuesta_correcta = $("#respuesta_correcta_dummy").clone().removeAttr('id');
     $("#respuesta_correcta_dummy").remove();
+    
 
     var eliminarRespuesta = function (e) {
         //solo se puede eliminar respuesta si hay mas de 2

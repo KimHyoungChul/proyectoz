@@ -62,8 +62,14 @@ $(window).on('beforeunload', function() {
 });
 
 ws.onopen = function(e) {
+    console.log('Conexion presenter abierta.');
     presenter();
-}
+
+	//trying to keep alive
+    // setTimeout(function() {
+     //    ws.send(JSON.stringify({id: 'keepAlive'}));
+    // },30000);
+};
 
 ws.onmessage = function (message) {
 	var parsedMessage = JSON.parse(message.data);
@@ -113,6 +119,7 @@ function stop() {
 		sendMessage(message);
 		dispose();
 	}
+	console.error("termino: " + new Date());
 }
 
 function onOfferPresenter(error, offerSdp) {
@@ -148,6 +155,7 @@ function presenterResponse(message) {
 	}
 	else {
 		webRtcPeer.processAnswer(message.sdpAnswer);
+		console.error("empece: " + new Date());
 	}
 }
 

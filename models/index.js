@@ -5,14 +5,21 @@ var path      = require("path");
 var Sequelize = require("sequelize");
 var sequelize;
 
-if (process.env.DATABASE_URL) {
-    // the application is executed on Heroku ... use the postgres database
-    sequelize = new Sequelize(process.env.DATABASE_URL, {
+if (process.env.PRODUCTION) {
+    //aplicacion ejecutandose en droplet, usar credenciales de instancia RDS de AWS
+    sequelize = new Sequelize('proyectoz_relacional', 'postgres', '123batata',{
+        host: 'proyectoz-relacional.cvzngndx6hzq.us-east-1.rds.amazonaws.com',
         dialect: 'postgres',
-        freezeTableName: true
+        freezeTableName: true,
+        pool: {
+            max: 5,
+            min: 0,
+            idle: 10000
+        }
     });
-} else {
-    // the application is executed on the local machine ... use mysql
+}
+else {
+    //aplicacion ejecutandose localmente
     sequelize = new Sequelize('proyectoz', 'postgres', '123batata',{
         host: 'localhost',
         dialect: 'postgres',
@@ -27,6 +34,7 @@ if (process.env.DATABASE_URL) {
 
 var db = {};
 
+//cargar modelos
 fs  .readdirSync(__dirname)
     .filter(function(file) {
         return (file.indexOf(".") !== 0) && (file !== "index.js");
@@ -36,6 +44,7 @@ fs  .readdirSync(__dirname)
         db[model.name] = model;
     });
 
+//relacionar modelos
 db.horario.hasMany(db.intervalo,{as: 'Intervalos', foreignKey: 'horario'});
 db.solicitud.belongsTo(db.horario,{as: 'Horario', foreignKey: 'horario'});
 db.solicitud.hasOne(db.sesion_tutoria,{as: 'sesion_tutoria', foreignKey: 'solicitud'});
@@ -58,8 +67,9 @@ db.estudiante.belongsToMany(db.solicitud, {as: 'solicitudes', through: db.integr
 db.estudiante.belongsToMany(db.opcion_evaluacion, {as: 'respuestas', through: 'respuesta_evaluacion', foreignKey: 'estudiante'});
 db.opcion_evaluacion.belongsToMany(db.estudiante, {as: 'estudiantes', through: 'respuesta_evaluacion', foreignKey: 'respuesta'});
 
-
+//guardar referencias
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+//exportar objeto con referencias a orm y modelos
 module.exports = db;

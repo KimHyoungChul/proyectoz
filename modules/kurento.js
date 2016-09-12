@@ -98,6 +98,9 @@ var initializer = function(app_server,direcciones) {
                     onIceCandidate(sessionId, message.candidate);
                     break;
 
+                case 'keepAlive':
+                    break;
+
                 default:
                     ws.send(JSON.stringify({
                         id : 'error',
@@ -131,10 +134,6 @@ var initializer = function(app_server,direcciones) {
     }
 
     function startPresenter(sessionId,presenterId, ws, sdpOffer, callback) {
-        //TODO PONER TIMEOUT FUNCTION POR AQUI
-        //messages to keep alive
-        // setTimeout(function() {
-        // },30000);
 
         clearCandidatesQueue(sessionId);
         var viewers = [];
@@ -357,8 +356,10 @@ var initializer = function(app_server,direcciones) {
         } else if (data.viewers[sessionId]) {
             data.viewers[sessionId].webRtcEndpoint.release();
             delete data.viewers[sessionId];
-            console.log('Borrando viewer del presentador: ' + data.presenters[tutoria]);
-            delete data.presenters[tutoria].viewers[sessionId];
+            if(data.presenters[tutoria]) {
+                console.log('Borrando viewer del presentador: ' + data.presenters[tutoria]);
+                delete data.presenters[tutoria].viewers[sessionId];
+            }
         }
 
         clearCandidatesQueue(sessionId);

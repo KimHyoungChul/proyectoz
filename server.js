@@ -1,14 +1,13 @@
 //dependencias fuertes
-var express = require('express');
-var session = require('express-session');
+var express    = require('express');
+var session    = require('express-session');
 var bodyParser = require('body-parser');
-// var cookieParser = require('cookie-parser');
-var http     = require('http');
-var https    = require('https');
-var app      = express();
-var _models  = require('./models');
-var _kurento = require('./modules/kurento.js');
-var _io      = require('./modules/socket_io.js');
+var http       = require('http');
+var https      = require('https');
+var app        = express();
+var _models    = require('./models');
+var _kurento   = require('./modules/kurento.js');
+var _io        = require('./modules/socket_io.js');
 
 //utils
 var path    = require('path');
@@ -33,29 +32,25 @@ app.set('view engine', 'ejs');
 app.set('views','./views');
 
 //direcciones de recursos web
+//droplet IP 162.243.125.7
+//siempre kurento estara local a la aplicacion (droplet o local)
 var direcciones = {
     app_location : "https://localhost:8443/",
-    kurento_location : "ws://162.243.125.7:8888/kurento"
+    kurento_location : "ws://localhost:8888/kurento"
 };
 
-//crear instancia de servidor web http/https
-var server;
-if (process.env.DATABASE_URL) {
-    server = http.createServer(app);
-}
-else {
-    //cargar credenciales para https
-    var credenciales = {
-        key:  fs.readFileSync('./keys/server.key'),
-        cert: fs.readFileSync('./keys/server.crt')
-    };
-    server = https.createServer(credenciales,app);
-}
+//cargar credenciales para https
+var credenciales = {
+    key:  fs.readFileSync('./keys/server.key'),
+    cert: fs.readFileSync('./keys/server.crt')
+};
+//crear instancia de servidor web https
+var server = https.createServer(credenciales,app);
 
 //inicializando
 var port = process.env.PORT || 8443;
 var app_server = server.listen(port, function() {
-    console.log('Listening in ' + direcciones.app_location + ":" + port + "/");
+    console.log('Listening in ' + direcciones.app_location);
 
     //inicializando aplicacion luego que los modelos se 'sincronizan'
     _models.sequelize.sync().then(function () {
@@ -77,6 +72,7 @@ var app_server = server.listen(port, function() {
         require('./modules/routers/manejador_templates.js')(modules);
         require('./modules/routers/manejador_formularios.js')(modules);
 
+        //usuarios dummies (dev only)
         _models.usuario.findOrCreate({
             where: {email: 'u1@u1.u1'},
             defaults: {

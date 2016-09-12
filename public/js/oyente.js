@@ -72,10 +72,14 @@ $(document).ready(function () {
 });
 
 ws.onopen = function (e) {
-	console.log('Conexion abierta.');
+	console.log('Conexion viewer abierta.');
 	viewer();
-};
 
+    //trying to keep alive
+    // seTimeout(function() {
+    //     ws.send(JSON.stringify({id: 'keepAlive'}));
+    // },30000);
+};
 
 //kurento stuff
 $(window).on('beforeunload', function() {
@@ -106,11 +110,15 @@ ws.onmessage = function (message) {
 			break;
 		case 'halt':
 			console.error('Se murio');
+			console.error("termino: " + new Date());
 			webRtcPeer = null;
 			break;
 		case 'incomingQuestion':
-            mostrarEvaluacion(parsedMessage.data.evaluacion,parsedMessage.data.opciones);
+			mostrarEvaluacion(parsedMessage.data.evaluacion,parsedMessage.data.opciones);
 			break;
+		// case 'keepAlive':
+		// 	console.error("Ah, ha, ha, ha, stayin' alive, stayin' alive");
+		// 	break;
 		default:
 			console.error('Unrecognized message', parsedMessage);
 	}
@@ -227,6 +235,7 @@ function viewerResponse(message) {
 	}
 	else {
 		webRtcPeer.processAnswer(message.sdpAnswer);
+		console.error("empece: " + new Date());
 	}
 }
 
