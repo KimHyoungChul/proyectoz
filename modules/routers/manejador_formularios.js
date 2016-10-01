@@ -225,5 +225,24 @@ module.exports = function (modules) {
                 res.send(JSON.stringify( response ));
             }
         });
+
+
     });
+
+
+
+    app.post('/registrar-url', function(req, res) {
+        const recurso = req.body.recurso;
+        const sesion = req.body.sesion;
+        models.recurso_workspace.create({
+            url: recurso,
+            tipo: 'url',
+            sesion_tutoria: sesion
+        });
+        res.redirect(303,'/workspace?sesion=' + sesion);
+    });
+
+
+
+
 };

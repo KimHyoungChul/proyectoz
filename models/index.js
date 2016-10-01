@@ -33,6 +33,7 @@ db.usuario.hasOne(db.estudiante, {as: 'Estudiante', foreignKey: 'usuario'});
 db.tutor.hasOne(db.sesion_tutoria, {as: 'sesion_tutoria', foreignKey: 'tutor'});
 db.sesion_tutoria.hasOne(db.mensaje_sesion_tutoria, {as: 'mensaje_sesion_tutoria', foreignKey: 'sesion_tutoria'});
 db.sesion_tutoria.hasOne(db.mensaje_workspace, {as: 'mensaje_workspace', foreignKey: 'sesion_tutoria'});
+db.usuario.hasOne(db.mensaje_workspace, {as: 'mensaje_workspace', foreignKey: 'usuario'});
 db.estudiante.hasOne(db.solicitud, {as: 'solicitud', foreignKey: 'estudiante'});
 db.evaluacion.belongsTo(db.sesion_tutoria, {as: 'evaluaciones', foreignKey: 'sesion_tutoria'});
 db.evaluacion.hasMany(db.opcion_evaluacion, {as: 'opciones', foreignKey: 'evaluacion'});

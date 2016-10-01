@@ -58,7 +58,7 @@ _models.sequelize.sync().then(function () {
     _kurento.init(app_server,direcciones);
 
     //manejo de mensajeria del chat
-    _io.init(server);
+    _io.init(server,_models);
 
     var modules = {
         kurento: _kurento,
