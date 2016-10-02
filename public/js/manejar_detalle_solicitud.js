@@ -33,11 +33,6 @@ $(document).ready(function() {
         allDaySlot: false,
         slotLabelFormat: 'h A',
         slotDuration: '01:00:00',
-        events: eventos,
-        eventClick: function(calEvent, jsEvent, view) {
-            // alert('Event: ' + calEvent.title);
-            // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-            // alert('View: ' + view.name);
-        }
+        events: eventos
     });
 });

@@ -25,7 +25,9 @@ module.exports = function (modules) {
                 where: {id: solicitud_id}
             }).then(function (solicitudEncontrada) {
                 solicitudEncontrada.getHorario().then(function(horarioEncontrado) {
-                    horarioEncontrado.getIntervalos().then(function(intervalosEncontrados) {
+                    horarioEncontrado.getIntervalos({
+                        attributes: [['hora_inicio','start'],['hora_fin','end']]
+                    }).then(function(intervalosEncontrados) {
                         solicitudEncontrada.getKeywords().then(function(keywordsEncontrados) {
                             res.render('ver_solicitud', {
                                 solicitud: solicitudEncontrada,
@@ -68,6 +70,102 @@ module.exports = function (modules) {
                     });
                 });
             })
+        }
+    });
+
+    app.get('/sesion/:id/', function(req, res) {
+        console.log(req.params.id);
+        var opciones = {
+            todavia: false,
+            sesion: 0,
+            presentador: false
+        };
+        models.sesion_tutoria.find({
+            where:{
+                id: parseInt(req.params.id)
+            }
+        }).then(function (sesion) {
+            if (sesion && (sesion.estado === 'futura' || sesion.estado === 'en-proceso')) {
+
+                var usuario = req.session.usuario;
+
+                if (sesion.fecha <= new Date()) {
+                    opciones.sesion = sesion.id;
+                    opciones.nombre = req.session.usuario.nombre;
+                    opciones.email = req.session.usuario.email;
+                }
+                else {
+                    opciones.todavia = true;
+                }
+
+                if(usuario.tipo === 'tutor') {
+                    opciones.presentador = true;
+                    //preparar evaluaciones
+                    sesion.getEvaluaciones().then(function(evaluacionesEncontradas) {
+                        opciones.evaluaciones = evaluacionesEncontradas;
+                        if(sesion.estado === 'futura') {
+                            sesion.estado = 'en-proceso';
+                            sesion.save().then(function(sesionActualizada) {
+                                res.render('sesion_presentador',opciones);
+                            });
+                        }
+                        else {
+                            res.render('sesion_presentador',opciones);
+                        }
+                    });
+                }
+                else {
+                    res.render('sesion_oyente',opciones);
+                }
+            }
+            else {
+                res.redirect(303,'/');
+            }
+        });
+    });
+
+    app.get('/sesion/cerrar/:ses_id/',function(req,res) {
+        //verificar existencia y estado de sesion
+        var sesion_id = parseInt(req.params.ses_id);
+        //solo seguir si se ha iniciado sesion y el usuario es un tutor
+        if(req.session.usuario && req.session.usuario.tipo === 'tutor') {
+            //obtener usuario de la sesion
+            var usuario = req.session.usuario;
+
+            //buscar sesion
+            models.sesion_tutoria.find({
+                where: {
+                    id: sesion_id
+                }
+            }).then(function(sesion) {
+                //verificar que quien entro es el tutor de la sesion
+                //cambiar estado de sesion si no se ha terminado ya
+                if(sesion.tutor === usuario.id && ['futura','en-proceso'].includes(sesion.estado)) {
+                    //TODO descomentar cambio de estado en una sesion te de tutoria
+                    // sesion.estado = 'realizada';
+                    sesion.save().then(function(sesionActualizada) {
+                        //enviar mensaje a cada viewer para que se vayan
+                        kurento.data.presenters[sesion_id].viewers.forEach(function (viewer) {
+                            if(viewer.ws.readyState === 1) {
+                                viewer.ws.send(JSON.stringify({
+                                    id: 'sessionFinished',
+                                    data: {
+                                        mensaje_2: 'se termino la sesion ya'
+                                    },
+                                    mensaje: 'Se termino la sesion de tutoria'
+                                }));
+                            }
+                        });
+                        res.redirect(303,'/');
+                    });
+                }
+                else {
+                    res.redirect(303,'/');
+                }
+            });
+        }
+        else {
+            res.redirect(303,'/');
         }
     });
 
@@ -217,49 +315,6 @@ module.exports = function (modules) {
 
     app.get('/login/', function(req, res) {
         res.render('login');
-    });
-
-    app.get('/sesion/:id/', function(req, res) {
-        console.log(req.params.id);
-        var opciones = {
-            todavia: false,
-            sesion: 0,
-            presentador: false
-        };
-        models.sesion_tutoria.findAll({
-            where:{
-                id: parseInt(req.params.id)
-            }
-        }).then(function (sesiones) {
-            if (sesiones.length > 0) {
-                var sesion = sesiones[0];
-                var usuario = req.session.usuario;
-
-                if (sesion.fecha <= new Date()){
-                    opciones.sesion = sesion.id;
-				    opciones.nombre = req.session.usuario.nombre;
-                    opciones.email = req.session.usuario.email;                                
-				}
-                else {
-                    opciones.todavia = true;
-                }
-
-                if(usuario.tipo === 'tutor'){
-                    opciones.presentador = true;
-                    //preparar evaluaciones
-                    sesion.getEvaluaciones().then(function(evaluacionesEncontradas) {
-                        opciones.evaluaciones = evaluacionesEncontradas;
-                        res.render('sesion_presentador',opciones);
-                    });
-                }
-                else{
-                    res.render('sesion_oyente',opciones);
-                }
-            }
-            else {
-                res.redirect(303,'/');
-            }
-        });
     });
 
     app.get('/', function(req, res) {

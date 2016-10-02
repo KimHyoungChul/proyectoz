@@ -1,8 +1,20 @@
+<!--TODO mostrar integrantes si es un usuario del grupo, mostrar ofrecer tutoria si es un tutor -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="/bower_components/materialize/dist/css/materialize.min.css">
+    <link href="/bower_components/materialize/dist/css/materialize.min.css" rel="stylesheet">
+    <link href="/bower_components/materialize-clockpicker/dist/css/materialize.clockpicker.css" rel="stylesheet">
+    <link href='/bower_components/fullcalendar/dist/fullcalendar.min.css' rel='stylesheet' />
+    <link href='/css/custom.css' rel='stylesheet' />
+
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
+    <script src="/bower_components/materialize-clockpicker/dist/js/materialize.clockpicker.js"></script>
+    <script src='/bower_components/moment/moment.js'></script>
+    <script src='/bower_components/fullcalendar/dist/fullcalendar.js'></script>
+    <script src='/bower_components/fullcalendar/dist/lang/es.js'></script>
     <meta charset="UTF-8">
     <title>ProyectoZ</title>
 </head>
@@ -10,19 +22,67 @@
 <% include nav.ejs %>
 <div class="container">
     <div class="row">
-        <h3>Ver Solicitudes</h3>
-        <div class="col s12">
-            <div class="col s6">
-                <p><%= JSON.stringify(solicitud) %></p>
-                <p><%= JSON.stringify(keywords) %></p>
-                <p><%= JSON.stringify(intervalos) %></p>
+        <div class="col s8">
+            <div class="col s12">
+                <div class="section">
+                    <h3><b><%= solicitud.titulo %></b></h3>
+                    <h5><%= solicitud.cuerpo %></h5>
+                </div>
+                <div class="divider"></div>
+                <div class="section">
+                    <% keywords.forEach(function(keyword) { %>
+                    <div class="chip">
+                        <%= keyword.texto %>
+                    </div>
+                    <% }); %>
+                </div>
+                <div class="divider"></div>
+                <div class="section">
+                    <span id="calendar_btn" class="btn waves-effect waves-light" href="#">Mostrar Calendario
+                            <i class="material-icons right">cloud</i>
+                    </span>
+                    <div id="calendar_div">
+                        <div id='calendar'></div>
+                        <div style='clear:both'></div>
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="col s4">
+            <!--TODO mostrar integrantes si es un usuario del grupo, mostrar ofrecer tutoria si es un tutor -->
+            <!--<form id="nueva_solicitud" action="/solicitud/crear_tutoria/" method="post">-->
+                <!--<input type="hidden" name="solicitud_id" value="<%= solicitud.id %>">-->
+                <!--<ul class="collection">-->
+                    <!--<li class="collection-item">-->
+                        <!--<div class="input-field">-->
+                            <!--<i class="material-icons prefix">query_builder</i>-->
+                            <!--<label for="timepicker">Hora de inicio</label>-->
+                            <!--<input id="timepicker" class="timepicker" type="time" name="hora" required>-->
+                        <!--</div>-->
+                    <!--</li>-->
+                    <!--<li class="collection-item">-->
+                        <!--<div class="input-field">-->
+                            <!--<i class="material-icons prefix">today</i>-->
+                            <!--<input id="datepicker" type="date" class="datepicker" name="fecha" required>-->
+                            <!--<label for="datepicker">Fecha</label>-->
+                        <!--</div>-->
+                    <!--</li>-->
+                <!--</ul>-->
+                <!--<div class="col s12">-->
+                    <!--<br>-->
+                    <!--<button class="btn-large waves-effect waves-light" type="submit" name="submit" value="submit">-->
+                        <!--Establecer Horario-->
+                        <!--<i class="material-icons right">send</i>-->
+                    <!--</button>-->
+                <!--</div>-->
+            <!--</form>-->
         </div>
     </div>
 </div>
 
-<script src="/bower_components/jquery/dist/jquery.min.js"></script>
-<script src="/bower_components/materialize/dist/js/materialize.min.js">
-</script>
+<pre id="intervalos" class="hide"><%= JSON.stringify(intervalos) %></pre>
+
+<script src="/js/custom.js"></script>
+<script src="/js/manejar_detalle_solicitud.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 var ws = new WebSocket('wss://' + location.host + '/ws');
 var video;
 var webRtcPeer;
+var sessionFinished = false;
 
 $(document).ready(function () {
 	//kurento stuff
@@ -74,11 +75,6 @@ $(document).ready(function () {
 ws.onopen = function (e) {
 	console.log('Conexion viewer abierta.');
 	viewer();
-
-    //trying to keep alive
-    // seTimeout(function() {
-    //     ws.send(JSON.stringify({id: 'keepAlive'}));
-    // },30000);
 };
 
 //kurento stuff
@@ -110,15 +106,16 @@ ws.onmessage = function (message) {
 			break;
 		case 'halt':
 			console.error('Se murio');
-			console.error("termino: " + new Date());
 			webRtcPeer = null;
 			break;
 		case 'incomingQuestion':
 			mostrarEvaluacion(parsedMessage.data.evaluacion,parsedMessage.data.opciones);
 			break;
-		// case 'keepAlive':
-		// 	console.error("Ah, ha, ha, ha, stayin' alive, stayin' alive");
-		// 	break;
+		case 'sessionFinished':
+            sessionFinished = true;
+			dispose();
+			terminarSesion();
+            break;
 		default:
 			console.error('Unrecognized message', parsedMessage);
 	}
@@ -155,9 +152,27 @@ function mostrarEvaluacion(raw_evaluacion,raw_opciones) {
         p.append(input).append(label);
         question_radio_choices.append(p);
     });
-    // //manejar salida de formulario con ajax
+    //manejar salida de formulario con ajax
     //abrir modal
     question_modal.openModal({ dismissible: false });
+}
+
+function terminarSesion() {
+	//TODO beautify todo el proceso de terminar una sesion
+	//cambiar imagen del video
+	video.src = '';
+	video.poster = '/img/webrtc.png';
+	video.style.background = '';
+
+	//mostrar mensaje en pizarra
+	$("#pizarra").html("<h1>Se termino la sesion de tutoria</h1>");
+
+	//deshabilitar chat
+	$("#btn").addClass("disabled").unbind('click');
+	$("#m").attr("disabled",true);
+
+	//mostrar boton de salida
+	$("#btn_salir").removeClass('hide');
 }
 
 //kurento stuff

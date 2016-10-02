@@ -33,14 +33,6 @@ video#video {
     max-height: 100%;
 }
 
-#video-div-oyente {
-    /* algun estilo que aplique */
-}
-
-#video-div-presentador {
-    /* algun estilo que aplique */
-}
-
 #mensajes {
     max-height: 180px;
 	overflow: auto;

@@ -1,6 +1,7 @@
 var ws = new WebSocket('wss://' + location.host + '/ws');
 var video;
 var webRtcPeer;
+var sessionFinished = false;
 
 $(document).ready(function () {
 	//kurento stuff
@@ -54,6 +55,12 @@ $(document).ready(function () {
             }
         });
 	});
+
+	$("#cerrar_tutoria_btn").click(function(e) {
+		if(!confirm("Seguro que desea terminar?")) {
+			e.preventDefault();
+		}
+	});
 });
 
 //kurento stuff
@@ -64,11 +71,6 @@ $(window).on('beforeunload', function() {
 ws.onopen = function(e) {
     console.log('Conexion presenter abierta.');
     presenter();
-
-	//trying to keep alive
-    // setTimeout(function() {
-     //    ws.send(JSON.stringify({id: 'keepAlive'}));
-    // },30000);
 };
 
 ws.onmessage = function (message) {
@@ -89,6 +91,9 @@ ws.onmessage = function (message) {
 		case 'iceCandidate':
 			webRtcPeer.addIceCandidate(parsedMessage.candidate);
 			break;
+        case 'sessionFinished':
+            sessionFinished = true;
+            break;
 		default:
 			console.error('Unrecognized message', parsedMessage);
 	}
