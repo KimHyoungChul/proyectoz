@@ -17,7 +17,7 @@ var fs      = require('fs');
 //inicializando express app
 // app.use(cookieParser('salabantruska'));
 app.use(session({
-    secret: 'salabantruska',
+    secret: 'proyectoz'
     // resave: false,
     // saveUninitialized: true,
     // cookie: { secure: true, httpOnly: false }

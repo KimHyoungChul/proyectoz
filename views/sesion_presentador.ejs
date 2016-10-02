@@ -20,11 +20,11 @@
 </head>
 <body>
     <% if (todavia) { %>
-    <div class="row">
+    <div id="body" class="row">
         <p>Falta tiempo para iniciar la tutoria</p>
     </div>
     <% } else { %>
-    <div class="container">
+    <div id="body" class="container">
         <div class="row">
                 <hr />
             <div id="video-div-presentador" class="col s4">
@@ -73,8 +73,7 @@
                                             <a href="#"
                                                class="btn waves-effect waves-light btn_lanzar_pregunta"
                                                sesion="<%= sesion %>"
-                                               evaluacion="<%= eval.id %>"
-                                            >
+                                               evaluacion="<%= eval.id %>">
                                                 Lanzar Pregunta<i class="material-icons right">send</i>
                                             </a>
                                         </p>
@@ -97,6 +96,14 @@
                 <br />
                 <br />
             </div>
+        </div>
+    </div>
+    <div id="modal_no_webcam" class="modal bottom-sheet">
+        <div class="modal-content">
+            <h4>No se ha detectado una camara web</h4>
+            <p>No puedes ejercer el rol de tutor sin una camara web.</p>
+            <p>No puedes ejercer el rol de tutor sin una camara web.</p>
+            <p><a href="/" class="modal-action modal-close waves-effect waves-green btn-large red darken-4 white-text">Salir de este lugar</a></p>
         </div>
     </div>
     <% } %>

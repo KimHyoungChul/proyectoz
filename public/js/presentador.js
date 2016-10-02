@@ -4,62 +4,79 @@ var webRtcPeer;
 var sessionFinished = false;
 
 $(document).ready(function () {
-	//kurento stuff
-	video = $("#video").get(0);
 
-	// presenter();
-	$("#btn-finalizar").click(stop);
+	//solo seguir si se cuenta con camara web
+	navigator.getMedia=(navigator.getUserMedia ||
+						navigator.webkitGetUserMedia ||
+						navigator.mozGetUserMedia ||
+						navigator.msGetUserMedia);
 
-	//chat events
-	var chatInfo = {
-		sesion: $('#sesion-id').val(),
-		nombre: $('#nombre').val(),
-		email: $('#email').val()
-	};
+	navigator.getMedia({
+		video: true,
+ 	}, function(mediaStreamLocal) {
+		//kurento stuff
+		video = $("#video").get(0);
 
-	$('#btn').click(function(){
-		chatInfo.mensaje = $('#m').val();
-		socket.emit('chat message', JSON.stringify(chatInfo));
-		$('#m').val('');
+		// presenter();
+		$("#btn-finalizar").click(stop);
 
-		return false;
-	});
-	//chat stuff
-	var socket = io();
+		//chat events
+		var chatInfo = {
+			sesion: $('#sesion-id').val(),
+			nombre: $('#nombre').val(),
+			email: $('#email').val()
+		};
 
-	console.log($('#nombre').val());
-	socket.emit('inicializando', JSON.stringify(chatInfo));
-	socket.on('chat message', function(msg){
-		var recibido = JSON.parse(msg);
-		$('#messages').append($('<li>').text(recibido.nombre + ' : ' + recibido.mensaje));
-		var element = document.getElementById("mensajes");
-		element.scrollTop = element.scrollHeight;
-		console.log(msg);
-	});
+		$('#btn').click(function(){
+			chatInfo.mensaje = $('#m').val();
+			socket.emit('chat message', JSON.stringify(chatInfo));
+			$('#m').val('');
 
-	//view events
-	$(".btn_lanzar_pregunta").click(function(e) {
-		e.preventDefault();
+			return false;
+		});
+		//chat stuff
+		var socket = io();
 
-		var sesion_id = $(this).attr("sesion");
-		var evaluacion_id = $(this).attr("evaluacion");
-        var url = "/sesion/"+sesion_id+"/lanzar_evaluacion/"+evaluacion_id+"/";
-        $.get(url,function(message) {
-           var parsedMessage = JSON.parse(message);
+		console.log($('#nombre').val());
+		socket.emit('inicializando', JSON.stringify(chatInfo));
+		socket.on('chat message', function(msg){
+			var recibido = JSON.parse(msg);
+			$('#messages').append($('<li>').text(recibido.nombre + ' : ' + recibido.mensaje));
+			var element = document.getElementById("mensajes");
+			element.scrollTop = element.scrollHeight;
+			console.log(msg);
+		});
 
-            if(parsedMessage.status === 'ok') {
-                alert("Pregunta Enviada");
-            }
-            else {
-                alert("Inconvenientes con enviar pregunta");
-            }
-        });
-	});
-
-	$("#cerrar_tutoria_btn").click(function(e) {
-		if(!confirm("Seguro que desea terminar?")) {
+		//view events
+		$(".btn_lanzar_pregunta").click(function(e) {
 			e.preventDefault();
-		}
+
+			var sesion_id = $(this).attr("sesion");
+			var evaluacion_id = $(this).attr("evaluacion");
+			var url = "/sesion/"+sesion_id+"/lanzar_evaluacion/"+evaluacion_id+"/";
+			$.get(url,function(message) {
+				var parsedMessage = JSON.parse(message);
+
+				if(parsedMessage.status === 'ok') {
+					alert("Pregunta Enviada");
+				}
+				else {
+					alert("Inconvenientes con enviar pregunta");
+				}
+			});
+		});
+
+		$("#cerrar_tutoria_btn").click(function(e) {
+			if(!confirm("Seguro que desea terminar?")) {
+				e.preventDefault();
+			}
+		});
+	}, function(error) {
+		$("#body").html('');
+
+		$("#modal_no_webcam").openModal({
+			dismissible: false
+		});
 	});
 });
 
@@ -103,7 +120,7 @@ function presenter() {
 	if (!webRtcPeer) {
 
 		var options = {
-			localVideo: video,
+			local: video,
 			onicecandidate : onIceCandidate
 		};
 

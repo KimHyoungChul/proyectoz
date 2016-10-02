@@ -49,33 +49,37 @@
             </div>
         </div>
         <div class="col s4">
-            <!--TODO mostrar integrantes si es un usuario del grupo, mostrar ofrecer tutoria si es un tutor -->
-            <!--<form id="nueva_solicitud" action="/solicitud/crear_tutoria/" method="post">-->
-                <!--<input type="hidden" name="solicitud_id" value="<%= solicitud.id %>">-->
-                <!--<ul class="collection">-->
-                    <!--<li class="collection-item">-->
-                        <!--<div class="input-field">-->
-                            <!--<i class="material-icons prefix">query_builder</i>-->
-                            <!--<label for="timepicker">Hora de inicio</label>-->
-                            <!--<input id="timepicker" class="timepicker" type="time" name="hora" required>-->
-                        <!--</div>-->
-                    <!--</li>-->
-                    <!--<li class="collection-item">-->
-                        <!--<div class="input-field">-->
-                            <!--<i class="material-icons prefix">today</i>-->
-                            <!--<input id="datepicker" type="date" class="datepicker" name="fecha" required>-->
-                            <!--<label for="datepicker">Fecha</label>-->
-                        <!--</div>-->
-                    <!--</li>-->
-                <!--</ul>-->
-                <!--<div class="col s12">-->
-                    <!--<br>-->
-                    <!--<button class="btn-large waves-effect waves-light" type="submit" name="submit" value="submit">-->
-                        <!--Establecer Horario-->
-                        <!--<i class="material-icons right">send</i>-->
-                    <!--</button>-->
-                <!--</div>-->
-            <!--</form>-->
+            <!--TODO mostrar integrantes si es un usuario del grupo -->
+            <% if(tipoUsuario == 'tutor') { %>
+            <form id="nueva_solicitud" action="/solicitud/crear_tutoria/" method="post">
+                <input type="hidden" name="solicitud_id" value="<%= solicitud.id %>">
+                <ul class="collection">
+                    <li class="collection-item">
+                        <div class="input-field">
+                            <i class="material-icons prefix">query_builder</i>
+                            <label for="timepicker">Hora de inicio</label>
+                            <input id="timepicker" class="timepicker" type="time" name="hora" required>
+                        </div>
+                    </li>
+                    <li class="collection-item">
+                        <div class="input-field">
+                            <i class="material-icons prefix">today</i>
+                            <input id="datepicker" type="date" class="datepicker" name="fecha" required>
+                            <label for="datepicker">Fecha</label>
+                        </div>
+                    </li>
+                </ul>
+                <div class="col s12">
+                    <br>
+                    <button class="btn-large waves-effect waves-light" type="submit" name="submit" value="submit">
+                        Establecer Horario
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </form>
+            <% } else if(tipoUsuario == 'estudiante') { %>
+            <h3>Aqui van los invitados</h3>
+            <% } %>
         </div>
     </div>
 </div>

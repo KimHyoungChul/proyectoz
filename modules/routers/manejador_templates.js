@@ -29,47 +29,27 @@ module.exports = function (modules) {
                         attributes: [['hora_inicio','start'],['hora_fin','end']]
                     }).then(function(intervalosEncontrados) {
                         solicitudEncontrada.getKeywords().then(function(keywordsEncontrados) {
-                            res.render('ver_solicitud', {
+                            var data = {
                                 solicitud: solicitudEncontrada,
                                 keywords: keywordsEncontrados,
                                 intervalos: intervalosEncontrados
-                            });
+                            };
+
+                            if(req.session.usuario) {
+                                data.tipoUsuario = req.session.usuario.tipo;
+                            }
+                            else {
+                                data.tipoUsuario = null;
+                            }
+
+                            res.render('ver_solicitud',data);
                         });
                     });
                 });
             })
         }
-    });
-
-    app.get('/solicitud/crear_tutoria/:sol_id/', function(req, res) {
-        var solicitud_id = parseInt(req.params.sol_id);
-
-        if(solicitud_id) {
-            //obtener solicitud con el id especificado
-            models.solicitud.find({
-                where: {
-                    id: solicitud_id
-                }
-            }).then(function (solicitudEncontrada) {
-                //buscar horario de solicitud encontrada
-                solicitudEncontrada.getHorario().then(function(horarioEncontrado) {
-                    //buscar intervalos del horario encontrado
-                    //cambiar nombre de atributos para ajustar a especificaciones de fullcalendar
-                    horarioEncontrado.getIntervalos({
-                        attributes: [['hora_inicio','start'],['hora_fin','end']]
-                    }).then(function(intervalosEncontrados) {
-                        //buscar keywords de la solicitud encontrada
-                        solicitudEncontrada.getKeywords().then(function(keywordsEncontrados) {
-                            //enviar datos encontrados para ser mostrados en la vista
-                            res.render('crear_tutoria', {
-                                solicitud: solicitudEncontrada,
-                                keywords: keywordsEncontrados,
-                                intervalos: intervalosEncontrados
-                            });
-                        });
-                    });
-                });
-            })
+        else {
+            res.redirect(303,'/');
         }
     });
 

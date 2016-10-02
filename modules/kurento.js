@@ -98,9 +98,6 @@ var initializer = function(app_server,direcciones) {
                     onIceCandidate(sessionId, message.candidate);
                     break;
 
-                case 'keepAlive':
-                    break;
-
                 default:
                     ws.send(JSON.stringify({
                         id : 'error',
@@ -242,7 +239,9 @@ var initializer = function(app_server,direcciones) {
             stop(sessionId);
         }
         console.log('Presentador con sesion: '+ presenter_id);
+
         var presenter = data.presenters[presenter_id];
+
         if(!presenter || !presenter.pipeline){
             var viewer = {
                 "webRtcEndpoint" : null,
@@ -262,15 +261,18 @@ var initializer = function(app_server,direcciones) {
             return callback(data.noPresenterMessage);
 
         }
+
         presenter.pipeline.create('WebRtcEndpoint', function(error, webRtcEndpoint) {
             if (error) {
                 stop(sessionId);
                 return callback(error);
             }
+
             var viewer = {
                 "webRtcEndpoint" : webRtcEndpoint,
                 "ws" : ws
             };
+
             data.presenters[presenter_id].viewers[sessionId] = viewer;
             data.viewers[sessionId] = viewer;
 
@@ -345,17 +347,23 @@ var initializer = function(app_server,direcciones) {
                     }
                 }
             });
+
             console.log("Borrando presentador con tutoria: " + tutoria );
+
             data.presenters[tutoria].webRtcEndpoint.release();
+
             if(data.presenters[tutoria].pipeline){
                 data.presenters[tutoria].pipeline.release();
             }
+
             data.presenters[tutoria].id = null;
             data.presenters[tutoria].pipeline = null;
 
         } else if (data.viewers[sessionId]) {
             data.viewers[sessionId].webRtcEndpoint.release();
+
             delete data.viewers[sessionId];
+
             if(data.presenters[tutoria]) {
                 console.log('Borrando viewer del presentador: ' + data.presenters[tutoria]);
                 delete data.presenters[tutoria].viewers[sessionId];
