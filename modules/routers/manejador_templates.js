@@ -7,6 +7,9 @@ module.exports = function (modules) {
     var models = modules.models;
     var Sequelize = modules.models.Sequelize;
     var kurento = modules.kurento;
+    var moment = require('moment');
+    //setear locale en spanish
+    moment.locale('es-do');
 
     app.get('/solicitud/crear/', function(req, res) {
         models.keyword.findAll().then(function (_keywords) {
@@ -219,20 +222,33 @@ module.exports = function (modules) {
     });
 
     app.get('/sesion/', function(req, res) {
+        //buscar sesiones junto con sus asociaciones
         models.sesion_tutoria.findAll({
+            where: {
+                estado: {
+                    $in: ['futura','en-proceso']
+                }
+            },
             include: [{
                 model: models.solicitud,
-                as: 'Solicitudes'
+                as: 'Solicitud',
+                include: [{
+                    model: models.keyword,
+                    as: 'Keywords'
+                }]
             },{
-                model: models.solicitud,
-                as: 'Invitaciones'
+                model: models.tutor,
+                as: 'Tutor',
+                include: [{
+                    model: models.usuario,
+                    as: 'Usuario'
+                }]
             }]
-        }).then(function(estudiantes) {
-
-            var sesiones = JSON.stringify(sesionesEncontradas);
+        }).then(function(sesionesEncontradas) {
 
             res.render('ver_sesiones',{
-                sesiones: sesiones
+                sesiones: sesionesEncontradas,
+                moment: moment
             });
         });
     });

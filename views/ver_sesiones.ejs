@@ -1,26 +1,49 @@
 <!--TODO mostrar integrantes si es un usuario del grupo, mostrar ofrecer tutoria si es un tutor-->
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
-    <!--<link href="/bower_components/materialize/dist/css/materialize.min.css" rel="stylesheet">-->
-    <!--<link href='/css/custom.css' rel='stylesheet' />-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/bower_components/materialize/dist/css/materialize.min.css" rel="stylesheet">
+    <link href='/css/custom.css' rel='stylesheet' />
 
-    <!--<script src="/bower_components/jquery/dist/jquery.min.js"></script>-->
-    <!--<script src="/bower_components/materialize/dist/js/materialize.min.js"></script>-->
-    <!--<script src='/bower_components/moment/moment.js'></script>-->
-    <!--<meta charset="UTF-8">-->
-    <!--<title>ProyectoZ</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<% include nav.ejs %>-->
-<!--<div class="container">-->
-    <!--<div class="row">-->
-    <!--</div>-->
-<!--</div>-->
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
+    <script src='/bower_components/moment/moment.js'></script>
+    <meta charset="UTF-8">
+    <title>ProyectoZ</title>
+</head>
+<body>
+<% include nav.ejs %>
+<div class="container">
+    <div class="row">
+        <% sesiones.forEach(function(sesion) { %>
+        <%
+            var titulo = sesion.Tutor.Usuario.nombre+" "+sesion.Tutor.Usuario.apellido+", "+sesion.Tutor.Usuario.email;
 
-<!--<script src="/js/custom.js"></script>-->
-<!--<script src="/js/manejar_detalle_solicitud.js"></script>-->
-<!--</body>-->
-<!--</html>-->
-<%= sesiones %>
+            var fecha_sin_timezone = moment(sesion.fecha).format('YYYY-MM-DD');
+            var momento_mostrado = moment(fecha_sin_timezone+' '+sesion.hora_inicio+'.001-04');
+
+            var color = sesion.estado == 'futura' ? 'green darken-2' : 'green darken-4';
+        %>
+        <div class="card <%= color %>">
+            <div class="card-content white-text">
+                <span class="card-title">
+                    <b><%= titulo %></b>
+                </span>
+                <%
+                %>
+                <p>Sera impartida <%= momento_mostrado.fromNow() %></p>
+            </div>
+            <div class="card-action">
+                <% sesion.Solicitud.Keywords.forEach(function(keyword) { %>
+                <div class="chip"><%= keyword.texto %></div>
+                <% }); %>
+            </div>
+        </div>
+        <% }); %>
+    </div>
+</div>
+
+<script src="/js/custom.js"></script>
+</body>
+</html>
