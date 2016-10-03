@@ -11,7 +11,12 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         }
     }, {
-        freezeTableName: true
+        freezeTableName: true,
+        classMethods: {
+            associate: function (db) {
+                db.opcion_evaluacion.belongsToMany(db.estudiante, {as: 'Estudiantes', through: 'respuesta_evaluacion', foreignKey: 'respuesta'});
+            }
+        }
     });
 
     return Opcion_evaluacion;

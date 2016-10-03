@@ -45,26 +45,11 @@ fs  .readdirSync(__dirname)
     });
 
 //relacionar modelos
-db.horario.hasMany(db.intervalo,{as: 'Intervalos', foreignKey: 'horario'});
-db.solicitud.belongsTo(db.horario,{as: 'Horario', foreignKey: 'horario'});
-db.solicitud.hasOne(db.sesion_tutoria,{as: 'sesion_tutoria', foreignKey: 'solicitud'});
-db.usuario.hasOne(db.tutor, {as: 'Tutor', foreignKey: 'usuario'});
-db.usuario.hasOne(db.estudiante, {as: 'Estudiante', foreignKey: 'usuario'});
-db.tutor.hasOne(db.sesion_tutoria, {as: 'sesion_tutoria', foreignKey: 'tutor'});
-db.sesion_tutoria.hasOne(db.mensaje_workspace, {as: 'mensaje_workspace', foreignKey: 'sesion_tutoria'});
-db.estudiante.hasOne(db.solicitud, {as: 'solicitud', foreignKey: 'estudiante'});
-db.sesion_tutoria.hasMany(db.evaluacion, {as: 'Evaluaciones', foreignKey: 'sesion_tutoria'});
-db.evaluacion.hasMany(db.opcion_evaluacion, {as: 'Opciones', foreignKey: 'evaluacion'});
-db.sesion_tutoria.hasMany(db.recurso_workspace, {as: 'recursos', foreignKey: 'sesion_tutoria'});
-
-db.keyword.belongsToMany(db.tutor, {as: 'Tutores', through: 'keyword_tutor', foreignKey: 'keyword'});
-db.tutor.belongsToMany(db.keyword, {as: 'Keywords', through: 'keyword_tutor', foreignKey: 'tutor'});
-db.keyword.belongsToMany(db.solicitud, {as: 'Solicitudes', through: 'keyword_solicitud', foreignKey: 'keyword'});
-db.solicitud.belongsToMany(db.keyword, {as: 'Keywords', through: 'keyword_solicitud', foreignKey: 'solicitud'});
-db.solicitud.belongsToMany(db.estudiante, {as: 'estudiantes', through: db.integrante_solicitud, foreignKey: 'solicitud'});
-db.estudiante.belongsToMany(db.solicitud, {as: 'solicitudes', through: db.integrante_solicitud, foreignKey: 'estudiante'});
-db.estudiante.belongsToMany(db.opcion_evaluacion, {as: 'respuestas', through: 'respuesta_evaluacion', foreignKey: 'estudiante'});
-db.opcion_evaluacion.belongsToMany(db.estudiante, {as: 'estudiantes', through: 'respuesta_evaluacion', foreignKey: 'respuesta'});
+Object.keys(db).forEach(function(modelName) {
+    if ("associate" in db[modelName]) {
+        db[modelName].associate(db);
+    }
+});
 
 //guardar referencias
 db.sequelize = sequelize;

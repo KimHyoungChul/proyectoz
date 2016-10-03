@@ -10,7 +10,13 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         }
     }, {
-        freezeTableName: true
+        freezeTableName: true,
+        classMethods: {
+            associate: function (db) {
+                db.horario.hasMany(db.intervalo,{as: 'Intervalos', foreignKey: 'horario'});
+                db.horario.hasOne(db.solicitud,{as: 'Solicitud', foreignKey: 'horario'})
+            }
+        }
     });
 
     return Horario;

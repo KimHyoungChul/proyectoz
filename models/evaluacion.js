@@ -16,7 +16,12 @@ module.exports = function(sequelize, DataTypes) {
             key: "id"
         }
     }, {
-        freezeTableName: true
+        freezeTableName: true,
+        classMethods: {
+            associate: function (db) {
+                db.evaluacion.belongsTo(db.sesion_tutoria, {as: 'Sesion_tutoria', foreignKey: 'sesion_tutoria'});
+            }
+        }
     });
 
     return Evaluacion;

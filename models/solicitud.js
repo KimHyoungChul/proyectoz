@@ -24,7 +24,17 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         }
     },{
-        freezeTableName: true
+        freezeTableName: true,
+        classMethods: {
+            associate: function(db) {
+                db.solicitud.hasOne(db.sesion_tutoria,{as: 'Sesion_tutoria', foreignKey: 'solicitud'});
+                db.solicitud.belongsTo(db.estudiante,{as: 'Estudiante', foreignKey: 'estudiante'});
+                db.solicitud.belongsTo(db.horario,{as: 'Horario', foreignKey: 'horario'});
+
+                db.solicitud.belongsToMany(db.keyword, {as: 'Keywords', through: 'keyword_solicitud', foreignKey: 'solicitud'});
+                db.solicitud.belongsToMany(db.estudiante, {as: 'Estudiantes', through: db.integrante_solicitud, foreignKey: 'solicitud'});
+            }
+        }
     });
 
     return Solicitud;

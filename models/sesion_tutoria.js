@@ -18,7 +18,16 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         }
     }, {
-        freezeTableName: true
+        freezeTableName: true,
+        classMethods: {
+            associate: function(db) {
+                db.sesion_tutoria.belongsTo(db.tutor, {as: 'Tutor', foreignKey: 'tutor'});
+                db.sesion_tutoria.hasMany(db.mensaje_workspace, {as: 'Mensajes_workspace', foreignKey: 'sesion_tutoria'});
+                db.sesion_tutoria.hasMany(db.recurso_workspace, {as: 'Recursos', foreignKey: 'sesion_tutoria'});
+                db.sesion_tutoria.belongsTo(db.solicitud, {as: 'Solicitud', foreignKey: 'solicitud'});
+                db.sesion_tutoria.hasMany(db.evaluacion, {as: 'Evaluaciones', foreignKey: 'sesion_tutoria'});
+            }
+        }
     });
 
     return Sesion_tutoria;

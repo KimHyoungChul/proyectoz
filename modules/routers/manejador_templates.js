@@ -218,6 +218,25 @@ module.exports = function (modules) {
         }
     });
 
+    app.get('/sesion/', function(req, res) {
+        models.sesion_tutoria.findAll({
+            include: [{
+                model: models.solicitud,
+                as: 'Solicitudes'
+            },{
+                model: models.solicitud,
+                as: 'Invitaciones'
+            }]
+        }).then(function(estudiantes) {
+
+            var sesiones = JSON.stringify(sesionesEncontradas);
+
+            res.render('ver_sesiones',{
+                sesiones: sesiones
+            });
+        });
+    });
+
     app.get('/keyword/crear/', function(req, res) {
         res.render('crear_keyword');
     });

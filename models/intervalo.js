@@ -11,7 +11,12 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         }
     },{
-        freezeTableName: true
+        freezeTableName: true,
+        classMethods: {
+            associate: function (db) {
+                db.intervalo.belongsTo(db.horario,{as: 'Horario', foreignKey: 'horario'});
+            }
+        }
     });
 
     return Intervalo;

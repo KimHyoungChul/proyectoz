@@ -30,7 +30,13 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         }
     },{
-        freezeTableName: true
+        freezeTableName: true,
+        classMethods: {
+            associate: function (db) {
+                db.usuario.hasOne(db.tutor, {as: 'Tutor', foreignKey: 'usuario'});
+                db.usuario.hasOne(db.estudiante, {as: 'Estudiante', foreignKey: 'usuario'});
+            }
+        }
     });
 
     return Usuario;
