@@ -36,7 +36,7 @@
             </div>
             <div class="card-action">
                 <% sesion.Solicitud.Keywords.forEach(function(keyword) { %>
-                <div class="chip"><%= keyword.texto %></div>
+                <a href="/sesion/tag/<%= keyword.id %>" class="chip black-text"><%= keyword.texto %></a>
                 <% }); %>
             </div>
         </div>

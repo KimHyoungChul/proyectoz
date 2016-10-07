@@ -253,6 +253,36 @@ module.exports = function (modules) {
         });
     });
 
+    app.get('/sesion/tag/:tag_id', function(req, res) {
+        var tag_id = parseInt(req.params.tag_id);
+
+        models.sesion_tutoria.findAll({
+            include: [{
+                model: models.solicitud,
+                as: 'Solicitud',
+                include: [{
+                    model: models.keyword,
+                    as: 'Keywords',
+                    where: {
+                        id: tag_id
+                    }
+                }]
+            },{
+                model: models.tutor,
+                as: 'Tutor',
+                include: [{
+                    model: models.usuario,
+                    as: 'Usuario'
+                }]
+            }]
+        }).then(function(sesionesEncontradas) {
+            res.render('ver_sesiones',{
+                sesiones: sesionesEncontradas,
+                moment: moment
+            });
+        });
+    });
+
     app.get('/keyword/crear/', function(req, res) {
         res.render('crear_keyword');
     });
