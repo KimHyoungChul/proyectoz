@@ -9,6 +9,11 @@ module.exports = function(sequelize, DataTypes) {
         url: {
             type: DataTypes.STRING(300),
             allowNull: false
+        },
+        tipo: {
+            type: DataTypes.STRING(15),
+            allowNull: false,
+            values: ['url', 'archivo']
         }
     }, {
         freezeTableName: true,

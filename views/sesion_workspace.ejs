@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/materialize/dist/css/materialize.min.css">
+    <link rel="stylesheet" href="/css/kurento.css">
+    <meta charset="UTF-8">
+    <title>ProyectoZ</title>
+</head>
+<body>
+<% include nav.ejs %>
+
+<div class="row">
+    <div class="col s8">
+        <div class="card-panel">
+            <h3>Recursos</h3>
+            <a data-target="modal1" class="btn-floating modal-trigger"><i class="material-icons">attach_file</i></a>
+            <a data-target="modal2" class="btn-floating teal modal-trigger"><i class="material-icons">exit_to_app</i></a>
+            <h5>Archivos</h5>
+
+
+
+
+            <ul class="collection" id ='coleccion-archivos'>
+                <% for(var i=0; i<archivos.length; i++) { %>
+
+                    <li class="collection-item">
+                        <div>
+                            <a href="<%= archivos[i].url %>"><%= archivos[i].url.split('/').pop() %></a>
+                                <% if(presentador){%>
+                                <a href="/borrar-archivo/<%= archivos[i].id%>/<%= sesion%>"  class="secondary-content"><i class="material-icons">delete</i></a>
+                                <% }%>
+
+                        </div>
+                    </li>
+
+                <% } %>
+
+            </ul>
+            <h5>Enlaces</h5>
+            <ul class="collection" id ='coleccion-archivos'>
+                <% for(var i=0; i<urls.length; i++) { %>
+
+                <li class="collection-item">
+                    <div>
+                        <a href="<%= urls[i].url %>"><%= urls[i].url %></a>
+
+                        <a href="/borrar-url/<%= urls[i].id%>/<%= sesion%>"  class="secondary-content"><i class="material-icons">delete</i></a>
+
+
+                    </div>
+                </li>
+
+                <% } %>
+
+            </ul>
+        </div>
+
+
+    </div>
+    <div class="col s4">
+        <div class="card blue-grey">
+            <div class="card-content">
+                <div id="mensajes"  class="card-panel" style="height: 400px; overflow: auto">
+                    <div class="card-content">
+                        <div class="panel-body">
+                            <ul id="messages">
+                                <% for(var i=0; i<mensajes.length; i++) { %>
+                                <li><%= mensajes[i].nombre_usuario %>:<%= mensajes[i].mensaje%></li>
+                                <% } %>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-panel" style="padding-bottom: 0">
+                    <div class="row" style="margin-bottom: 0">
+                        <div class="col s9">
+                            <input id="m" style="border:1px solid; height: 35px; border-color: #008080"/>
+                        </div>
+                        <div class="col s3">
+                            <button id="btn" class="btn waves-effect waves-light" style="height: 37px">Enviar
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <input id="sesion-id" type="hidden" value=<%= sesion %>>
+        <input id="nombre" type="hidden" value="<%= nombre %>">
+        <input id="email" type="hidden" value=<%= email %>>
+        <input id="usuario" type="hidden" value=<%= usuario %>>
+        <input id="tipo_usuario" type="hidden" value=<%= tipo_usuario %>>
+
+
+    </div>
+
+
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h5>Indique los archivos a subir</h5>
+            <form action="#" id="upload-form">
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>File</span>
+                        <input id="file-input" type="file" multiple>
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text" placeholder="Upload one or more files">
+                    </div>
+                </div>
+                <button id="upload-file" class="btn" style="margin-left: 44% "> Subir</button>
+            </form>
+
+        </div>
+    </div>
+
+
+
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <h5>Indique el enlace</h5>
+            <form action="/registrar-url" method="post" id="formURL">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">account_circle</i>
+                    <input  id="recurso" name="recurso"  placeholder="URL" class="active" required>
+                    <label for="recurso"  data-success=""></label>
+                    <input type="hidden"   name="sesion"  value=<%= sesion %>>
+
+                </div>
+                <button id="recurso-url" type="submit" class="btn" style="margin-left: 44% "> Enviar</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
+<script src="/bower_components/jquery-validation/dist/jquery.validate.js"></script>
+<script src="/js/workspace.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/materialize/dist/css/materialize.min.css">
+    <meta charset="UTF-8">
+    <title>ProyectoZ</title>
+</head>
+<body>
+<% include nav.ejs %>
+<h1>Mis sesiones</h1>
+<div class="collection">
+    <% for(var i=0; i<sesiones.length; i++) { %>
+    <a href="/sesion/<%= sesiones[i].id %>" class="collection-item"><%= sesiones[i].titulo %><span class="badge">1</span></a>
+    <% } %>
+</div>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/materialize/dist/js/materialize.min.js">
+</script>
+</body>
+</html>

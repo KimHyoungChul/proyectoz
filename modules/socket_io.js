@@ -1,10 +1,11 @@
 /**
  * Created by forte on 14/08/16.
  */
-
+var moment  = require('moment');
 var idCounter = 0;
 var clientes = [];
 var sesiones = [];
+
 
 function nextUniqueId() {
     idCounter++;
@@ -25,8 +26,47 @@ function ingresarCliente(sessionId, chatInfo){
     }
 }
 
-function enviarMensaje(chatInfo){
+function enviarMensaje(chatInfo, models){
     var sesion = clientes[chatInfo.sesion];
+
+
+    if(chatInfo.tipo_usuario === 'tutor'){
+        models.tutor.findAll({
+            where:{
+                id:chatInfo.usuario
+            }
+
+        }).then(function (tutor) {
+            var tut = tutor[0];
+            models.mensaje_workspace.create({
+                sesion_tutoria: chatInfo.sesion,
+                texto: chatInfo.mensaje,
+                usuario: tut.usuario,
+                hora_fecha: moment()
+            });
+
+        });
+    }
+    else{
+        models.estudiante.findAll({
+            where:{
+                id:chatInfo.usuario
+            }
+
+        }).then(function (estudiante) {
+            var tut = estudiante[0];
+            models.mensaje_workspace.create({
+                sesion_tutoria: chatInfo.sesion,
+                texto: chatInfo.mensaje,
+                usuario: tut.usuario,
+                hora_fecha: moment()
+            });
+
+        });
+
+    }
+
+
     sesion.forEach(function (cliente) {
         cliente.socket.emit('chat message', JSON.stringify(chatInfo));
     });
@@ -35,7 +75,7 @@ function enviarMensaje(chatInfo){
 
 
 module.exports = {
-    init: function (app_server) {
+    init: function (app_server, models) {
         var io = require('socket.io').listen(app_server);
 
         io.on('connection', function(socket) {
@@ -45,7 +85,7 @@ module.exports = {
             
             socket.on('chat message', function(msg) {
                 var chatInfo = JSON.parse(msg);
-                enviarMensaje(chatInfo);
+                enviarMensaje(chatInfo,models);
             });
 
             socket.on('inicializando', function(msg){

@@ -8,6 +8,7 @@ var app        = express();
 var _models    = require('./models');
 var _kurento   = require('./modules/kurento.js');
 var _io        = require('./modules/socket_io.js');
+var _async = require('async');
 
 //utils
 var path    = require('path');
@@ -20,16 +21,16 @@ app.use(session({
     secret: 'proyectoz'
     // resave: false,
     // saveUninitialized: true,
-    // cookie: { secure: true, httpOnly: false }
+    // cookie: { secure: true }
 }));
-app.use(express.static('./public'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //declarando motor de templates
 app.set('view engine', 'ejs');
 //ubicacion de vistas
-app.set('views','./views');
+app.set('views', __dirname + '/views');
 
 //direcciones de recursos web
 //droplet IP 162.243.125.7
@@ -38,12 +39,14 @@ var direcciones = {
     app_location : "https://localhost:8443/",
     kurento_location : "ws://localhost:8888/kurento"
 };
+var app_url = url.parse(direcciones.app_location);
 
 //cargar credenciales para https
 var credenciales = {
-    key:  fs.readFileSync('./keys/server.key'),
-    cert: fs.readFileSync('./keys/server.crt')
+    key:  fs.readFileSync('keys/server.key'),
+    cert: fs.readFileSync('keys/server.crt')
 };
+
 //crear instancia de servidor web https
 var server = https.createServer(credenciales,app);
 
@@ -59,13 +62,14 @@ var app_server = server.listen(port, function() {
         _kurento.init(app_server,direcciones);
 
         //manejo de mensajeria del chat
-        _io.init(server);
+        _io.init(server,_models);
 
         var modules = {
             kurento: _kurento,
             io:      _io,
             models:  _models,
-            express: app
+            express: app,
+        	async: _async
         };
 
         //inicializando rutas
