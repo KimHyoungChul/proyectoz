@@ -56,7 +56,7 @@ var app_server = server.listen(port, function() {
     console.log('Listening in ' + direcciones.app_location);
 
     //inicializando aplicacion luego que los modelos se 'sincronizan'
-    _models.sequelize.sync().then(function () {
+    _models.sequelize.sync({force: true}).then(function () {
 
         //inicializando mensajeria con kurento
         _kurento.init(app_server,direcciones);

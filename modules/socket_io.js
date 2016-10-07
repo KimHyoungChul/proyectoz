@@ -29,6 +29,7 @@ function ingresarCliente(sessionId, chatInfo){
 function enviarMensaje(chatInfo, models){
     var sesion = clientes[chatInfo.sesion];
 
+    console.log(chatInfo);
 
     if(chatInfo.tipo_usuario === 'tutor'){
         models.tutor.findAll({
@@ -47,7 +48,7 @@ function enviarMensaje(chatInfo, models){
 
         });
     }
-    else{
+    else {
         models.estudiante.findAll({
             where:{
                 id:chatInfo.usuario

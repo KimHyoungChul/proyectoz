@@ -313,9 +313,6 @@ module.exports = function (modules) {
                     sesiones: listaSesiones
                 });
             });
-
-
-
         });
 
     });
@@ -399,7 +396,7 @@ module.exports = function (modules) {
                 id: opciones.sesion
             }
         }).then(function (sesiones) {
-            if (sesiones.length > 0){
+            if (sesiones.length > 0) {
                 var sesion = sesiones[0];
                 if (sesion.estado !== 'futura'){
                     res.redirect(303, '/');
@@ -423,7 +420,7 @@ module.exports = function (modules) {
                     }).then(function (urls) {
                         models.mensaje_workspace.findAll({
                             where:{
-                                sesion_tutoria:opciones.sesion
+                                sesion_tutoria: opciones.sesion
                             },
                             order: 'id ASC'
                         }).then(function (mensajes) {
@@ -438,7 +435,6 @@ module.exports = function (modules) {
                                         id: mensaje.id,
                                         nombre_usuario: usuarios[0].nombre + ' ' + usuarios[0].apellido,
                                         mensaje: mensaje.texto
-
                                     };
                                     listaMensajes.push(result);
                                     callback()
@@ -531,7 +527,11 @@ module.exports = function (modules) {
     });
 
     app.get('/sign-s3', function(req, res) {
-        const s3 = new aws.S3();
+        s3 = new aws.S3();
+        s3.config.update({
+            accessKeyId: 'AKIAJBUY5XJQXVVEYW7Q',
+            secretAccessKey: '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'
+        });
         const fileName = req.query['file-name'];
         const fileType = req.query['file-type'];
         const sesion = req.query['sesion'];
@@ -553,12 +553,10 @@ module.exports = function (modules) {
                 signedRequest: data,
                 url: 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+fileName
             };
-        res.write(JSON.stringify(returnData));
-        console.log(JSON.stringify(returnData));
-        res.end();
 
-
-
+            res.write(JSON.stringify(returnData));
+            console.log(JSON.stringify(returnData));
+            res.end();
          });
     });
 

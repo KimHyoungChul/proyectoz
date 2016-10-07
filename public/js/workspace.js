@@ -11,7 +11,7 @@ $(document).ready(function () {
 		tipo_usuario: $('#tipo_usuario').val()
 	};
 
-	$('#btn').click(function(){
+	$('#btn').click(function() {
 		chatInfo.mensaje = $('#m').val();
 		socket.emit('chat message', JSON.stringify(chatInfo));
 		$('#m').val('');
