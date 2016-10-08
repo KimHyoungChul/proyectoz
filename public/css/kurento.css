@@ -34,7 +34,7 @@ video#video {
 }
 
 #mensajes {
-    max-height: 180px;
+    max-height: 700px;
 	overflow: auto;
 }
 

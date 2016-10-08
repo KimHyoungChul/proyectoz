@@ -18,7 +18,6 @@ $(document).ready(function () {
         showLeft.switchClass('hide','left_hidden',250,'swing');
         showLeft.attr("style","");
     };
-
     var esconderRight = function () {
         //esconder div
         divRight.switchClass('col s4','hide',250,'swing');
@@ -26,7 +25,6 @@ $(document).ready(function () {
         showRight.switchClass('hide','right_hidden',250,'swing');
         showRight.attr("style","");
     };
-
     var mostrarLeft = function () {
         //mostrar div
         //esconder derecho
@@ -55,7 +53,6 @@ $(document).ready(function () {
     $("#btn_show_left").click(function() {
         mostrarLeft();
     });
-
     $("#btn_show_right").click(function() {
         mostrarRight();
     });

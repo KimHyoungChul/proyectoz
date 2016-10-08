@@ -16,24 +16,83 @@
     <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
     <script src="/bower_components/kurento-utils/js/kurento-utils.js"></script>
     <script src="/js/oyente.js"></script>
+    <script src="/js/oyente_ui.js"></script>
     <title>ProyectoZ</title>
 </head>
 <body>
-    <div class="container">
+    <% include nav.ejs %>
+    <div id="body">
         <% if (todavia) { %>
         <div class="row">
             <p>Falta tiempo para iniciar la tutoria</p>
         </div>
         <%} else { %>
         <div class="row">
-            <hr />
-            <div class="col s5">
-                <div id="video-div-oyente">
+            <!-- col s5 : col s4 -->
+            <div id="video-div-oyente" class="col s5" style="background-color: #7EB3FE">
+                <div class="row">
+                    <a id="btn_salir" href="/" class="btn red darken-2">Salir de sesion de tutoria</a>
+                </div>
+                <div class="row">
                     <video id="video" autoplay></video>
                 </div>
-                <a id="btn_salir" href="/" class="btn hide">Salir de sesion de tutoria</a>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
             </div>
-            <div class="col s5 offset-s1 text-center right-side">
+            <!-- col s6 : col s4 -->
+            <div id="pizarra" tipo="pizarra_oyente" class="col s6">
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+            </div>
+            <!-- col s1 hide : col s4 text-center -->
+            <div id="div_mensajes_oyente" class="col s1 hide">
                 <br />
                 <div class="row">
                     <div class="col s9">
@@ -57,17 +116,8 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div id="pizarra" class="col s12">
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-            </div>
+        <div id="toggle_chat" class="right_hidden">
+            <a id="btn_toggle_chat" class="btn-floating btn-large waves-effect waves-light red z-depth-3"><i id="icon_btn_toggle_chat" class="material-icons">skip_previous</i></a>
         </div>
         <div id="question_modal_div" class="modal bottom-sheet">
             <div class="modal-content">
