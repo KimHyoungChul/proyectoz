@@ -96,8 +96,10 @@ module.exports = {
             });
 
             socket.on('disconnect', function () {
-                delete sesiones[sessionId];
-                delete clientes[tutoria][sessionId];
+                if(sessionId && tutoria) {
+                    delete sesiones[sessionId];
+                    delete clientes[tutoria][sessionId];
+                }
             });
         });
 

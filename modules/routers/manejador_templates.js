@@ -60,54 +60,59 @@ module.exports = function (modules) {
     });
 
     app.get('/sesion/:id/', function(req, res) {
-        console.log(req.params.id);
-        var opciones = {
-            todavia: false,
-            sesion: 0,
-            presentador: false
-        };
-        models.sesion_tutoria.find({
-            where:{
-                id: parseInt(req.params.id)
-            }
-        }).then(function (sesion) {
-            if (sesion && (sesion.estado === 'futura' || sesion.estado === 'en-proceso')) {
+        if(req.session.usuario) {
+            console.log(req.params.id);
+            var opciones = {
+                todavia: false,
+                sesion: 0,
+                presentador: false
+            };
+            models.sesion_tutoria.find({
+                where: {
+                    id: parseInt(req.params.id)
+                }
+            }).then(function (sesion) {
+                if (sesion && (sesion.estado === 'futura' || sesion.estado === 'en-proceso')) {
 
-                var usuario = req.session.usuario;
+                    var usuario = req.session.usuario;
 
-                if (sesion.fecha <= new Date()) {
-                    opciones.sesion = sesion.id;
-                    opciones.nombre = req.session.usuario.nombre;
-                    opciones.email = req.session.usuario.email;
+                    if (sesion.fecha <= new Date()) {
+                        opciones.sesion = sesion.id;
+                        opciones.nombre = req.session.usuario.nombre;
+                        opciones.email = req.session.usuario.email;
+                    }
+                    else {
+                        opciones.todavia = true;
+                    }
+
+                    if (usuario.tipo === 'tutor') {
+                        opciones.presentador = true;
+                        //preparar evaluaciones
+                        sesion.getEvaluaciones().then(function (evaluacionesEncontradas) {
+                            opciones.evaluaciones = evaluacionesEncontradas;
+                            if (sesion.estado === 'futura') {
+                                sesion.estado = 'en-proceso';
+                                sesion.save().then(function (sesionActualizada) {
+                                    res.render('sesion_presentador', opciones);
+                                });
+                            }
+                            else {
+                                res.render('sesion_presentador', opciones);
+                            }
+                        });
+                    }
+                    else {
+                        res.render('sesion_oyente', opciones);
+                    }
                 }
                 else {
-                    opciones.todavia = true;
+                    res.redirect(303, '/');
                 }
-
-                if(usuario.tipo === 'tutor') {
-                    opciones.presentador = true;
-                    //preparar evaluaciones
-                    sesion.getEvaluaciones().then(function(evaluacionesEncontradas) {
-                        opciones.evaluaciones = evaluacionesEncontradas;
-                        if(sesion.estado === 'futura') {
-                            sesion.estado = 'en-proceso';
-                            sesion.save().then(function(sesionActualizada) {
-                                res.render('sesion_presentador',opciones);
-                            });
-                        }
-                        else {
-                            res.render('sesion_presentador',opciones);
-                        }
-                    });
-                }
-                else {
-                    res.render('sesion_oyente',opciones);
-                }
-            }
-            else {
-                res.redirect(303,'/');
-            }
-        });
+            });
+        }
+        else {
+            res.redirect(303,'/');
+        }
     });
 
     app.get('/sesion/cerrar/:ses_id/',function(req,res) {

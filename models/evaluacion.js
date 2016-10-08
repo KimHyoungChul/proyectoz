@@ -20,6 +20,7 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function (db) {
                 db.evaluacion.belongsTo(db.sesion_tutoria, {as: 'Sesion_tutoria', foreignKey: 'sesion_tutoria'});
+                db.evaluacion.hasMany(db.opcion_evaluacion, {as: 'Opciones', foreignKey: 'evaluacion'})
             }
         }
     });

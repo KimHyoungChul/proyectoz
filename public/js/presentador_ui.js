@@ -59,7 +59,7 @@ $(document).ready(function () {
 
     $("#video-div-presentador").mouseover(function(event) {
         $(this).animate({
-            opacity: 0.2
+            opacity: 0.3
         },150);
     });
     $("#video-div-presentador").mouseout(function(event) {

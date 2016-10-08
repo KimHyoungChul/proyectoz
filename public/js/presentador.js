@@ -17,7 +17,7 @@ $(document).ready(function () {
 		//kurento stuff
 		video = $("#video").get(0);
 
-		// presenter();
+		presenter();
 		$("#btn-finalizar").click(stop);
 
 		//chat events
@@ -85,11 +85,6 @@ $(window).on('beforeunload', function() {
 	ws.close();
 });
 
-ws.onopen = function(e) {
-    console.log('Conexion presenter abierta.');
-    presenter();
-};
-
 ws.onmessage = function (message) {
 	var parsedMessage = JSON.parse(message.data);
 
@@ -120,7 +115,7 @@ function presenter() {
 	if (!webRtcPeer) {
 
 		var options = {
-			local: video,
+			localVideo: video,
 			onicecandidate : onIceCandidate
 		};
 
