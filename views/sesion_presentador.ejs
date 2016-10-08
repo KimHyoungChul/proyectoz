@@ -16,21 +16,82 @@
     <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
     <script src="/bower_components/kurento-utils/js/kurento-utils.js"></script>
     <script src="/js/presentador.js"></script>
+    <script src="/js/sesion_ui.js"></script>
     <title>ProyectoZ</title>
 </head>
 <body>
+    <% include nav.ejs %>
     <% if (todavia) { %>
     <div id="body" class="row">
         <p>Falta tiempo para iniciar la tutoria</p>
     </div>
     <% } else { %>
-    <div id="body" class="container">
+    <div id="body">
         <div class="row">
-                <hr />
-            <div id="video-div-presentador" class="col s4">
-                <video id="video" autoplay></video>
+            <!-- col s4 : hide -->
+            <div id="div_preguntas" class="col s4">
+                <div class="row">
+                    <div id="video-div-presentador" style="background-color: #0b3e6f">
+                        <video id="video" autoplay></video>
+                    </div>
+                </div>
+                <div class="row">
+                    <a id="cerrar_tutoria_btn" class="btn red darken-4" href="/sesion/cerrar/<%= sesion %>/">
+                        Terminar tutoria
+                    </a>
+                </div>
+                <div class="row">
+                    <div id="presentador_preguntas">
+                        <ul class="collapsible" data-collapsible="accordion">
+                            <% evaluaciones.forEach(function(eval) { %>
+                            <li>
+                                <div class="collapsible-header truncate">
+                                    <i class="material-icons left">question_answer</i><%= eval.encabezado %>
+                                </div>
+                                <div class="collapsible-body">
+                                    <p><%= eval.encabezado %></p>
+                                    <p>
+                                        <a href="#"
+                                           class="btn waves-effect waves-light btn_lanzar_pregunta"
+                                           sesion="<%= sesion %>"
+                                           evaluacion="<%= eval.id %>">
+                                            Lanzar Pregunta<i class="material-icons right">send</i>
+                                        </a>
+                                    </p>
+                                </div>
+                            </li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div id="div_mensajes" class="col s8">
+            <!-- col s7 -->
+            <div id="pizarra" class="col s7">
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+            </div>
+            <!-- col s4 : hide -->
+            <div id="div_mensajes" class="hide">
                 <div class="col s12 text-center">
                     <div class="col s9">
                         <input id="m">
@@ -51,57 +112,17 @@
                 <input id="email" type="hidden" value=<%= email %>>
             </div>
         </div>
-        <div class="row">
-            <div class="col s5">
-                <div class="row">
-                    <a id="cerrar_tutoria_btn" class="btn red darken-4" href="/sesion/cerrar/<%= sesion %>/">
-                        Termiar tutoria
-                    </a>
-                </div>
-                <div class="row">
-                    <div id="presentador_preguntas">
-                        <div>
-                            <ul class="collapsible" data-collapsible="accordion">
-                                <% evaluaciones.forEach(function(eval) { %>
-                                <li>
-                                    <div class="collapsible-header truncate">
-                                        <i class="material-icons left">question_answer</i><%= eval.encabezado %>
-                                    </div>
-                                    <div class="collapsible-body">
-                                        <p><%= eval.encabezado %></p>
-                                        <p>
-                                            <a href="#"
-                                               class="btn waves-effect waves-light btn_lanzar_pregunta"
-                                               sesion="<%= sesion %>"
-                                               evaluacion="<%= eval.id %>">
-                                                Lanzar Pregunta<i class="material-icons right">send</i>
-                                            </a>
-                                        </p>
-                                    </div>
-                                </li>
-                                <% }); %>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="pizarra" class="col s6 offset-s1">
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-            </div>
-        </div>
+    </div>
+    <!-- boton para mostrar/esconder chat/preguntas -->
+    <div id="show_left" class="hide">
+        <a id="btn_show_left" class="btn-floating btn-large waves-effect waves-light red "><i class="material-icons">skip_next</i></a>
+    </div>
+    <div id="show_right" class="right_hidden">
+        <a id="btn_show_right" class="btn-floating btn-large waves-effect waves-light red "><i class="material-icons">skip_previous</i></a>
     </div>
     <div id="modal_no_webcam" class="modal bottom-sheet">
         <div class="modal-content">
             <h4>No se ha detectado una camara web</h4>
-            <p>No puedes ejercer el rol de tutor sin una camara web.</p>
             <p>No puedes ejercer el rol de tutor sin una camara web.</p>
             <p><a href="/" class="modal-action modal-close waves-effect waves-green btn-large red darken-4 white-text">Salir de este lugar</a></p>
         </div>

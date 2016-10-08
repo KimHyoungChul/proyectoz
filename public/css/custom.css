@@ -12,3 +12,7 @@ textarea {
     display: block;
     margin: auto auto auto auto;
 }
+
+#body {
+    margin: 1%;
+}

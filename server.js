@@ -18,7 +18,7 @@ var fs      = require('fs');
 //inicializando express app
 // app.use(cookieParser('salabantruska'));
 app.use(session({
-    secret: 'proyectoz'
+    secret: 'proyectoz',
     // resave: false,
     // saveUninitialized: true,
     // cookie: { secure: true }
@@ -56,7 +56,7 @@ var app_server = server.listen(port, function() {
     console.log('Listening in ' + direcciones.app_location);
 
     //inicializando aplicacion luego que los modelos se 'sincronizan'
-    _models.sequelize.sync({force: true}).then(function () {
+    _models.sequelize.sync().then(function () {
 
         //inicializando mensajeria con kurento
         _kurento.init(app_server,direcciones);

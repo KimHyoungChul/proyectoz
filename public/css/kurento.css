@@ -49,3 +49,41 @@ video#video {
     background-color: forestgreen;
 }
 
+.scroll_respuestas {
+	max-height: 600px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.center-align {
+	display: block;
+	margin: auto auto auto auto;
+}
+
+#body {
+	margin: 1%;
+}
+
+#video-div-presentador {
+	position: absolute;
+	left: 1%;
+	bottom: 1%;
+}
+
+.left_hidden {
+	position: absolute;
+	left: 1%;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+.right_hidden {
+	position: absolute;
+	right: 1%;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
