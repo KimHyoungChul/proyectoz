@@ -16,6 +16,11 @@ $(document).ready(function () {
 		email: $('#email').val()
 	};
 
+	//pizarra
+	var editor = ace.edit("editor");
+	editor.setTheme("ace/theme/dawn");
+	editor.setReadOnly(true);
+
 	$('#btn').click(function(){
 		chatInfo.mensaje = $('#m').val();
 		socket.emit('chat message', JSON.stringify(chatInfo));
@@ -33,6 +38,19 @@ $(document).ready(function () {
 		var element = document.getElementById("mensajes");
 		element.scrollTop = element.scrollHeight;
 		console.log(msg);
+	});
+
+	//pizarra stuff
+	socket.on('pizarra_edit', function(msg){
+		var recibido = JSON.parse(msg);
+		editor.setValue(recibido.mensaje);
+		editor.getSession().setMode("ace/mode/"+recibido.modo);
+		editor.find("{Bruce Springsteen}");
+	});
+
+	socket.on('pizarra_mode', function(msg){
+		var recibido = JSON.parse(msg);
+		editor.getSession().setMode("ace/mode/"+recibido.mensaje);
 	});
 
     //node app stuff
