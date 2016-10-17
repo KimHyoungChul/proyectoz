@@ -5,6 +5,7 @@
 
 
 $(document).ready(function () {
+    var located_in_bottom = true;
 
     var divLeft  = $("#div_preguntas");
     var divRight = $("#div_mensajes");
@@ -57,14 +58,29 @@ $(document).ready(function () {
         mostrarRight();
     });
 
-    $("#video-div-presentador").mouseover(function(event) {
+    $("#video-div-presentador").hover(function(event) {
+        //handler in
         $(this).animate({
             opacity: 0.3
-        },150);
-    });
-    $("#video-div-presentador").mouseout(function(event) {
+        }, 150);
+
+    },function(event) {
+        //handler out
         $(this).animate({
             opacity: 1
         },150);
+    });
+
+    $("#presentador_preguntas").hover(function(event){
+        //handler in
+        $("#video-div-presentador").animate({
+            left: "35%"
+        })
+
+    },function(event){
+        //handler out
+        $("#video-div-presentador").animate({
+            left: "1%",
+        })
     });
 });

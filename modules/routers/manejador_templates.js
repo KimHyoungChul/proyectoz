@@ -191,6 +191,38 @@ module.exports = function (modules) {
     });
 
     //TODO manejar evento de lanzamiento de pregunta individual
+    app.get('/sesion/:ses_id/lanzar_evaluacion/:ev_id/viewer/:viewer_id', function(req, res) {
+        var sesion_id = parseInt(req.params.ses_id);
+        var eval_id   = parseInt(req.params.ev_id);
+        var viewer_id = parseInt(req.params.viewer_id);
+
+        //buscar evaluacion
+        models.evaluacion.find({
+            where: {
+                id: eval_id
+            }
+        }).then(function(evaluacion) {
+            evaluacion.getOpciones().then(function(opcionesEvaluacion) {
+                //enviar mensaje a websocket de oyente seleccionado
+                var viewer = kurento.data.presenters[sesion_id].viewers[viewer_id];
+                if(viewer && viewer.ws && viewer.ws.readyState === 1) {
+                    viewer.ws.send(JSON.stringify({
+                        id: 'incomingQuestion',
+                        data: {
+                            evaluacion: JSON.stringify(evaluacion),
+                            opciones: JSON.stringify(opcionesEvaluacion)
+                        },
+                        mensaje: 'lanzamiento de evaluacion fue exitoso'
+                    }));
+                }
+                //enviar respuesta
+                res.send(JSON.stringify({
+                    status: 'ok',
+                    message: 'eval: ' + eval_id + ", sesion: " + sesion_id + ", viewer: " + viewer_id
+                }));
+            });
+        });
+    });
 
     app.get('/sesion/ver_evaluaciones/:ses_id/', function(req, res) {
         var sesion_id = parseInt(req.params.ses_id);

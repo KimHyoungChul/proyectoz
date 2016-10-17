@@ -24,6 +24,7 @@ $(document).ready(function () {
 
 		return false;
 	});
+
 	//chat stuff
 	var socket = io();
 	
@@ -124,6 +125,8 @@ ws.onmessage = function (message) {
 
 //node app stuff
 function mostrarEvaluacion(raw_evaluacion,raw_opciones) {
+	console.debug("wei pero que paso");
+
     var evaluacion = JSON.parse(raw_evaluacion);
     var opciones = JSON.parse(raw_opciones);
     //cambiar texto de modal

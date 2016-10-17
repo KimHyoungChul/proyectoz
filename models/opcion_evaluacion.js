@@ -14,7 +14,8 @@ module.exports = function(sequelize, DataTypes) {
         freezeTableName: true,
         classMethods: {
             associate: function (db) {
-                db.opcion_evaluacion.belongsToMany(db.estudiante, {as: 'Estudiantes', through: 'respuesta_evaluacion', foreignKey: 'respuesta'});
+                // db.opcion_evaluacion.belongsToMany(db.estudiante, {as: 'Estudiantes', through: 'respuesta_evaluacion', foreignKey: 'respuesta'});
+                db.opcion_evaluacion.belongsTo(db.evaluacion, {as: 'Evaluacion', foreignKey: 'evaluacion'})
             }
         }
     });

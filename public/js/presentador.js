@@ -35,7 +35,7 @@ $(document).ready(function () {
 			email: $('#email').val()
 		};
 
-		$('#btn').click(function(){
+		$('#btn').click(function () {
 			chatInfo.mensaje = $('#m').val();
 			socket.emit('chat message', JSON.stringify(chatInfo));
 			$('#m').val('');
@@ -47,7 +47,7 @@ $(document).ready(function () {
 
 		console.log($('#nombre').val());
 		socket.emit('inicializando', JSON.stringify(chatInfo));
-		socket.on('chat message', function(msg){
+		socket.on('chat message', function (msg) {
 			var recibido = JSON.parse(msg);
 			$('#messages').append($('<li>').text(recibido.nombre + ' : ' + recibido.mensaje));
 			var element = document.getElementById("mensajes");
@@ -57,18 +57,18 @@ $(document).ready(function () {
 
 		//view events
 		//lanzar pregunta en grupo
-		$(".btn_lanzar_pregunta_grupo").click(function(e) {
+		$(".btn_lanzar_pregunta_grupo").click(function (e) {
 			e.preventDefault();
 
 			var sesion_id = $(this).attr("sesion");
 			var evaluacion_id = $(this).attr("evaluacion");
-			var url = "/sesion/"+sesion_id+"/lanzar_evaluacion/"+evaluacion_id+"/";
+			var url = "/sesion/" + sesion_id + "/lanzar_evaluacion/" + evaluacion_id + "/";
 
-			$.get(url,function(message) {
+			$.get(url, function (message) {
 				var parsedMessage = JSON.parse(message);
 
-				if(parsedMessage.status === 'ok') {
-					alert("Pregunta Enviada");
+				if (parsedMessage.status === 'ok') {
+					// alert(parsedMessage.menasje);
 				}
 				else {
 					alert("Inconvenientes con enviar pregunta");
@@ -76,14 +76,14 @@ $(document).ready(function () {
 			});
 		});
 		//lanzar pregunta individual
-		$(".btn_lanzar_pregunta_individual").click(function(e) {
+		$(".btn_abrir_grupo").click(function (e) {
 			e.preventDefault();
 
-			var target_div    = $(this).parent().parent().find(".coleccion_viewers");
-			var sesion_id     = $(this).attr("sesion");
+			var target_div = $(this).parent().parent().find(".coleccion_viewers");
+			var sesion_id = $(this).attr("sesion");
 			var evaluacion_id = $(this).attr("evaluacion");
 
-			crearListaEstudiantes(target_div,sesion_id,evaluacion_id);
+			crearListaEstudiantes(target_div, sesion_id, evaluacion_id);
 		});
 		//abrir pregunta para enviar
 		$(".collapsible-header").click(function() {
@@ -167,9 +167,38 @@ function crearListaEstudiantes(divTarget,sesion,eval) {
 		var url = "/sesion/"+sesion+"/lanzar_evaluacion/"+eval+"/viewer/"+viewer.sessionId;
 		var $linkEstudiante = $("<a>", {
 			href: url,
-			class: "collection-item pregunta_individual"
+			class: "collection-item pregunta_individual btn_lanzar_pregunta_individual"
 		}).html(viewer.nombre + ": " + viewer.email);
 		divTarget.append($linkEstudiante);
+	});
+
+	/*
+	* Lanzar evaluacion individual
+	* se puso aqui porque los links se crean
+	* y borran mediante jquery y hay que actualizar event listeners
+	*/
+	$("a.btn_lanzar_pregunta_individual").click(function(e) {
+		e.preventDefault();
+
+
+		var url = $(this).attr("href");
+
+		if(url) {
+
+			$.get(url, function (message) {
+				var parsedMessage = JSON.parse(message);
+
+				if (parsedMessage.status === 'ok') {
+					// alert(parsedMessage.mensaje);
+				}
+				else {
+					alert("Inconvenientes con enviar pregunta");
+				}
+			});
+		}
+		else {
+			console.error("No se pudo enviar pregunta individual");
+		}
 	});
 }
 
