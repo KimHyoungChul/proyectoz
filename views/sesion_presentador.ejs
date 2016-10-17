@@ -6,6 +6,7 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="/bower_components/materialize/dist/css/materialize.min.css" rel="stylesheet">
+    <link href="/bower_components/components-font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/kurento.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/custom.css" rel="stylesheet">
 
@@ -49,14 +50,31 @@
                                     <i class="material-icons left">question_answer</i><%= eval.encabezado %>
                                 </div>
                                 <div class="collapsible-body">
-                                    <p><%= eval.encabezado %></p>
                                     <p>
+                                        <%= eval.encabezado %>
+                                        <br/>
+                                        <br/>
                                         <a href="#"
-                                           class="btn waves-effect waves-light btn_lanzar_pregunta"
+                                           data-activates='dropdown_seleccion_estudiante'
+                                           class="btn btn-floating btn-large waves-effect waves-light btn-sm btn_lanzar_pregunta_grupo"
                                            sesion="<%= sesion %>"
                                            evaluacion="<%= eval.id %>">
-                                            Lanzar Pregunta<i class="material-icons right">send</i>
+                                            <i class="fa fa-users"></i>
                                         </a>
+                                        &nbsp;
+                                        &nbsp;
+                                        <a href="#"
+                                           data-activates='dropdown_seleccion_estudiante'
+                                           class="btn btn-floating btn-large waves-effect waves-light btn-sm blue darken-3 btn_lanzar_pregunta_individual"
+                                           sesion="<%= sesion %>"
+                                           evaluacion="<%= eval.id %>">
+                                            <i class="fa fa-user"></i>
+                                        </a>
+                                        <br/>
+                                        <!-- colleccion de estudiantes para lanzar preguntas -->
+                                        <div class="collection coleccion_viewers">
+                                            <!--<a href="#!" class="collection-item">Alvin</a>-->
+                                        </div>
                                     </p>
                                 </div>
                             </li>
@@ -120,6 +138,7 @@
     <div id="show_right" class="right_hidden">
         <a id="btn_show_right" class="btn-floating btn-large waves-effect waves-light red z-depth-3"><i class="material-icons">skip_previous</i></a>
     </div>
+    <!-- modal para mostrar no webcam -->
     <div id="modal_no_webcam" class="modal bottom-sheet">
         <div class="modal-content">
             <h4>No se ha detectado una camara web</h4>

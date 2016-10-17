@@ -190,6 +190,8 @@ module.exports = function (modules) {
         });
     });
 
+    //TODO manejar evento de lanzamiento de pregunta individual
+
     app.get('/sesion/ver_evaluaciones/:ses_id/', function(req, res) {
         var sesion_id = parseInt(req.params.ses_id);
 
@@ -534,8 +536,8 @@ module.exports = function (modules) {
     app.get('/sign-s3', function(req, res) {
         s3 = new aws.S3();
         s3.config.update({
-            accessKeyId: 'AKIAJBUY5XJQXVVEYW7Q',
-            secretAccessKey: '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'
+            accessKeyId: 'AKIAJUZEUCKWZSP5HQYQ',
+            secretAccessKey: '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'
         });
         const fileName = req.query['file-name'];
         const fileType = req.query['file-type'];

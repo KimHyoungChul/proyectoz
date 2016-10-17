@@ -2,6 +2,14 @@ var ws = new WebSocket('wss://' + location.host + '/ws');
 var video;
 var webRtcPeer;
 var sessionFinished = false;
+var viewerData = {};
+
+/* TODO realizar evento de envio de pregunta individual
+*  TODO mover video cuando esta en el medio
+*  TODO mostrar feedback de respuestas a pregunta
+*
+* */
+
 
 $(document).ready(function () {
 
@@ -48,12 +56,14 @@ $(document).ready(function () {
 		});
 
 		//view events
-		$(".btn_lanzar_pregunta").click(function(e) {
+		//lanzar pregunta en grupo
+		$(".btn_lanzar_pregunta_grupo").click(function(e) {
 			e.preventDefault();
 
 			var sesion_id = $(this).attr("sesion");
 			var evaluacion_id = $(this).attr("evaluacion");
 			var url = "/sesion/"+sesion_id+"/lanzar_evaluacion/"+evaluacion_id+"/";
+
 			$.get(url,function(message) {
 				var parsedMessage = JSON.parse(message);
 
@@ -64,6 +74,20 @@ $(document).ready(function () {
 					alert("Inconvenientes con enviar pregunta");
 				}
 			});
+		});
+		//lanzar pregunta individual
+		$(".btn_lanzar_pregunta_individual").click(function(e) {
+			e.preventDefault();
+
+			var target_div    = $(this).parent().parent().find(".coleccion_viewers");
+			var sesion_id     = $(this).attr("sesion");
+			var evaluacion_id = $(this).attr("evaluacion");
+
+			crearListaEstudiantes(target_div,sesion_id,evaluacion_id);
+		});
+		//abrir pregunta para enviar
+		$(".collapsible-header").click(function() {
+			$(".coleccion_viewers").html("");
 		});
 
 		$("#cerrar_tutoria_btn").click(function(e) {
@@ -103,13 +127,51 @@ ws.onmessage = function (message) {
 		case 'iceCandidate':
 			webRtcPeer.addIceCandidate(parsedMessage.candidate);
 			break;
-        case 'sessionFinished':
-            sessionFinished = true;
-            break;
+		case 'newViewer':
+			agregarViewer(parsedMessage);
+			break;
+		case 'viewerLeft':
+			removerViewer(parsedMessage);
+			break;
+		case 'sessionFinished':
+			sessionFinished = true;
+			break;
 		default:
 			console.error('Unrecognized message', parsedMessage);
 	}
 };
+
+function removerViewer(viewer) {
+	if(viewerData[viewer.email]) {
+		delete viewer[viewer.email];
+	}
+
+	console.log(viewerData);
+}
+
+function agregarViewer(viewer) {
+	viewerData[viewer.email] = {};
+	viewerData[viewer.email].enabled   = true;
+	viewerData[viewer.email].sessionId = viewer.sessionId;
+	viewerData[viewer.email].nombre    = viewer.nombre;
+	viewerData[viewer.email].email     = viewer.email;
+
+	console.log(viewerData);
+}
+
+function crearListaEstudiantes(divTarget,sesion,eval) {
+	divTarget.html("");
+	Object.keys(viewerData).forEach(function(key,index) {
+		var viewer = viewerData[key];
+
+		var url = "/sesion/"+sesion+"/lanzar_evaluacion/"+eval+"/viewer/"+viewer.sessionId;
+		var $linkEstudiante = $("<a>", {
+			href: url,
+			class: "collection-item pregunta_individual"
+		}).html(viewer.nombre + ": " + viewer.email);
+		divTarget.append($linkEstudiante);
+	});
+}
 
 function presenter() {
 	if (!webRtcPeer) {

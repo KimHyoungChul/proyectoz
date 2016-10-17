@@ -2,6 +2,7 @@ var ws = new WebSocket('wss://' + location.host + '/ws');
 var video;
 var webRtcPeer;
 var sessionFinished = false;
+var chatInfo = {};
 
 $(document).ready(function () {
 	//kurento stuff
@@ -10,13 +11,13 @@ $(document).ready(function () {
 	$("#btn-finalizar").click(stop);
 
 	//chat events
-	var chatInfo = {
+	chatInfo = {
 		sesion: $('#sesion-id').val(),
 		nombre: $('#nombre').val(),
 		email: $('#email').val()
 	};
 
-	$('#btn').click(function(){
+	$('#btn').click(function() {
 		chatInfo.mensaje = $('#m').val();
 		socket.emit('chat message', JSON.stringify(chatInfo));
 		$('#m').val('');
@@ -195,7 +196,9 @@ function viewer() {
 function stop() {
 	if (webRtcPeer) {
 		var message = {
-			id : 'stop'
+			id : 'stop',
+			isViewer: true,
+			emailViewer: chatInfo.email
 		};
 
 		sendMessage(message);
@@ -211,7 +214,9 @@ function onOfferViewer(error, offerSdp) {
 	var message = {
 		id : 'viewer',
 		sdpOffer : offerSdp,
-		presenter_id :  presenter_id
+		presenter_id :  presenter_id,
+		nombreViewer: chatInfo.nombre,
+		emailViewer: chatInfo.email
 	};
 
 	sendMessage(message);

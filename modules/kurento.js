@@ -55,8 +55,10 @@ var initializer = function(app_server,direcciones) {
                                 message : error
                             }));
                         }
+
                         esTutor = true;
                         tutoria = message.sesion_id;
+
                         if(ws.readyState === 1){
                             ws.send(JSON.stringify({
                                 id : 'presenterResponse',
@@ -70,7 +72,12 @@ var initializer = function(app_server,direcciones) {
 
                 case 'viewer':
                     var presenter_id = message.presenter_id;
-                    startViewer(sessionId, presenter_id, ws, message.sdpOffer, function(error, sdpAnswer) {
+                    var datosViewer = {
+                        nombre: message.nombreViewer,
+                        email: message.emailViewer
+                    };
+
+                    startViewer(datosViewer, sessionId, presenter_id, ws, message.sdpOffer, function(error, sdpAnswer) {
                         if (error) {
                             return ws.send(JSON.stringify({
                                 id : 'viewerResponse',
@@ -82,12 +89,23 @@ var initializer = function(app_server,direcciones) {
                         esTutor = false;
                         tutoria = presenter_id;
 
+                        //notificar a viewer que fue aceptado
                         ws.send(JSON.stringify({
                             id : 'viewerResponse',
                             response : 'accepted',
                             sdpAnswer : sdpAnswer
                         }));
+
+                        //notificar a presenter correspondiente que llego un viewer
+                        data.presenters[presenter_id].ws.send(JSON.stringify({
+                            id: 'newViewer',
+                            sessionId: sessionId,
+                            nombre: datosViewer.nombre,
+                            email: datosViewer.email
+                        }));
                     });
+
+                    console.log("llego: " + message.nombreViewer + ": " + message.emailViewer);
                     break;
 
                 case 'stop':
@@ -141,7 +159,8 @@ var initializer = function(app_server,direcciones) {
             id : sessionId,
             pipeline : null,
             webRtcEndpoint : null,
-            viewers: viewers
+            viewers: viewers,
+            ws: ws
         };
         
         getKurentoClient(function(error, kurentoClient) {
@@ -225,6 +244,7 @@ var initializer = function(app_server,direcciones) {
                                 }));
                             }
                         });
+
                         console.log('Presentador creado sesion: '+ presenterId);
                     });
                 });
@@ -232,27 +252,29 @@ var initializer = function(app_server,direcciones) {
         });
     }
 
-    function startViewer(sessionId, presenter_id, ws, sdpOffer, callback) {
+    function startViewer(datosViewer, sessionId, presenter_id, ws, sdpOffer, callback) {
         clearCandidatesQueue(sessionId);
         
         if (data.presenters === {}) {
             stop(sessionId);
         }
-        console.log('Presentador con sesion: '+ presenter_id);
+        console.log('Viewer con sesion: '+ presenter_id);
 
         var presenter = data.presenters[presenter_id];
 
-        if(!presenter || !presenter.pipeline){
+        if(!presenter || !presenter.pipeline) {
             var viewer = {
+                "id" : sessionId,
                 "webRtcEndpoint" : null,
                 "ws" : ws,
-                "pendiente" : true
-                
+                "pendiente" : true,
+                "nombre" : datosViewer.nombre,
+                "email" : datosViewer.email
             };
-            if(presenter){
+            if(presenter) {
                 data.presenters[presenter_id].viewers[sessionId] = viewer;
             }
-            else{
+            else {
                 data.presenters[presenter_id] = {
                     viewers: [viewer]
                 }
@@ -270,7 +292,9 @@ var initializer = function(app_server,direcciones) {
 
             var viewer = {
                 "webRtcEndpoint" : webRtcEndpoint,
-                "ws" : ws
+                "ws" : ws,
+                "nombre" : datosViewer.nombre,
+                "email" : datosViewer.email
             };
 
             data.presenters[presenter_id].viewers[sessionId] = viewer;
@@ -352,22 +376,37 @@ var initializer = function(app_server,direcciones) {
 
             data.presenters[tutoria].webRtcEndpoint.release();
 
-            if(data.presenters[tutoria].pipeline){
+            if(data.presenters[tutoria].pipeline) {
                 data.presenters[tutoria].pipeline.release();
             }
 
             data.presenters[tutoria].id = null;
             data.presenters[tutoria].pipeline = null;
 
-        } else if (data.viewers[sessionId]) {
-            data.viewers[sessionId].webRtcEndpoint.release();
-
-            delete data.viewers[sessionId];
-
+        }
+        else if (data.viewers[sessionId]) {
+            //borrar de arreglo de presentaciones
             if(data.presenters[tutoria]) {
                 console.log('Borrando viewer del presentador: ' + data.presenters[tutoria]);
+
+                var webSocketPresentador = data.presenters[tutoria].ws;
+                if(webSocketPresentador.readyState === 1) {
+                    //notificar a presentador que se fue un viewer
+                    webSocketPresentador.send(JSON.stringify({
+                        id: "viewerLeft",
+                        viewerId: sessionId,
+                        nombre: data.viewers[sessionId].nombre,
+                        email: data.viewers[sessionId].email
+                    }));
+                }
+
                 delete data.presenters[tutoria].viewers[sessionId];
             }
+
+            data.viewers[sessionId].webRtcEndpoint.release();
+
+            //borrar de arreglo global de viewers
+            delete data.viewers[sessionId];
         }
 
         clearCandidatesQueue(sessionId);
