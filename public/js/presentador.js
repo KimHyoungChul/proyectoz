@@ -3,9 +3,10 @@ var video;
 var webRtcPeer;
 var sessionFinished = false;
 var viewerData = {};
+var last_cant_contestadas;
+var last_cantidad_enviadas;
 
-/* TODO realizar evento de envio de pregunta individual
-*  TODO mover video cuando esta en el medio
+/*
 *  TODO mostrar feedback de respuestas a pregunta
 *
 * */
@@ -68,7 +69,10 @@ $(document).ready(function () {
 				var parsedMessage = JSON.parse(message);
 
 				if (parsedMessage.status === 'ok') {
-					// alert(parsedMessage.menasje);
+					Materialize.toast('Evaluacion enviada!', 4000);
+
+					last_cant_contestadas = 0;
+					last_cantidad_enviadas = parseInt(parsedMessage.cantidad_enviadas);
 				}
 				else {
 					alert("Inconvenientes con enviar pregunta");
@@ -136,6 +140,9 @@ ws.onmessage = function (message) {
 		case 'sessionFinished':
 			sessionFinished = true;
 			break;
+		case 'evaluacionRespondida':
+			Materialize.toast(parsedMessage.usuario + ' ya respondio!', 4000);
+			break;
 		default:
 			console.error('Unrecognized message', parsedMessage);
 	}
@@ -180,7 +187,6 @@ function crearListaEstudiantes(divTarget,sesion,eval) {
 	$("a.btn_lanzar_pregunta_individual").click(function(e) {
 		e.preventDefault();
 
-
 		var url = $(this).attr("href");
 
 		if(url) {
@@ -189,7 +195,10 @@ function crearListaEstudiantes(divTarget,sesion,eval) {
 				var parsedMessage = JSON.parse(message);
 
 				if (parsedMessage.status === 'ok') {
-					// alert(parsedMessage.mensaje);
+					Materialize.toast('Evaluacion enviada!', 4000);
+
+					last_cant_contestadas = 0;
+					last_cantidad_enviadas = parseInt(parsedMessage.cantidad_enviadas);
 				}
 				else {
 					alert("Inconvenientes con enviar pregunta");

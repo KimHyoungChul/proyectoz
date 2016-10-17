@@ -60,27 +60,27 @@ $(document).ready(function () {
 
     $("#video-div-presentador").hover(function(event) {
         //handler in
-        $(this).animate({
+        $(this).stop().animate({
             opacity: 0.3
         }, 150);
 
     },function(event) {
         //handler out
-        $(this).animate({
+        $(this).stop().animate({
             opacity: 1
         },150);
     });
 
-    $("#presentador_preguntas").hover(function(event){
+    $("#presentador_preguntas").hover(function(event) {
         //handler in
-        $("#video-div-presentador").animate({
+        $("#video-div-presentador").stop().animate({
             left: "35%"
         })
 
-    },function(event){
+    },function(event) {
         //handler out
-        $("#video-div-presentador").animate({
-            left: "1%",
+        $("#video-div-presentador").stop().animate({
+            left: "1%"
         })
     });
 });

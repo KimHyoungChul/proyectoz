@@ -6,6 +6,8 @@ var moment  = require('moment');
 module.exports = function (modules) {
     var app = modules.express;
     var models = modules.models;
+    var kurento = modules.kurento;
+    var kurento = modules.kurento;
     var Sequelize = modules.models.Sequelize;
 
     app.post('/solicitud/crear/', function(req, res) {
@@ -207,6 +209,15 @@ module.exports = function (modules) {
                     estudiante: id_estudiante,
                     respuesta: respuesta_elegida
                 }).then(function (respuestaCreada) {
+                    //notificar a presenter que alquien ya le respondio
+                    var sesion = req.body.sesion;
+                    if(kurento.data.presenters[sesion] && kurento.data.presenters[sesion].ws) {
+                        kurento.data.presenters[sesion].ws.send(JSON.stringify({
+                            id: 'evaluacionRespondida',
+                            usuario: req.session.usuario.email
+                        }));
+                    }
+
                     //enviar respuesta de submission
                     res.send(JSON.stringify({status: 'success', mensaje: 'todo nitido'}));
                 });

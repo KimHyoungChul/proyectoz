@@ -171,6 +171,7 @@ module.exports = function (modules) {
         }).then(function(evaluacion) {
             //buscar opciones evaluacion
             evaluacion.getOpciones().then(function(opcionesEvaluacion) {
+                var cant_eval_enviadas = 0;
                 //enviar mensaje a cada websocket de oyente conectado a sesion_id
                 kurento.data.presenters[sesion_id].viewers.forEach(function (viewer) {
                     if(viewer.ws.readyState === 1) {
@@ -182,15 +183,20 @@ module.exports = function (modules) {
                             },
                             mensaje: 'lanzamiento de evaluacion fue exitoso'
                         }));
+
+                        cant_eval_enviadas++;
                     }
                 });
                 //enviar respuesta
-                res.send(JSON.stringify({status: 'ok',message:'pretty neat'}));
+                res.send(JSON.stringify({
+                    status: 'ok',
+                    message:'pretty neat',
+                    cantidad_enviadas: cant_eval_enviadas
+                }));
             });
         });
     });
 
-    //TODO manejar evento de lanzamiento de pregunta individual
     app.get('/sesion/:ses_id/lanzar_evaluacion/:ev_id/viewer/:viewer_id', function(req, res) {
         var sesion_id = parseInt(req.params.ses_id);
         var eval_id   = parseInt(req.params.ev_id);
@@ -203,6 +209,7 @@ module.exports = function (modules) {
             }
         }).then(function(evaluacion) {
             evaluacion.getOpciones().then(function(opcionesEvaluacion) {
+                var cant_eval_enviadas = 0;
                 //enviar mensaje a websocket de oyente seleccionado
                 var viewer = kurento.data.presenters[sesion_id].viewers[viewer_id];
                 if(viewer && viewer.ws && viewer.ws.readyState === 1) {
@@ -214,11 +221,14 @@ module.exports = function (modules) {
                         },
                         mensaje: 'lanzamiento de evaluacion fue exitoso'
                     }));
+
+                    cant_eval_enviadas++;
                 }
                 //enviar respuesta
                 res.send(JSON.stringify({
                     status: 'ok',
-                    message: 'eval: ' + eval_id + ", sesion: " + sesion_id + ", viewer: " + viewer_id
+                    message: 'eval: ' + eval_id + ", sesion: " + sesion_id + ", viewer: " + viewer_id,
+                    cantidad_enviadas: cant_eval_enviadas
                 }));
             });
         });
