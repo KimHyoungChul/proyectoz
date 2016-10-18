@@ -17,14 +17,19 @@ $(document).ready(function () {
 		email: $('#email').val()
 	};
 
-	$('#btn').click(function() {
+	//pizarra
+	var editor = ace.edit("editor");
+	editor.setTheme("ace/theme/dawn");
+	editor.setReadOnly(true);
+
+
+	$('#btn').click(function(){
 		chatInfo.mensaje = $('#m').val();
 		socket.emit('chat message', JSON.stringify(chatInfo));
 		$('#m').val('');
 
 		return false;
 	});
-
 	//chat stuff
 	var socket = io();
 	
@@ -35,6 +40,19 @@ $(document).ready(function () {
 		var element = document.getElementById("mensajes");
 		element.scrollTop = element.scrollHeight;
 		console.log(msg);
+	});
+
+	//pizarra stuff
+	socket.on('pizarra_edit', function(msg){
+		var recibido = JSON.parse(msg);
+		editor.setValue(recibido.mensaje);
+		editor.getSession().setMode("ace/mode/"+recibido.modo);
+		editor.find("{Bruce Springsteen}");
+	});
+
+	socket.on('pizarra_mode', function(msg){
+		var recibido = JSON.parse(msg);
+		editor.getSession().setMode("ace/mode/"+recibido.mensaje);
 	});
 
     //node app stuff
@@ -125,8 +143,6 @@ ws.onmessage = function (message) {
 
 //node app stuff
 function mostrarEvaluacion(raw_evaluacion,raw_opciones) {
-	console.debug("wei pero que paso");
-
     var evaluacion = JSON.parse(raw_evaluacion);
     var opciones = JSON.parse(raw_opciones);
     //cambiar texto de modal

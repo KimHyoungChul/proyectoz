@@ -73,6 +73,26 @@ function enviarMensaje(chatInfo, models){
     });
 }
 
+function actualizarPizarra(chatInfo){
+    var sesion = clientes[chatInfo.sesion];
+
+    console.log(chatInfo);
+
+    sesion.forEach(function (cliente) {
+        cliente.socket.emit('pizarra_edit', JSON.stringify(chatInfo));
+    });
+}
+
+function modoPizarra(chatInfo){
+    var sesion = clientes[chatInfo.sesion];
+
+    console.log(chatInfo);
+
+    sesion.forEach(function (cliente) {
+        cliente.socket.emit('pizarra_mode', JSON.stringify(chatInfo));
+    });
+}
+
 
 
 module.exports = {
@@ -87,6 +107,16 @@ module.exports = {
             socket.on('chat message', function(msg) {
                 var chatInfo = JSON.parse(msg);
                 enviarMensaje(chatInfo,models);
+            });
+
+            socket.on('pizarra_edit', function(msg) {
+                var chatInfo = JSON.parse(msg);
+                actualizarPizarra(chatInfo);
+            });
+
+            socket.on('pizarra_mode', function(msg) {
+                var chatInfo = JSON.parse(msg);
+                modoPizarra(chatInfo);
             });
 
             socket.on('inicializando', function(msg){

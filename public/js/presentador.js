@@ -35,6 +35,10 @@ $(document).ready(function () {
 			nombre: $('#nombre').val(),
 			email: $('#email').val()
 		};
+		//pizarra
+		var editor = ace.edit("editor");
+		editor.setTheme("ace/theme/dawn");
+
 
 		$('#btn').click(function () {
 			chatInfo.mensaje = $('#m').val();
@@ -43,6 +47,8 @@ $(document).ready(function () {
 
 			return false;
 		});
+
+
 		//chat stuff
 		var socket = io();
 
@@ -54,6 +60,19 @@ $(document).ready(function () {
 			var element = document.getElementById("mensajes");
 			element.scrollTop = element.scrollHeight;
 			console.log(msg);
+		});
+		
+		//pizarra stuff
+		$('#select-lenguajes').on('change',function () {
+			var nuevo_modo = this.value;
+			editor.getSession().setMode("ace/mode/"+nuevo_modo);
+
+		});
+
+		editor.getSession().on('change', function(e) {
+			chatInfo.mensaje = editor.getValue();
+			chatInfo.modo = $('#select-lenguajes').val();
+			socket.emit('pizarra_edit', JSON.stringify(chatInfo));
 		});
 
 		//view events

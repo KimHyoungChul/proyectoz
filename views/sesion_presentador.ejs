@@ -83,28 +83,28 @@
             </div>
             <!-- col s7 -->
             <div id="pizarra" class="col s7">
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
+                <select id="select-lenguajes">
+                    <option value="plain_text" selected>Plain Text</option>
+                    <option value="assembly_x86">Assembly x86</option>
+                    <option value="c_cpp">C/C++</option>
+                    <option value="csharp">C#</option>
+                    <option value="css">CSS</option>
+                    <option value="golang">Go</option>
+                    <option value="groovy">Groovy</option>
+                    <option value="haskell">Haskell</option>
+                    <option value="html">HTML</option>
+                    <option value="java">Java</option>
+                    <option value="javascript">Javascript</option>
+                    <option value="php">PHP</option>
+                    <option value="prolog">Prolog</option>
+                    <option value="python">Python</option>
+                    <option value="ruby">Ruby</option>
+                    <option value="sh">Linux Shell</option>
+                    <option value="sql">SQL</option>
+                    <option value="swift">Swift</option>
+
+                </select>
+                <div style="width: 600px; height: 250px; font-size: 18px"  id="editor">Seleccione un lenguaje y escriba su codigo aqu&iacute;!</div>
             </div>
             <!-- col s4 : hide -->
             <div id="div_mensajes" class="hide">
@@ -144,6 +144,12 @@
             <p><a href="/" class="modal-action modal-close waves-effect waves-green btn-large red darken-4 white-text">Salir de este lugar</a></p>
         </div>
     </div>
+    <script src="/js/ace_plugin/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        $(document).ready(function() {
+            $('select').material_select();
+        });
+    </script>
     <% } %>
 </body>
 </html>
