@@ -578,8 +578,8 @@ module.exports = function (modules) {
     app.get('/sign-s3', function(req, res) {
         s3 = new aws.S3();
         s3.config.update({
-            accessKeyId: 'AKIAJUZEUCKWZSP5HQYQ',
-            secretAccessKey: '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'
+            accessKeyId: process.env.AWS_KEY,
+            secretAccessKey: process.env.AWS_SECRET
         });
         const fileName = req.query['file-name'];
         const fileType = req.query['file-type'];

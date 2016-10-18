@@ -51,89 +51,96 @@ var credenciales = {
 var server = https.createServer(credenciales,app);
 
 //inicializando
-var port = process.env.PORT || 8443;
-var app_server = server.listen(port, function() {
-    console.log('Listening in ' + direcciones.app_location);
+if (process.env.AWS_KEY && process.env.AWS_SECRET) {
+    var port = process.env.PROYECTOZ_APP_PORT || 8443;
+    var app_server = server.listen(port, function () {
+        console.log('Listening in ' + direcciones.app_location);
 
-    //inicializando aplicacion luego que los modelos se 'sincronizan'
-    _models.sequelize.sync().then(function () {
+        //inicializando aplicacion luego que los modelos se 'sincronizan'
+        _models.sequelize.sync().then(function () {
 
-        //inicializando mensajeria con kurento
-        _kurento.init(app_server,direcciones);
+            //inicializando mensajeria con kurento
+            _kurento.init(app_server, direcciones);
 
-        //manejo de mensajeria del chat
-        _io.init(server,_models);
+            //manejo de mensajeria del chat
+            _io.init(server, _models);
 
-        var modules = {
-            kurento: _kurento,
-            io:      _io,
-            models:  _models,
-            express: app,
-        	async: _async
-        };
+            var modules = {
+                kurento: _kurento,
+                io: _io,
+                models: _models,
+                express: app,
+                async: _async
+            };
 
-        //inicializando rutas
-        require('./modules/routers/manejador_templates.js')(modules);
-        require('./modules/routers/manejador_formularios.js')(modules);
+            //inicializando rutas
+            require('./modules/routers/manejador_templates.js')(modules);
+            require('./modules/routers/manejador_formularios.js')(modules);
 
-        //usuarios dummies (dev only)
-        _models.usuario.findOrCreate({
-            where: {email: 'u1@u1.u1'},
-            defaults: {
-                email: 'u1@u1.u1',
-                password: 'usuario1',
-                nombre: 'usuario1',
-                apellido: 'usuario1',
-                genero: 'M',
-                fecha_nacimiento: new Date('12-15-1996')
-            }
-        }).spread(function(user,created) {
-            _models.estudiante.findOrCreate({
-                where: {id: 1},
+            //usuarios dummies (dev only)
+            _models.usuario.findOrCreate({
+                where: {email: 'u1@u1.u1'},
                 defaults: {
-                    institucion: 'IPISA',
-                    usuario: user.get('id')
+                    email: 'u1@u1.u1',
+                    password: 'usuario1',
+                    nombre: 'usuario1',
+                    apellido: 'usuario1',
+                    genero: 'M',
+                    fecha_nacimiento: new Date('12-15-1996')
                 }
+            }).spread(function (user, created) {
+                _models.estudiante.findOrCreate({
+                    where: {id: 1},
+                    defaults: {
+                        institucion: 'IPISA',
+                        usuario: user.get('id')
+                    }
+                });
             });
-        });
-        _models.usuario.findOrCreate({
-            where: {email: 'u3@u3.u3'},
-            defaults: {
-                email: 'u3@u3.u3',
-                password: 'usuario3',
-                nombre: 'usuario3',
-                apellido: 'usuario3',
-                genero: 'F',
-                fecha_nacimiento: new Date('11-6-1993')
-            }
-        }).spread(function(user,created) {
-            _models.estudiante.findOrCreate({
-                where: {id: 2},
+            _models.usuario.findOrCreate({
+                where: {email: 'u3@u3.u3'},
                 defaults: {
-                    institucion: 'PASPLAND',
-                    usuario: user.get('id')
+                    email: 'u3@u3.u3',
+                    password: 'usuario3',
+                    nombre: 'usuario3',
+                    apellido: 'usuario3',
+                    genero: 'F',
+                    fecha_nacimiento: new Date('11-6-1993')
                 }
+            }).spread(function (user, created) {
+                _models.estudiante.findOrCreate({
+                    where: {id: 2},
+                    defaults: {
+                        institucion: 'PASPLAND',
+                        usuario: user.get('id')
+                    }
+                });
             });
-        });
-        _models.usuario.findOrCreate({
-            where: {email: 'u2@u2.u2'},
-            defaults: {
-                email: 'u2@u2.u2',
-                password: 'usuario2',
-                nombre: 'usuario2',
-                apellido: 'usuario2',
-                genero: 'F',
-                fecha_nacimiento: new Date('06-02-1994')
-            }
-        }).spread(function(user,created) {
-            _models.tutor.findOrCreate({
-                where: {id: 1},
+            _models.usuario.findOrCreate({
+                where: {email: 'u2@u2.u2'},
                 defaults: {
-                    ocupacion: 'Estudiante',
-                    autorizado: false,
-                    usuario: user.get('id')
+                    email: 'u2@u2.u2',
+                    password: 'usuario2',
+                    nombre: 'usuario2',
+                    apellido: 'usuario2',
+                    genero: 'F',
+                    fecha_nacimiento: new Date('06-02-1994')
                 }
+            }).spread(function (user, created) {
+                _models.tutor.findOrCreate({
+                    where: {id: 1},
+                    defaults: {
+                        ocupacion: 'Estudiante',
+                        autorizado: false,
+                        usuario: user.get('id')
+                    }
+                });
             });
         });
     });
-});
+}
+else {
+    console.error("CREAR VARIABLES DE ENTORNO PARA EJECUTAR:");
+    console.error("\tAWS_KEY");
+    console.error("\tAWS_SECRET");
+}
