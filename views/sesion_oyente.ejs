@@ -15,8 +15,10 @@
     <script src="/bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
     <script src="/bower_components/kurento-utils/js/kurento-utils.js"></script>
+    <% if(!todavia) { %>
     <script src="/js/oyente.js"></script>
     <script src="/js/oyente_ui.js"></script>
+    <% } %>
     <title>ProyectoZ</title>
 </head>
 <body>
@@ -34,7 +36,7 @@
                     <a id="btn_salir" href="/" class="btn red darken-2">Salir de sesion de tutoria</a>
                 </div>
                 <div class="row">
-                    <video id="video" autoplay></video>
+                    <video id="video" autoplay poster="/img/webrtc.png"></video>
                 </div>
             </div>
             <!-- col s6 : col s4 -->

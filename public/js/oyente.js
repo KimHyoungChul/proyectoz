@@ -29,7 +29,7 @@ $(document).ready(function () {
 
 		return false;
 	};
-	
+
 	$('#btn').click(enviarMensajeChat);
 
 	$("#formChatSesionOyente").submit(function(e) {
@@ -135,6 +135,9 @@ ws.onmessage = function (message) {
 		case 'halt':
 			console.error('Se murio');
 			webRtcPeer = null;
+			video.src = '';
+			video.poster = '/img/webrtc.png';
+			video.style.background = '';
 			break;
 		case 'incomingQuestion':
 			mostrarEvaluacion(parsedMessage.data.evaluacion,parsedMessage.data.opciones);

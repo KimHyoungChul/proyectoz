@@ -16,9 +16,11 @@
     <script src="/bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
     <script src="/bower_components/kurento-utils/js/kurento-utils.js"></script>
+    <% if(!todavia) { %>
     <script src="/js/presentador.js"></script>
     <script src="/js/presentador_ui.js"></script>
     <title>ProyectoZ</title>
+    <% } %>
 </head>
 <body>
     <% include nav.ejs %>
@@ -33,7 +35,7 @@
             <div id="div_preguntas" class="col s4">
                 <div class="row">
                     <div id="video-div-presentador">
-                        <video id="video" autoplay></video>
+                        <video id="video" autoplay poster="/img/webrtc.png"></video>
                     </div>
                 </div>
                 <div class="row">
