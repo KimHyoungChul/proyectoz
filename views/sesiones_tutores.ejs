@@ -8,11 +8,46 @@
 </head>
 <body>
 <% include nav.ejs %>
-<h1>Mis sesiones</h1>
-<div class="collection">
-    <% for(var i=0; i<sesiones.length; i++) { %>
-    <a href="/sesion/<%= sesiones[i].id %>" class="collection-item"><%= sesiones[i].titulo %><span class="badge">1</span></a>
-    <% } %>
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <h3>Mis sesiones</h3>
+            <% sesiones.forEach(function(sesion) { %>
+            <%
+                var titulo = sesion.Tutor.Usuario.nombre+" "+sesion.Tutor.Usuario.apellido+", "+sesion.Tutor.Usuario.email;
+
+                var fecha_sin_timezone = moment(sesion.fecha).format('YYYY-MM-DD');
+                var momento_mostrado = moment(fecha_sin_timezone+' '+sesion.hora_inicio+'.001-04');
+
+                var color = sesion.estado == 'futura' ? 'green lighten-1' : 'green darken-1';
+            %>
+            <div class="card <%= color %>">
+                <div class="card-content white-text">
+                <span class="card-title">
+                    <b><%= titulo %></b>
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    <% if(sesion.estado === 'en-proceso') { %>
+                    <a href="/sesion/<%= sesion.id %>">
+                        <div class="chip white">
+                            Ir
+                        </div>
+                    </a>
+                    <% } %>
+                </span>
+                <p>Sera impartida <%= momento_mostrado.fromNow() %></p>
+
+                </div>
+                <div class="card-action">
+                    <% sesion.Solicitud.Keywords.forEach(function(keyword) { %>
+                    <a href="/sesion/tag/<%= keyword.id %>" class="chip black-text"><%= keyword.texto %></a>
+                    <% }); %>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+    </div>
 </div>
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="/bower_components/materialize/dist/js/materialize.min.js">

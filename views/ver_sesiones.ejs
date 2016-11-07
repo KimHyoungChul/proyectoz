@@ -22,7 +22,7 @@
             var fecha_sin_timezone = moment(sesion.fecha).format('YYYY-MM-DD');
             var momento_mostrado = moment(fecha_sin_timezone+' '+sesion.hora_inicio+'.001-04');
 
-            var color = sesion.estado == 'futura' ? 'green darken-2' : 'green darken-4';
+            var color = sesion.estado == 'futura' ? 'green lighten-1' : 'green darken-1';
         %>
         <div class="card <%= color %>">
             <div class="card-content white-text">

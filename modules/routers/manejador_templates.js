@@ -335,34 +335,43 @@ module.exports = function (modules) {
         });
     });
 
-    app.get('/tutores/mis-sesiones', function(req, res){
+    app.get('/tutores/sesiones', function(req, res){
         var usuario = req.session.usuario;
-        models.sesion_tutoria.findAll({
-            where:{
-                tutor: parseInt(usuario.id),
-                estado: 'futura'
-            }
-        }).then(function (sesiones) {
-            var listaSesiones =[];
-            async.each(sesiones, function (sesion, callback) {
-                models.solicitud.findAll({
-                    where: {
-                        id: sesion.solicitud
+
+        if(usuario.tipo === 'tutor') {
+            models.sesion_tutoria.findAll({
+                where: {
+                    tutor: parseInt(usuario.id),
+                    estado: {
+                        $in: ['futura','en-proceso']
                     }
-                }).then(function (solicitudes) {
-                    var result = {
-                        id: sesion.id,
-                        titulo: solicitudes[0].titulo
-                    };
-                    listaSesiones.push(result);
-                    callback()
-                });
-            }, function () {
+                },
+                include: [{
+                    model: models.solicitud,
+                    as: 'Solicitud',
+                    include: [{
+                        model: models.keyword,
+                        as: 'Keywords'
+                    }]
+                },{
+                    model: models.tutor,
+                    as: 'Tutor',
+                    include: [{
+                        model: models.usuario,
+                        as: 'Usuario'
+                    }]
+                }]
+            }).then(function(sesionesEncontradas) {
+
                 res.render('sesiones_tutores',{
-                    sesiones: listaSesiones
+                    sesiones: sesionesEncontradas,
+                    moment: moment
                 });
             });
-        });
+        }
+        else {
+            res.redirect(303,'/');
+        }
 
     });
 
@@ -610,6 +619,17 @@ module.exports = function (modules) {
     });
 
     app.get('/tutores/agregar_keyword/', function(req, res) {
+        models.tutor.findAll().then(function(_tutores) {
+            models.keyword.findAll().then(function (_keywords) {
+                res.render('agregar_keyword_tutor', {
+                    tutores: _tutores,
+                    keywords: _keywords
+                });
+            });
+        });
+    });
+
+    app.get('/tutores/ver_tutorias/', function(req, res) {
         models.tutor.findAll().then(function(_tutores) {
             models.keyword.findAll().then(function (_keywords) {
                 res.render('agregar_keyword_tutor', {
