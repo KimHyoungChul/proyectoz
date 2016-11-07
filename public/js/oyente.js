@@ -22,14 +22,22 @@ $(document).ready(function () {
 	editor.setTheme("ace/theme/dawn");
 	editor.setReadOnly(true);
 
-
-	$('#btn').click(function(){
+	var enviarMensajeChat = function () {
 		chatInfo.mensaje = $('#m').val();
 		socket.emit('chat message', JSON.stringify(chatInfo));
 		$('#m').val('');
 
 		return false;
-	});
+	};
+	
+	$('#btn').click(enviarMensajeChat);
+
+	$("#formChatSesionOyente").submit(function(e) {
+		e.preventDefault();
+
+		enviarMensajeChat();
+	})
+
 	//chat stuff
 	var socket = io();
 	

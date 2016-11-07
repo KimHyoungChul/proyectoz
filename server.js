@@ -47,6 +47,7 @@ var credenciales = {
     cert: fs.readFileSync('keys/server.crt')
 };
 
+
 //crear instancia de servidor web https
 var server = https.createServer(credenciales,app);
 

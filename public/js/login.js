@@ -21,7 +21,7 @@ $(document).ready(function () {
             }
         }
     });
-    $('#btn-login').on('click', function () {
+    var submitLogin = function () {
         console.log('klk');
         if ($('#formLogin').valid()) {
             $.post("/login/", {
@@ -37,5 +37,12 @@ $(document).ready(function () {
             });
         }
 
-    });
+    };
+    $('#btn-login').on('click', submitLogin);
+
+    $('#formLogin').submit(function(e) {
+        e.preventDefault();
+
+        submitLogin();
+    })
 });

@@ -39,14 +39,22 @@ $(document).ready(function () {
 		var editor = ace.edit("editor");
 		editor.setTheme("ace/theme/dawn");
 
-
-		$('#btn').click(function () {
+		var enviarMensajeChat = function () {
 			chatInfo.mensaje = $('#m').val();
 			socket.emit('chat message', JSON.stringify(chatInfo));
 			$('#m').val('');
 
 			return false;
-		});
+		};
+		
+		$('#btn').click(enviarMensajeChat);
+
+		$("#formChatSesionPresentador").submit(function(e) {
+			e.preventDefault();
+
+			enviarMensajeChat();
+		})
+
 
 
 		//chat stuff

@@ -11,12 +11,12 @@ $(document).ready(function () {
 		tipo_usuario: $('#tipo_usuario').val()
 	};
 
-	$('#btn').click(function() {
-		chatInfo.mensaje = $('#m').val();
-		socket.emit('chat message', JSON.stringify(chatInfo));
-		$('#m').val('');
+	$('#btn').click(enviarMensajeChat);
 
-		return false;
+	$("#formChatWorkspace").submit(function(e) {
+		e.preventDefault();
+
+		enviarMensajeChat();
 	});
 
 	//chat stuff
@@ -35,7 +35,13 @@ $(document).ready(function () {
 
 
 
+	function enviarMensajeChat() {
+		chatInfo.mensaje = $('#m').val();
+		socket.emit('chat message', JSON.stringify(chatInfo));
+		$('#m').val('');
 
+		return false;
+	}
 
 	$('#upload-file').click(initUpload);
 
