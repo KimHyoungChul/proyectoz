@@ -234,7 +234,7 @@ module.exports = function (modules) {
     });
 
     app.post('/estudiantes/crear/', function(req, res) {
-        console.log(req.body.password);
+        console.log(req.body.fecha_nacimiento);
         models.usuario.create({
             email: req.body.email.toLocaleLowerCase(),
             password: req.body.password,

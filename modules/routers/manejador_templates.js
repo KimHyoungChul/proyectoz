@@ -624,6 +624,7 @@ module.exports = function (modules) {
         res.render('login');
     });
 
+
     app.get('/', function(req, res) {
         console.log(req.session);
         res.render('basic');

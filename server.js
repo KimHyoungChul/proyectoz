@@ -76,6 +76,7 @@ if (process.env.AWS_KEY && process.env.AWS_SECRET) {
             //inicializando rutas
             require('./modules/routers/manejador_templates.js')(modules);
             require('./modules/routers/manejador_formularios.js')(modules);
+            require('./modules/routers/manejador_rest.js')(modules);
 
             //usuarios dummies (dev only)
             _models.usuario.findOrCreate({
@@ -140,7 +141,9 @@ if (process.env.AWS_KEY && process.env.AWS_SECRET) {
     });
 }
 else {
+    console.error(process.env);
     console.error("CREAR VARIABLES DE ENTORNO PARA EJECUTAR:");
     console.error("\tAWS_KEY");
     console.error("\tAWS_SECRET");
 }
+
