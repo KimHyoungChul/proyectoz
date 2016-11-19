@@ -3,6 +3,11 @@
  */
 var moment  = require('moment');
 
+var FCM = require('fcm-push');
+
+var serverKey = process.env.FIREBASE_TOKEN;
+var fcm = new FCM(serverKey);
+
 module.exports = function (modules) {
     var app = modules.express;
     var models = modules.models;
@@ -297,7 +302,7 @@ module.exports = function (modules) {
     });
 
     app.post('/login/', function(req, res) {
-        console.log('sdfs');
+
         var response = {};
         res.contentType('json');
         models.usuario.findAll({
@@ -364,7 +369,36 @@ module.exports = function (modules) {
         res.redirect(303,'/workspace?sesion=' + sesion);
     });
 
+    function enviarNotificacion(usuarios,encabezado,mensaje) {
 
+        usuarios.forEach(function (usuario) {
+            if(usuario.firebase_token){
+                var registrationTokens = usuario.firebase_token;
+                console.log("Se va a enviar un mensaje...");
+                console.log("Con el token: " + registrationTokens);
+
+                var message = {
+                    to: registrationTokens, // required fill with device token or topics
+                    collapse_key: 'papazon',
+                    notification: {
+                        title: encabezado,
+                        body: mensaje
+                    }
+                };
+
+                fcm.send(message, function(err, response){
+                    if (err) {
+                        console.log("Ha ocurrido un error al enviar la notificacion!");
+                    } else {
+                        console.log("Notificacion enviada, respuesta del servidor: ", response);
+                    }
+                });
+            }
+
+
+        })
+
+    }
 
 
 };

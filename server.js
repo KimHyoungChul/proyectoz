@@ -51,7 +51,7 @@ var credenciales = {
 var server = https.createServer(credenciales,app);
 
 //inicializando
-if (process.env.AWS_KEY && process.env.AWS_SECRET) {
+if (process.env.AWS_KEY && process.env.AWS_SECRET && process.env.FIREBASE_TOKEN) {
     var port = process.env.PROYECTOZ_APP_PORT || 8443;
     var app_server = server.listen(port, function () {
         console.log('Listening in ' + direcciones.app_location);

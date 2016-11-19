@@ -18,6 +18,7 @@
     "ejs": "^2.4.2",
     "express": "~4.12.4",
     "express-session": "^1.14.0",
+    "fcm-push": "^1.1.2",
     "http": "0.0.0",
     "kurento-client": "Kurento/kurento-client-js",
     "minimist": "^1.1.1",

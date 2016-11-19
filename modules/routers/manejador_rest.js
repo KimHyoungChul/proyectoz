@@ -52,6 +52,26 @@ module.exports = function (modules) {
         });
     });
 
+    app.post("/rest/registrarToken/", function(req,res){
+        var response = {};
+        res.contentType('json');
+
+        models.usuario.findAll({
+            where: {
+                email: req.body.email
+            }
+        }).then(function(usuario){
+            usuario[0].firebase_token = req.body.password;
+            usuario[0].save().then(function () {
+                res.send(JSON.stringify({lol:1}));
+                console.log('guardado token');
+            });
+        })
+
+    });
+
+
+
 
 
 };
