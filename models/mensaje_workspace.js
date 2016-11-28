@@ -19,6 +19,7 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function (db) {
                 db.mensaje_workspace.belongsTo(db.sesion_tutoria, {as: 'Sesion_tutoria', foreignKey: 'sesion_tutoria'});
+                db.mensaje_workspace.belongsTo(db.usuario, {as: 'Usuario', foreignKey: 'usuario'});
             }
         }
     });
