@@ -5,6 +5,7 @@ var moment  = require('moment');
 
 var FCM = require('fcm-push');
 var gcm = require('node-gcm');
+var schedule = require('node-schedule');
 
 var serverKey = process.env.FIREBASE_TOKEN;
 var fcm = new FCM(serverKey);
@@ -133,9 +134,25 @@ module.exports = function (modules) {
                     solicitud: solicitudActualizada.id,
                     tutor: req.session.usuario.id
                 }).then(function(sesion_creada) {
-                    usuariosSesion(sesion_creada);
+                    models.solicitud.find({
+                        where:{
+                            id: sesion_creada.solicitud
+                        }
+                    }).then(function (solicitud) {
+                        usuariosSesion(sesion_creada,"Felicidades!", "Tu solicitud '"+ solicitud.titulo+"' ha sido aceptada.");
 
-                    res.redirect(303,'/');
+                        var time = sesion_creada.hora_inicio.split(":");
+                        var date = new Date(sesion_creada.fecha);
+                        date.setHours(time[0]);
+                        date.setMinutes(time[1]-5);
+
+                        schedule.scheduleJob(date, function(){
+                            usuariosSesion(sesion_creada,"Atención!", "La sesión de tutoría '"+ solicitud.titulo+"' iniciará en 5 minutos.");
+                        });
+                        console.log(date);
+                        res.redirect(303,'/');
+                    });
+
                 });
             });
         });
@@ -402,7 +419,7 @@ module.exports = function (modules) {
 
     }
 
-    function usuariosSesion(session){
+    function usuariosSesion(session,titulo,cuerpo){
         var usuarios = [];
         models.sesion_tutoria.find({
             where: {
@@ -467,7 +484,7 @@ module.exports = function (modules) {
 
             }).then(function (sesiones) {
                 usuarios.push(sesiones.Solicitud.Estudiante.Usuario);
-                enviarNotificacion(usuarios,"STR","Tu solicitud de tutoría ha sido aceptada.");
+                enviarNotificacion(usuarios,titulo,cuerpo);
             });
 
 
