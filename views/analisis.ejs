@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>CubesViewer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="lib/angular-ui-grid/ui-grid.css" />
+    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="lib/nvd3/nv.d3.css" />
+    <link rel="stylesheet" href="lib/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="lib/cube/cubesviewer.css" />
+    <link rel="stylesheet" href="lib/bootstrap-submenu/css/bootstrap-submenu.css" /> <!-- after cubesviewer.css! -->
+
+    <script src="lib/jquery/jquery.js"></script>
+    <script src="lib/bootstrap/bootstrap.js"></script>
+    <script src="lib/bootstrap-submenu/js/bootstrap-submenu.js"></script>
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular-cookies/angular-cookies.js"></script>
+    <script src="lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="lib/angular-ui-grid/ui-grid.js"></script>
+    <script src="lib/d3/d3.js"></script>
+    <script src="lib/nvd3/nv.d3.js"></script>
+    <script src="lib/flotr2/flotr2.min.js"></script>
+    <script src="lib/masonry/masonry.pkgd.min.js"></script>  <!-- needed for CubesViewer Studio only, not embedded views -->
+    <script src="lib/cube/cubesviewer.js"></script>
+
+</head>
+
+<body>
+
+<script type="text/javascript">
+
+    // Initialize CubesViewer when document is ready
+    $(document).ready(function() {
+
+    	// var cubesUrl = prompt ("Enter your Cubes Server URL\n(or try http://cubesdemo.cubesviewer.com)", "http://localhost:5000");
+        var cubesUrl = "http://localhost:5000";
+
+        cubesviewerStudio.init({
+        	cubesUrl: cubesUrl,
+            container: $('#cubesviewer').get(0),
+            debug: true
+        });
+
+    });
+
+</script>
+<!-- CubeViewer Container -->
+<div class="container">
+	<div class="row">
+		<div class="col col-md-10 col-md-offset-1">
+			<br>
+			<br>
+			<div class="panel panel-default">
+			    <div class="panel-heading">
+			    	<h2>Cube Viewer Sample</h2>
+			    </div>
+			    <div class="panel-body">
+			    	<div id="cubesviewer" class=""></div>
+			    </div>
+		    </div>
+	    </div>
+	</div>
+</div>
+
+</body>
+</html>

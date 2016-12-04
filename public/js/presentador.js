@@ -1,4 +1,4 @@
-var ws = new WebSocket('wss://' + location.host + '/ws');
+var ws = new WebSocket('ws://' + location.host + '/ws');
 var video;
 var webRtcPeer;
 var sessionFinished = false;

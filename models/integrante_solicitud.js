@@ -15,7 +15,13 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         }
     }, {
-        freezeTableName: true
+        freezeTableName: true,
+        classMethods: {
+            associate: function (db) {
+                db.integrante_solicitud.belongsTo(db.solicitud, {as: 'Solicitud', through: 'integrante_solicitud_solicitud', foreignKey: 'solicitud'});
+                db.integrante_solicitud.belongsTo(db.estudiante, {as: 'Estudiante', through: 'integrante_solicitud_estudiante', foreignKey: 'estudiante'});
+            }
+        }
     });
 
     return Integrante_solicitud;

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/materialize/dist/css/materialize.min.css">
+    <meta charset="UTF-8">
+    <title>ProyectoZ</title>
+</head>
+<body>
+<% include nav.ejs %>
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <h3>Mis Solicitudes</h3>
+            <% solicitudes.forEach(function(solicitud) { %>
+            <% var color = solicitud.estado == 'aceptada' ? 'green lighten-1' : 'green darken-1'; %>
+            <div class="card <%= color %>">
+                <div class="card-content white-text">
+                <span class="card-title">
+                    <a href="/solicitud/ver/<%= solicitud.id %>/" style="text-decoration: none; color: #fff;">
+                        <b><%= solicitud.titulo %></b>
+                    </a>
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    <% if(solicitud.estado === 'en-proceso') { %>
+                    <a href="/solicitud/ver/<%= sesion.id %>/">
+                        <div class="chip white">
+                            ver
+                        </div>
+                    </a>
+                    <% } %>
+                </span>
+                <p><%= solicitud.cuerpo %></p>
+
+                </div>
+                <div class="card-action">
+                    <% solicitud.Keywords.forEach(function(keyword) { %>
+                    <a href="/sesion/tag/<%= keyword.id %>" class="chip black-text"><%= keyword.texto %></a>
+                    <% }); %>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+    </div>
+</div>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/materialize/dist/js/materialize.min.js">
+</script>
+</body>
+</html>

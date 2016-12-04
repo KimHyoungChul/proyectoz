@@ -8,7 +8,7 @@ var app        = express();
 var _models    = require('./models');
 var _kurento   = require('./modules/kurento.js');
 var _io        = require('./modules/socket_io.js');
-var _async = require('async');
+var _async     = require('async');
 
 //utils
 var path    = require('path');
@@ -36,7 +36,7 @@ app.set('views', __dirname + '/views');
 //droplet IP 162.243.125.7
 //siempre kurento estara local a la aplicacion (droplet o local)
 var direcciones = {
-    app_location : "https://localhost:8443/",
+    app_location : "http://localhost:8443/",
     kurento_location : "ws://localhost:8888/kurento"
 };
 var app_url = url.parse(direcciones.app_location);
@@ -49,7 +49,8 @@ var credenciales = {
 
 
 //crear instancia de servidor web https
-var server = https.createServer(credenciales,app);
+// var server = https.createServer(credenciales,app);
+var server = http.createServer(app);
 
 //inicializando
 if (process.env.AWS_KEY && process.env.AWS_SECRET) {

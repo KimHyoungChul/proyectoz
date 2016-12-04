@@ -29,9 +29,8 @@
                 <span class="card-title">
                     <b><%= titulo %></b>
                 </span>
-                <%
-                %>
-                <p>Sera impartida <%= momento_mostrado.fromNow() %></p>
+                <% var texto = sesion.estado == 'futura' ? 'Sera' : 'Fue'; %>
+                <p><%= texto %> impartida <%= momento_mostrado.fromNow() %></p>
             </div>
             <div class="card-action">
                 <% sesion.Solicitud.Keywords.forEach(function(keyword) { %>

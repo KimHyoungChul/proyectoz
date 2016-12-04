@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/kurento.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="bower_components/adapter.js/adapter.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/kurento-utils/js/kurento-utils.js"></script>
+    <script src="js/index.js"></script>
+    <title>Primer Demo</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 texto-centrado">
+                <div class="row">
+                    <hr/>
+                    <div class="col-md-4 texto-centrado">
+                        <a id="btn-presenter" href="#" class="btn btn-primary btn-block">Tutor</a>
+                        <br/>
+                        <h3 id="presenter-id"></h3>
+                    </div>
+                    <div class="col-md-4 texto-centrado">
+                        <div class="alert alert-warning">
+                            <a id="btn-viewer" href="#" class="btn btn-default btn-block">Oyente</a>
+                            <br>
+                            <!-- <label for="presenter-input">Presenter ID:</label> -->
+                            <input class="form-control" id="presenter-input" type="text">
+                        </div>
+                        <br>
+                    </div>
+                    <div class="col-md-4 texto-centrado">
+                        <a id="btn-finalizar" href="#" class="btn btn-danger btn-block">Detener transmision</a>
+                    </div>
+                </div>
+                <div id="video-div">
+                    <video id="video" autoplay width="600px" height="440px"></video>
+                </div>
+            </div>
+            <div class="col-md-5 col-md-offset-1 texto-centrado right-side">
+                <hr/>
+                <div class="row">
+                    <div class="col-md-12 texto-centrado">
+                        <div class="panel panel-default chatbox">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <input id="m">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a id="btn" href="#" class="btn btn-success btn-block">Enviar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 texto-centrado">
+                        <div class="panel panel-default chatbox">
+                            <div class="panel-body">
+                                <ul id="messages"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

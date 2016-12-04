@@ -1,74 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
 
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/kurento.css">
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="bower_components/adapter.js/adapter.js"></script>
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/kurento-utils/js/kurento-utils.js"></script>
-    <script src="js/index.js"></script>
-    <title>Primer Demo</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/materialize/dist/css/materialize.min.css">
+    <link href="/css/index.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <title>ProyectoZ</title>
 </head>
 <body>
-    <div class="container">
+<nav class="white" role="navigation">
+    <div class="nav-wrapper container">
+        <a id="logo-container" href="#" class="brand-logo">
+            <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+        </a>
+        <ul id="dropdown_menu_registro" class="dropdown-content">
+            <li><a href="/tutores/crear/">Como Tutor</a></li>
+            <li><a href="/estudiantes/crear/">Como Estudiante</a></li>
+        </ul>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="/login">Iniciar sesion</a></li>
+            <li>
+                <a class="dropdown-button" href="#!" data-activates="dropdown_menu_registro">
+                    Registrarme<i class="material-icons right">arrow_drop_down</i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+        <div class="container">
+            <br><br>
+            <h1 class="header center blue-text text-darken-4"><b>Sistema de Tutorias Remotas</b></h1>
+            <div class="row center">
+                <h5 class="header col s12 light blue-text text-darken-4">Minimizando distancias. Maximizando tiempo.</h5>
+            </div>
+            <br><br>
+        </div>
+    </div>
+    <div class="parallax"><img src="/img/background1.jpeg"></div>
+</div>
+
+
+<div class="container">
+    <div class="section">
+        <!--   Icon Section   -->
         <div class="row">
-            <div class="col-md-6 texto-centrado">
-                <div class="row">
-                    <hr/>
-                    <div class="col-md-4 texto-centrado">
-                        <a id="btn-presenter" href="#" class="btn btn-primary btn-block">Tutor</a>
-                        <br/>
-                        <h3 id="presenter-id"></h3>
-                    </div>
-                    <div class="col-md-4 texto-centrado">
-                        <div class="alert alert-warning">
-                            <a id="btn-viewer" href="#" class="btn btn-default btn-block">Oyente</a>
-                            <br>
-                            <!-- <label for="presenter-input">Presenter ID:</label> -->
-                            <input class="form-control" id="presenter-input" type="text">
-                        </div>
-                        <br>
-                    </div>
-                    <div class="col-md-4 texto-centrado">
-                        <a id="btn-finalizar" href="#" class="btn btn-danger btn-block">Detener transmision</a>
-                    </div>
-                </div>
-                <div id="video-div">
-                    <video id="video" autoplay width="600px" height="440px"></video>
+            <div class="col s12 m4">
+                <div class="icon-block">
+                    <h2 class="center blue-grey-text text-darken-3"><i class="material-icons">my_location</i></h2>
+                    <h5 class="center">Adquiere conocimiento On The Go</h5>
+
+                    <p class="light">Usando el sistema de tutorias no tienes que salir de tu casa para recibir tutelaje, o para impartirlo. Solo con un ordenador y acceso internet.</p>
                 </div>
             </div>
-            <div class="col-md-5 col-md-offset-1 texto-centrado right-side">
-                <hr/>
-                <div class="row">
-                    <div class="col-md-12 texto-centrado">
-                        <div class="panel panel-default chatbox">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-md-9">
-                                        <input id="m">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <a id="btn" href="#" class="btn btn-success btn-block">Enviar</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 texto-centrado">
-                        <div class="panel panel-default chatbox">
-                            <div class="panel-body">
-                                <ul id="messages"></ul>
-                            </div>
-                        </div>
-                    </div>
+
+            <div class="col s12 m4">
+                <div class="icon-block">
+                    <h2 class="center blue-grey-text text-darken-3"><i class="material-icons">group</i></h2>
+                    <h5 class="center">Aporta a la comunidad universitaria</h5>
+
+                    <p class="light">Forma parte de nuestra comunidad de tutores y apoya al crecimiento de tu Quisqueya, desde el ambito de la programacion.</p>
+                </div>
+            </div>
+
+            <div class="col s12 m4">
+                <div class="icon-block">
+                    <h2 class="center blue-grey-text text-darken-3"><i class="material-icons">schedule</i></h2>
+                    <h5 class="center">Flexibilidad de horario</h5>
+
+                    <p class="light">Sean estudiante o tutores, los usuarios disponen de las horas a dedicar impartiendo o recibiendo tutorias. Lo que convierte este sistema en una alternativa de aprendizaje flexible y conveniente.</p>
                 </div>
             </div>
         </div>
+
     </div>
+</div>
+
+
+<div class="parallax-container valign-wrapper">
+    <div class="section no-pad-bot">
+        <div class="container">
+            <div class="row center">
+                <h4 class="header col s12 light"><b>Permanece un paso mas cerca con la aplicacion movil.</b></h4>
+            </div>
+            <div class="row center">
+                <a href="http://materializecss.com/getting-started.html" id="download-button">
+                    <img src="/img/android.png" width="25%" height="30%">
+                </a>
+            </div>
+            <br><br>
+        </div>
+    </div>
+    <div class="parallax"><img src="/img/background2.jpeg"></div>
+</div>
+
+<footer class="page-footer teal">
+    <div class="footer-copyright blue darken-4">
+        <div class="container">
+            Made by <a class="brown-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+        </div>
+    </div>
+</footer>
+
+<!--  Scripts-->
+<!--<script src="/bower_components/jquery/dist/jquery.js"></script>-->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
+<script src="/js/index.js"></script>
 </body>
 </html>

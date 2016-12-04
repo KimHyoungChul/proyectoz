@@ -28,7 +28,15 @@ module.exports = function (modules) {
         if(solicitud_id) {
             //obtener solicitud con el id especificado
             models.solicitud.find({
-                where: {id: solicitud_id}
+                where: {id: solicitud_id},
+                include: [{
+                    model: models.estudiante,
+                    as: 'Estudiantes',
+                    include: [{
+                        model: models.usuario,
+                        as: 'Usuario'
+                    }]
+                }]
             }).then(function (solicitudEncontrada) {
                 solicitudEncontrada.getHorario().then(function(horarioEncontrado) {
                     horarioEncontrado.getIntervalos({
@@ -49,6 +57,8 @@ module.exports = function (modules) {
                             }
 
                             res.render('ver_solicitud',data);
+
+                            // res.send(JSON.stringify(data));
                         });
                     });
                 });
@@ -423,7 +433,8 @@ module.exports = function (modules) {
                             where: {
                                 id: {
                                     $in: solicitudes_ids
-                                }
+                                },
+                                estado: 'pendiente'
                             }
                         }).then(function(_solicitudes) {
                             res.render('ver_solicitudes',{
@@ -629,24 +640,148 @@ module.exports = function (modules) {
         });
     });
 
-    app.get('/tutores/ver_tutorias/', function(req, res) {
-        models.tutor.findAll().then(function(_tutores) {
-            models.keyword.findAll().then(function (_keywords) {
-                res.render('agregar_keyword_tutor', {
-                    tutores: _tutores,
-                    keywords: _keywords
-                });
-            });
-        });
-    });
+    // app.get('/tutores/ver_tutorias/', function(req, res) {
+    //     models.tutor.findAll().then(function(_tutores) {
+    //         models.keyword.findAll().then(function (_keywords) {
+    //             res.render('agregar_keyword_tutor', {
+    //                 tutores: _tutores,
+    //                 keywords: _keywords
+    //             });
+    //         });
+    //     });
+    // });
 
     app.get('/login/', function(req, res) {
         res.render('login');
     });
 
+    app.get('/analisis', function(req,res) {
+        res.render('analisis');
+    });
+
     app.get('/', function(req, res) {
-        console.log(req.session);
-        res.render('basic');
+
+        if(req.session.usuario) {
+            if(req.session.usuario.tipo == 'tutor') {
+                res.redirect(303,'/tutores/sesiones');
+            }
+            else if(req.session.usuario.tipo == 'estudiante') {
+                res.redirect(303,'/estudiantes/mis_sesiones');
+            }
+        }
+        else {
+            res.render('index', {
+                tipoUsuario: tipo
+            });
+        }
+    });
+
+    app.get('/estudiante/mis_solicitudes/', function(req,res) {
+        var usuarioSesion = req.session.usuario;
+
+        if(usuarioSesion) {
+            models.solicitud.findAll({
+                where: {
+                    estudiante: parseInt(usuarioSesion.id)
+                },
+                order: [
+                    ['id','DESC']
+                ],
+                include: [{
+                    model: models.keyword,
+                    as: 'Keywords',
+                    through: {
+                        attributes: ['id','texto']
+                    }
+                }]
+            }).then(function(solicitudesEncontradas) {
+                res.render('ver_solicitudes_estudiante',{
+                    solicitudes: solicitudesEncontradas
+                });
+            })
+        }
+        else {
+            res.redirect(303,'/');
+        }
+    });
+
+    app.get('/estudiante/mis_invitaciones/', function(req,res) {
+        var usuarioSesion = req.session.usuario;
+
+        if(usuarioSesion) {
+            models.integrante_solicitud.findAll({
+                where: {
+                    estudiante: parseInt(usuarioSesion.id),
+                    estado: 'pendiente'
+                },
+                include: [{
+                    model: models.solicitud,
+                    as: 'Solicitud',
+                    include: [{
+                        model: models.keyword,
+                        as: 'Keywords',
+                        through: {
+                            attributes: ['id','texto']
+                        }
+                    },{
+                        model: models.estudiante,
+                        as: 'Estudiante',
+                        include: [{
+                            model: models.usuario,
+                            as: 'Usuario'
+                        }]
+                    }]
+                }]
+            }).then(function(invitacionesEncontradas) {
+                res.render('ver_invitaciones_estudiante',{
+                    invitaciones: invitacionesEncontradas
+                });
+            })
+        }
+        else {
+            res.redirect(303,'/');
+        }
+    });
+
+    app.get('/estudiante/mis_sesiones', function(req,res) {
+        var usuarioSesion = req.session.usuario;
+
+        if(usuarioSesion) {
+            models.sesion_tutoria.findAll({
+                where: {
+                    estado: {
+                        $in: ['futura', 'en-proceso']
+                    }
+                },
+                include: [{
+                    model: models.solicitud,
+                    as: 'Solicitud',
+                    where: {
+                        estudiante: usuarioSesion.id
+                    },
+                    include: [{
+                        model: models.keyword,
+                        as: 'Keywords'
+                    }]
+                }, {
+                    model: models.tutor,
+                    as: 'Tutor',
+                    include: [{
+                        model: models.usuario,
+                        as: 'Usuario'
+                    }]
+                }]
+            }).then(function (sesionesEncontradas) {
+
+                res.render('ver_sesiones', {
+                    sesiones: sesionesEncontradas,
+                    moment: moment
+                });
+            });
+        }
+        else {
+            res.redirect(303,'/');
+        }
     });
 };
 

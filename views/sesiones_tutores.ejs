@@ -19,7 +19,7 @@
                 var fecha_sin_timezone = moment(sesion.fecha).format('YYYY-MM-DD');
                 var momento_mostrado = moment(fecha_sin_timezone+' '+sesion.hora_inicio+'.001-04');
 
-                var color = sesion.estado == 'futura' ? 'green lighten-1' : 'green darken-1';
+                var color = sesion.estado == 'futura' ? 'teal accent-4' : 'green darken-1';
             %>
             <div class="card <%= color %>">
                 <div class="card-content white-text">
@@ -31,13 +31,38 @@
                     <% if(sesion.estado === 'en-proceso') { %>
                     <a href="/sesion/<%= sesion.id %>">
                         <div class="chip white">
-                            Ir
+                            <b>Ir a sesion</b>
                         </div>
                     </a>
-                    <% } %>
+                    <% } else { %>
+                    <a href="/sesion/<%= sesion.id %>">
+                        <div class="chip white">
+                            <b>Empezar sesion</b>
+                        </div>
+                    </a>
+                    <a href="/sesion/crear_evaluacion/<%= sesion.id %>/">
+                        <div class="chip red lighten-2">
+                            <b>Crear evaluacion</b>
+                        </div>
+                    </a>
+                    <a href="workspace?sesion=<%= sesion.id %>">
+                        <div class="chip lime accent-1">
+                            <b>Workspace</b>
+                        </div>
+                    </a>
+                    <% }; %>
                 </span>
-                <p>Sera impartida <%= momento_mostrado.fromNow() %></p>
+                <%
+                    var texto = "";
 
+                    if(sesion.estado === 'futura') {
+                        texto = "Sera impartida";
+                    }
+                    else {
+                        texto = "Esta siendo impartida desde";
+                    }
+                %>
+                <p><%= texto %> <%= momento_mostrado.fromNow() %></p>
                 </div>
                 <div class="card-action">
                     <% sesion.Solicitud.Keywords.forEach(function(keyword) { %>

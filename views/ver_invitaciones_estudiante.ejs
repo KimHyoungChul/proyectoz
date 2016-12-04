@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/materialize/dist/css/materialize.min.css">
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <title>ProyectoZ</title>
+</head>
+<body>
+<% include nav.ejs %>
+<div class="container">
+    <div class="row">
+        <div class="col s10 offset-s1">
+            <div class="card-panel white">
+                <h3>Mis Invitaciones</h3>
+                <br>
+                <% if(invitaciones.length > 0) { %>
+                    <div class="row">
+                        <div class="col s5">
+                            <i class="fa fa-quote-left"></i>
+                        </div>
+                        <div class="col s3">
+                            <i class="fa fa-cogs"></i>
+                        </div>
+                        <div class="col s4">
+                            <i class="fa fa-cogs"></i>
+                        </div>
+                    </div>
+                    <% invitaciones.forEach(function(invitacion) { %>
+                        <div class="row">
+                            <div class="col s5">
+                                <%= invitacion.Solicitud.titulo %>
+                            </div>
+                            <div class="col s3">
+                                <%= invitacion.Solicitud.Estudiante.Usuario.email %>
+                            </div>
+                            <div class="col s4">
+                                <form class="form_invitacion" action="/invitacion/responder" method="post" style="display: inline-block">
+                                    <input type="hidden" id="input_estudiante" name="estudiante" value="<%= invitacion.estudiante %>">
+                                    <input type="hidden" id="input_solicitud" name="solicitud" value="<%= invitacion.solicitud %>">
+                                    <button type="submit"
+                                            class="btn blue darken-3 tooltipped"
+                                            name="accion"
+                                            value="aceptar"
+                                            data-position="top" data-delay="50" data-tooltip="Aceptar invitacion">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                </form>
+                                <form class="form_invitacion" action="/invitacion/responder" method="post" style="display: inline-block">
+                                    <input type="hidden" id="input_estudiante" name="estudiante" value="<%= invitacion.estudiante %>">
+                                    <input type="hidden" id="input_solicitud" name="solicitud" value="<%= invitacion.solicitud %>">
+                                    <button type="submit"
+                                            class="btn-flat tooltipped"
+                                            name="accion"
+                                            value="rechazar"
+                                            data-position="top" data-delay="50" data-tooltip="Rechazar invitacion">
+                                        <i class="fa fa-close"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                <div class="row">
+                    <div class="col s6 offset-s3">
+                        <div class="card-panel teal white-text">
+                            <p><b>No cuentas con invitaciones en este momento</b></p>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/materialize/dist/js/materialize.min.js"></script>
+<script src="/js/invitaciones.js"></script>
+</body>
+</html>

@@ -47,8 +47,7 @@
                 </div>
             </div>
         </div>
-        <div class="col s4">
-            <!--TODO mostrar integrantes si es un usuario del grupo -->
+        <ul class="col s4">
             <% if(tipoUsuario == 'tutor') { %>
             <form id="nueva_solicitud" action="/solicitud/crear_tutoria/" method="post">
                 <input type="hidden" name="solicitud_id" value="<%= solicitud.id %>">
@@ -77,7 +76,33 @@
                 </div>
             </form>
             <% } else if(tipoUsuario == 'estudiante') { %>
-            <h3>Aqui van los invitados</h3>
+            <!--<br>-->
+            <h3><b>Invitados</b></h3>
+            <ul class="collection">
+                <%
+                    var colors = {
+                        pendiente: 'blue-grey',
+                        aceptado: 'blue darken-3',
+                        rechazado: 'red darken-3'
+                    };
+                %>
+
+                <% if(solicitud.Estudiantes.length > 0 ) { %>
+                    <% solicitud.Estudiantes.forEach(function (estudiante) { %>
+                        <% var badge_color = colors[estudiante.integrante_solicitud.estado]; %>
+                        <li class="collection-item">
+                            <span class="new badge <%= badge_color %>" data-badge-caption="">
+                                <%= estudiante.integrante_solicitud.estado %>
+                            </span>
+                            <b><%= estudiante.Usuario.email %></b>
+                        </li>
+                    <% }); %>
+                <% } else { %>
+                    <li class="collection-item">
+                        <b>No hay invitados para esta solicitud</b>
+                    </li>
+                <% } %>
+            </ul>
             <% } %>
         </div>
     </div>

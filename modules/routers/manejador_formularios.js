@@ -323,6 +323,9 @@ module.exports = function (modules) {
                         user.tipo = 'tutor';
                         user.id = tutor[0].id;
                         req.session.usuario = user;
+                        
+                        app.locals.tipoUsuario = user.tipo;
+
                         response.status = 0;
                         res.send(JSON.stringify(response));
                     }
@@ -337,6 +340,9 @@ module.exports = function (modules) {
                         user.tipo = 'estudiante';
                         user.id = estudiante[0].id;
                         req.session.usuario = user;
+
+                        app.locals.tipoUsuario = user.tipo;
+
                         response.status = 0;
                         res.send(JSON.stringify(response));
                     }
@@ -347,10 +353,46 @@ module.exports = function (modules) {
                 res.send(JSON.stringify( response ));
             }
         });
-
-
     });
 
+    app.post('/invitacion/responder', function(req, res) {
+        if(req.body.estudiante && req.body.solicitud && req.body.respuesta) {
+            models.integrante_solicitud.findOne({
+                where: {
+                    estudiante: parseInt(req.body.estudiante),
+                    solicitud: parseInt(req.body.solicitud)
+                },
+                include: [{
+                    model: models.solicitud,
+                    as:'Solicitud'
+                }]
+            }).then(function(invitacionEncontrado) {
+
+                //cambiar estado de invitacion
+                if(req.accion == 'aceptar') {
+                    invitacionEncontrado.estado = 'aceptado'
+                }
+                else {
+                    invitacionEncontrado.estado = 'rechazado'
+                }
+                //persistir cambio en la invitacion
+                invitacionEncontrado.save().then(function(invitacionActualizada) {
+
+                    res.send(JSON.stringify({
+                        status: 'ok',
+                        mensaje:'respondido con exito'
+                    }));
+                });
+            });
+        }
+        else {
+            res.send(JSON.stringify({
+                status: 'fail',
+                mensaje:'faltan parametros'
+            }));
+        }
+
+    });
 
 
     app.post('/registrar-url', function(req, res) {
