@@ -53,7 +53,7 @@ var credenciales = {
 var server = http.createServer(app);
 
 //inicializando
-if (process.env.AWS_KEY && process.env.AWS_SECRET) {
+if (process.env.AWS_KEY && process.env.AWS_SECRET && process.env.FIREBASE_TOKEN) {
     var port = process.env.PROYECTOZ_APP_PORT || 8443;
     var app_server = server.listen(port, function () {
         console.log('Listening in ' + direcciones.app_location);
@@ -78,6 +78,7 @@ if (process.env.AWS_KEY && process.env.AWS_SECRET) {
             //inicializando rutas
             require('./modules/routers/manejador_templates.js')(modules);
             require('./modules/routers/manejador_formularios.js')(modules);
+            require('./modules/routers/manejador_rest.js')(modules);
 
             //usuarios dummies (dev only)
             _models.usuario.findOrCreate({
@@ -142,7 +143,9 @@ if (process.env.AWS_KEY && process.env.AWS_SECRET) {
     });
 }
 else {
+    console.error(process.env);
     console.error("CREAR VARIABLES DE ENTORNO PARA EJECUTAR:");
     console.error("\tAWS_KEY");
     console.error("\tAWS_SECRET");
 }
+

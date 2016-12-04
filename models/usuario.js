@@ -28,7 +28,12 @@ module.exports = function(sequelize, DataTypes) {
         fecha_nacimiento: {
             type: DataTypes.DATEONLY,
             allowNull: false
+        },
+        firebase_token: {
+            type: DataTypes.STRING(256),
+            allowNull: true
         }
+
     },{
         freezeTableName: true,
         classMethods: {

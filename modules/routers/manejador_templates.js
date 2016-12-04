@@ -670,9 +670,7 @@ module.exports = function (modules) {
             }
         }
         else {
-            res.render('index', {
-                tipoUsuario: tipo
-            });
+            res.render('index');
         }
     });
 

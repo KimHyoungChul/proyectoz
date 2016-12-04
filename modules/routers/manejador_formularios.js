@@ -3,6 +3,13 @@
  */
 var moment  = require('moment');
 
+// var FCM = require('fcm-push');
+var gcm = require('node-gcm');
+var schedule = require('node-schedule');
+
+var serverKey = process.env.FIREBASE_TOKEN;
+// var fcm = new FCM(serverKey);
+
 module.exports = function (modules) {
     var app = modules.express;
     var models = modules.models;
@@ -127,7 +134,25 @@ module.exports = function (modules) {
                     solicitud: solicitudActualizada.id,
                     tutor: req.session.usuario.id
                 }).then(function(sesion_creada) {
-                    res.redirect(303,'/');
+                    models.solicitud.find({
+                        where:{
+                            id: sesion_creada.solicitud
+                        }
+                    }).then(function (solicitud) {
+                        usuariosSesion(sesion_creada,"Felicidades!", "Tu solicitud '"+ solicitud.titulo+"' ha sido aceptada.");
+
+                        var time = sesion_creada.hora_inicio.split(":");
+                        var date = new Date(sesion_creada.fecha);
+                        date.setHours(time[0]);
+                        date.setMinutes(time[1]-5);
+
+                        schedule.scheduleJob(date, function(){
+                            usuariosSesion(sesion_creada,"Atención!", "La sesión de tutoría '"+ solicitud.titulo+"' iniciará en 5 minutos.");
+                        });
+                        console.log(date);
+                        res.redirect(303,'/');
+                    });
+
                 });
             });
         });
@@ -234,7 +259,7 @@ module.exports = function (modules) {
     });
 
     app.post('/estudiantes/crear/', function(req, res) {
-        console.log(req.body.password);
+        console.log(req.body.fecha_nacimiento);
         models.usuario.create({
             email: req.body.email.toLocaleLowerCase(),
             password: req.body.password,
@@ -297,7 +322,7 @@ module.exports = function (modules) {
     });
 
     app.post('/login/', function(req, res) {
-        console.log('sdfs');
+
         var response = {};
         res.contentType('json');
         models.usuario.findAll({
@@ -406,7 +431,108 @@ module.exports = function (modules) {
         res.redirect(303,'/workspace?sesion=' + sesion);
     });
 
+    function enviarNotificacion(usuarios,encabezado,mensaje) {
+        var registrationTokens = [];
+        usuarios.forEach(function (usuario) {
+            if(usuario.firebase_token){
+                registrationTokens.push(usuario.firebase_token);
 
+            }
+        });
+        var message = new gcm.Message({
+            collapseKey: 'demo',
+            priority: 'high',
+
+
+            notification: {
+                title: encabezado,
+                icon: "education",
+                body: mensaje
+            }
+        });
+
+        var sender = new gcm.Sender(serverKey);
+
+
+        sender.sendNoRetry(message, { registrationTokens: registrationTokens }, function(err, response) {
+            if(err) console.error(err);
+            else    console.log(response);
+        });
+
+    }
+
+    function usuariosSesion(session,titulo,cuerpo){
+        var usuarios = [];
+        models.sesion_tutoria.find({
+            where: {
+                id: session.id
+            },
+            include: [{
+                model: models.solicitud,
+                as: 'Solicitud',
+
+                include: [{
+                    model: models.estudiante,
+                    as: 'Estudiantes',
+                    through: { where: {estado: "aceptada"}},
+                    attributes: ['id'],
+                    include: [{
+                        model: models.usuario,
+                        as: 'Usuario',
+                        where: {
+                            firebase_token: {
+                                $ne: null
+                            }
+                        }
+                    }]
+
+                }
+                ]
+
+            }]
+
+        }).then(function (sesion) {
+            if(sesion){
+                for(var i=0; i<sesion.Solicitud.Estudiantes.length; i++){
+                    usuarios.push(sesion.Solicitud.Estudiantes[i].Usuario);
+                }
+
+            }
+            models.sesion_tutoria.find({
+                where: {
+                    id: session.id
+                },
+                include: [{
+                    model: models.solicitud,
+                    as: 'Solicitud',
+
+                    include: [{
+                        model: models.estudiante,
+                        as: 'Estudiante',
+                        include: [{
+                            model: models.usuario,
+                            as: 'Usuario',
+                            where: {
+                                firebase_token: {
+                                    $ne: null
+                                }
+                            }
+                        }]
+
+                    }
+                    ]
+
+                }]
+
+            }).then(function (sesiones) {
+                usuarios.push(sesiones.Solicitud.Estudiante.Usuario);
+                enviarNotificacion(usuarios,titulo,cuerpo);
+            });
+
+
+
+        });
+    }
 
 
 };
