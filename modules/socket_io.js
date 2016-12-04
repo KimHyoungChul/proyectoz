@@ -5,6 +5,8 @@ var moment  = require('moment');
 var idCounter = 0;
 var clientes = [];
 var sesiones = [];
+var serverKey = process.env.FIREBASE_TOKEN;
+var gcm = require('node-gcm');
 
 
 function nextUniqueId() {
@@ -35,7 +37,11 @@ function enviarMensaje(chatInfo, models){
         models.tutor.findAll({
             where:{
                 id:chatInfo.usuario
-            }
+            },
+            include: [{
+                model: models.usuario,
+                as: "Usuario"
+            }]
 
         }).then(function (tutor) {
             var tut = tutor[0];
@@ -45,6 +51,8 @@ function enviarMensaje(chatInfo, models){
                 usuario: tut.usuario,
                 hora_fecha: moment()
             });
+            var cuerpo = tut.Usuario.nombre + " " + tut.Usuario.apellido + ": " + chatInfo.mensaje;
+            usuariosSesion(chatInfo.sesion,models,cuerpo);
 
         });
     }
@@ -52,7 +60,11 @@ function enviarMensaje(chatInfo, models){
         models.estudiante.findAll({
             where:{
                 id:chatInfo.usuario
-            }
+            },
+            include: [{
+                model: models.usuario,
+                as: "Usuario"
+            }]
 
         }).then(function (estudiante) {
             var tut = estudiante[0];
@@ -62,6 +74,8 @@ function enviarMensaje(chatInfo, models){
                 usuario: tut.usuario,
                 hora_fecha: moment()
             });
+            var cuerpo = tut.Usuario.nombre + " " + tut.Usuario.apellido + ": " + chatInfo.mensaje;
+            usuariosSesion(chatInfo.sesion,models,cuerpo);
 
         });
 
@@ -90,6 +104,114 @@ function modoPizarra(chatInfo){
 
     sesion.forEach(function (cliente) {
         cliente.socket.emit('pizarra_mode', JSON.stringify(chatInfo));
+    });
+}
+
+function enviarNotificacion(usuarios,encabezado,mensaje) {
+    var registrationTokens = [];
+    usuarios.forEach(function (usuario) {
+        if(usuario.firebase_token){
+            registrationTokens.push(usuario.firebase_token);
+
+        }
+    });
+
+    var message = new gcm.Message({
+        collapseKey: 'demo',
+        priority: 'high',
+
+
+        notification: {
+            title: encabezado,
+            icon: "education",
+            body: mensaje
+        }
+    });
+
+    var sender = new gcm.Sender(serverKey);
+
+
+    sender.sendNoRetry(message, { registrationTokens: registrationTokens }, function(err, response) {
+        if(err) console.error(err);
+        else    console.log(response);
+    });
+
+}
+
+function usuariosSesion(session,models,cuerpo){
+    var usuarios = [];
+    models.sesion_tutoria.find({
+        where: {
+            id: session
+        },
+        include: [{
+            model: models.solicitud,
+            as: 'Solicitud',
+
+            include: [{
+                model: models.estudiante,
+                as: 'Estudiantes',
+                through: { where: {estado: "aceptada"}},
+                attributes: ['id'],
+                include: [{
+                    model: models.usuario,
+                    as: 'Usuario',
+                    where: {
+                        firebase_token: {
+                            $ne: null
+                        }
+                    }
+                }]
+
+            }
+            ]
+
+        }]
+
+    }).then(function (sesion) {
+        if(sesion){
+            for(var i=0; i<sesion.Solicitud.Estudiantes.length; i++){
+                usuarios.push(sesion.Solicitud.Estudiantes[i].Usuario);
+            }
+
+        }
+        models.sesion_tutoria.find({
+            where: {
+                id: session
+            },
+            include: [{
+                model: models.solicitud,
+                as: 'Solicitud',
+
+                include: [{
+                    model: models.estudiante,
+                    as: 'Estudiante',
+                    include: [{
+                        model: models.usuario,
+                        as: 'Usuario',
+                        where: {
+                            firebase_token: {
+                                $ne: null
+                            }
+                        }
+                    }]
+
+                }
+                ]
+
+            }]
+
+        }).then(function (sesiones) {
+            usuarios.push(sesiones.Solicitud.Estudiante.Usuario);
+            var titulo = sesiones.Solicitud.titulo;
+            enviarNotificacion(usuarios,titulo,cuerpo);
+
+
+
+        });
+
+
+
     });
 }
 

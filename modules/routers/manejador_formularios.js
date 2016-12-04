@@ -4,6 +4,7 @@
 var moment  = require('moment');
 
 var FCM = require('fcm-push');
+var gcm = require('node-gcm');
 
 var serverKey = process.env.FIREBASE_TOKEN;
 var fcm = new FCM(serverKey);
@@ -132,6 +133,8 @@ module.exports = function (modules) {
                     solicitud: solicitudActualizada.id,
                     tutor: req.session.usuario.id
                 }).then(function(sesion_creada) {
+                    usuariosSesion(sesion_creada);
+
                     res.redirect(303,'/');
                 });
             });
@@ -370,34 +373,106 @@ module.exports = function (modules) {
     });
 
     function enviarNotificacion(usuarios,encabezado,mensaje) {
-
+        var registrationTokens = [];
         usuarios.forEach(function (usuario) {
             if(usuario.firebase_token){
-                var registrationTokens = usuario.firebase_token;
-                console.log("Se va a enviar un mensaje...");
-                console.log("Con el token: " + registrationTokens);
+                registrationTokens.push(usuario.firebase_token);
 
-                var message = {
-                    to: registrationTokens, // required fill with device token or topics
-                    collapse_key: 'papazon',
-                    notification: {
-                        title: encabezado,
-                        body: mensaje
-                    }
-                };
-
-                fcm.send(message, function(err, response){
-                    if (err) {
-                        console.log("Ha ocurrido un error al enviar la notificacion!");
-                    } else {
-                        console.log("Notificacion enviada, respuesta del servidor: ", response);
-                    }
-                });
             }
+        });
+        var message = new gcm.Message({
+            collapseKey: 'demo',
+            priority: 'high',
 
 
-        })
+            notification: {
+                title: encabezado,
+                icon: "education",
+                body: mensaje
+            }
+        });
 
+        var sender = new gcm.Sender(serverKey);
+
+
+        sender.sendNoRetry(message, { registrationTokens: registrationTokens }, function(err, response) {
+            if(err) console.error(err);
+            else    console.log(response);
+        });
+
+    }
+
+    function usuariosSesion(session){
+        var usuarios = [];
+        models.sesion_tutoria.find({
+            where: {
+                id: session.id
+            },
+            include: [{
+                model: models.solicitud,
+                as: 'Solicitud',
+
+                include: [{
+                    model: models.estudiante,
+                    as: 'Estudiantes',
+                    through: { where: {estado: "aceptada"}},
+                    attributes: ['id'],
+                    include: [{
+                        model: models.usuario,
+                        as: 'Usuario',
+                        where: {
+                            firebase_token: {
+                                $ne: null
+                            }
+                        }
+                    }]
+
+                }
+                ]
+
+            }]
+
+        }).then(function (sesion) {
+            if(sesion){
+                for(var i=0; i<sesion.Solicitud.Estudiantes.length; i++){
+                    usuarios.push(sesion.Solicitud.Estudiantes[i].Usuario);
+                }
+
+            }
+            models.sesion_tutoria.find({
+                where: {
+                    id: session.id
+                },
+                include: [{
+                    model: models.solicitud,
+                    as: 'Solicitud',
+
+                    include: [{
+                        model: models.estudiante,
+                        as: 'Estudiante',
+                        include: [{
+                            model: models.usuario,
+                            as: 'Usuario',
+                            where: {
+                                firebase_token: {
+                                    $ne: null
+                                }
+                            }
+                        }]
+
+                    }
+                    ]
+
+                }]
+
+            }).then(function (sesiones) {
+                usuarios.push(sesiones.Solicitud.Estudiante.Usuario);
+                enviarNotificacion(usuarios,"STR","Tu solicitud de tutoría ha sido aceptada.");
+            });
+
+
+
+        });
     }
 
 
