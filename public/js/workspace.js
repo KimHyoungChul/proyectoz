@@ -1,6 +1,6 @@
 
 $(document).ready(function () {
-	$('.modal-trigger').leanModal();
+	$('.modal').modal();
 
 	//chat events
 	var chatInfo = {
