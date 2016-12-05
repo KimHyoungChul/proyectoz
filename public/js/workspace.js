@@ -76,7 +76,7 @@ $(document).ready(function () {
 						'</div>'+
 						'</li>';
 					$('#coleccion-archivos').append(html);
-					$('#modal1').closeModal();
+					$('#modal1').modal('close');
 					$('#progressbar').remove();
 					location.replace('/workspace?sesion='+chatInfo.sesion);
 

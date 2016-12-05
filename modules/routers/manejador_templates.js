@@ -587,7 +587,7 @@ module.exports = function (modules) {
         const tipo = req.query['tipo'];
         console.log(fileType + tipo);
         models.recurso_workspace.create({
-            url: 'https://s3-us-west-2.amazonaws.com/pzworkspace/' + 1 + '/' + fileName,
+            url: 'https://s3-us-west-2.amazonaws.com/pzworkspace/' + sesion + '/' + fileName,
             tipo: tipo,
             sesion_tutoria: sesion
         });
