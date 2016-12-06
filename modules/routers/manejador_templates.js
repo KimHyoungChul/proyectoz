@@ -703,7 +703,7 @@ module.exports = function (modules) {
         }
     });
 
-    app.get('/estudiante/mis_invitaciones/', function(req,res) {
+    app.get('/estudiantes/mis_invitaciones/', function(req,res) {
         var usuarioSesion = req.session.usuario;
 
         if(usuarioSesion) {
@@ -741,7 +741,7 @@ module.exports = function (modules) {
         }
     });
 
-    app.get('/estudiante/mis_sesiones', function(req,res) {
+    app.get('/estudiantes/mis_sesiones', function(req,res) {
         var usuarioSesion = req.session.usuario;
 
         if(usuarioSesion) {

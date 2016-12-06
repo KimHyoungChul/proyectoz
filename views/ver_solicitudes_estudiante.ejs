@@ -10,8 +10,9 @@
 <% include nav.ejs %>
 <div class="container">
     <div class="row">
-        <div class="col s12">
-            <h3>Mis Solicitudes</h3>
+        <div class="col s10 offset-s1">
+            <div class="card-panel">
+                <h2 class="header teal-text" style="text-align: center">Mis Solicitudes</h2>
             <% solicitudes.forEach(function(solicitud) { %>
             <% var color = solicitud.estado == 'aceptada' ? 'green lighten-1' : 'green darken-1'; %>
             <div class="card <%= color %>">

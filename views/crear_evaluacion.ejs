@@ -22,19 +22,25 @@
 <div class="container">
     <div class="row">
         <div class="col s12">
-            <br>
+            <div class="card-panel">
+
+                <h4 class="header teal-text" style="text-align: center">Evaluaci&oacute;n</h4>
+
             <form id="nueva_evaluacion" action="/sesion/crear_evaluacion/" method="post">
                 <div class="row">
                     <input type="hidden" name="sesion_id" value="<%= sesion.id %>">
                     <div class="input-field col s11">
-                        <textarea id="input_encabezado" placeholder="Escribe aqui el encabezado de la pregunta" class="materialize-textarea validate" length="300" name="encabezado" required></textarea>
+                        <textarea id="input_encabezado" placeholder="Escribe aqu&iacute; el encabezado de la pregunta" class="materialize-textarea validate" length="300" name="encabezado" required></textarea>
                         <label for="input_encabezado">Encabezado</label>
                     </div>
                 </div>
+            </div>
+            <div class="card-panel">
                 <div class="row">
+                    <h4 class="header teal-text" style="text-align: center">Respuestas</h4>
                     <div class="col s9">
                         <div class="row">
-                            <h4>Respuestas</h4>
+
                             <a id="btn_agregar_respuesta" class="btn waves-effect waves-light text-center">
                                 <i class="material-icons left">library_add</i>
                                 Agregar respuesta
@@ -72,7 +78,7 @@
                     <div id="div_respuesta_correcta" class="col s3">
                         <h5>Respuesta Correcta</h5>
                         <select id="select_respuesta" name="respuesta_correcta" required>
-                            <option value="0" disabled selected>Choose your option</option>
+                            <option value="0" disabled selected>Selecciona una respuesta...</option>
                             <option value="1">Pregunta #1</option>
                             <option value="2">Pregunta #2</option>
                         </select>
@@ -84,7 +90,7 @@
                     <i class="material-icons right">send</i>
                 </button>
             </form>
-        </div>
+            </div>
     </div>
     <div id="div_respuesta_dummy" class="respuesta hide">
         <div class="input-field  col s10">
@@ -100,6 +106,7 @@
     </div>
     <option id="respuesta_correcta_dummy" class="hide"></option>
 </div>
+    </div>
 <script src="/js/custom.js"></script>
 <script src="/js/crear_evaluacion.js"></script>
 </body>

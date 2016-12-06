@@ -18,8 +18,10 @@
 <body>
 <% include nav.ejs %>
 <div class="container">
+    <div class="col s10 offset-s1">
+        <div class="card-panel">
     <div class="row">
-        <h3>Creando Solicitud</h3>
+        <h3 class="header teal-text" style="text-align: center">Nueva Solicitud</h3>
         <form id="nueva_solicitud" action="/solicitud/crear/" method="post">
             <input id="input_horario" type="hidden" name="horario">
             <input id="input_integrantes" type="hidden" name="integrantes">
@@ -34,6 +36,7 @@
                 </div>
             </div>
             <div class="col s6">
+                <br>
                 <div id="integrantes" class="chips">
                 </div>
                 <div id="keyword_div">
@@ -63,7 +66,7 @@
             </div>
         </form>
     </div>
-</div>
+</div></div></div>
 
 <script src="/js/custom.js"></script>
 <script src="/js/crear_solicitud.js"></script>

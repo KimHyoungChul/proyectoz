@@ -129,9 +129,7 @@ $(document).ready(function () {
 	}, function(error) {
 		$("#body").html('');
 
-		$("#modal_no_webcam").openModal({
-			dismissible: false
-		});
+		$("#modal_no_webcam").modal('open');
 	});
 });
 

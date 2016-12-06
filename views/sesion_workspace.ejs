@@ -13,7 +13,7 @@
 <div class="row">
     <div class="col s8">
         <div class="card-panel">
-            <h3>Recursos</h3>
+            <h3 class="header teal-text" style="text-align: center">Recursos</h3>
             <a data-target="modal1" class="btn-floating modal-trigger"><i class="material-icons">attach_file</i></a>
             <a data-target="modal2" class="btn-floating teal modal-trigger"><i class="material-icons">exit_to_app</i></a>
             <h5>Archivos</h5>
@@ -44,9 +44,9 @@
                 <li class="collection-item">
                     <div>
                         <a href="<%= urls[i].url %>"><%= urls[i].url %></a>
-
+                        <% if(presentador){%>
                         <a href="/borrar-url/<%= urls[i].id%>/<%= sesion%>"  class="secondary-content"><i class="material-icons">delete</i></a>
-
+                        <% }%>
 
                     </div>
                 </li>
@@ -106,7 +106,7 @@
         <div class="modal-content">
             <h5>Indique los archivos a subir</h5>
             <!--<form action="#" id="upload-form">-->
-                <div class="file-field input-field">
+                <div id="upload-form" class="file-field input-field">
                     <div class="btn">
                         <span>File</span>
                         <input id="file-input" type="file" multiple>

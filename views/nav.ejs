@@ -1,8 +1,10 @@
+<link rel="stylesheet" href="/css/background.css">
 <nav>
     <div class="nav-wrapper cyan darken-3">
         <% if(locals.tipoUsuario) { %>
-            <a href="/" class="brand-logo"><i class="material-icons" style="font-size: 45px">school</i>Sistemas de Tutorias Remotas</a>
+            <a href="/" class="brand-logo"><i class="material-icons" style="font-size: 45px">school</i>Sistema de Tutor&iacute;as Remotas</a>
             <% if(locals.tipoUsuario === 'tutor') { %>
+
                 <ul id="dropdown_menu_sesion_tutor" class="dropdown-content">
                     <li><a href="/tutores/sesiones">Mis sesiones</a></li>
                     <li><a href="/sesion/">Todas las sesiones</a></li>
@@ -17,8 +19,8 @@
                 </ul>
             <% } else if(locals.tipoUsuario === 'estudiante') { %>
                 <ul id="dropdown_menu_sesion_estudiante" class="dropdown-content">
-                    <li><a href="/estudiante/mis_sesiones">Mis sesiones</a></li>
-                    <li><a href="/estudiante/mis_invitaciones">Invitaciones</a></li>
+                    <li><a href="/estudiantes/mis_sesiones">Mis sesiones</a></li>
+                    <li><a href="/estudiantes/mis_invitaciones">Invitaciones</a></li>
                     <li><a href="/sesion/">Todas las sesiones</a></li>
                 </ul>
                 <ul id="dropdown_menu_solicitud_estudiante" class="dropdown-content">

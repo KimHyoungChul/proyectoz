@@ -38,12 +38,13 @@
                         <video id="video" autoplay poster="/img/webrtc.png"></video>
                     </div>
                 </div>
-                <div class="row">
-                    <a id="cerrar_tutoria_btn" class="btn red darken-4" href="/sesion/cerrar/<%= sesion %>/">
-                        Terminar tutoria
-                    </a>
-                </div>
-                <div class="row">
+
+                <div class="row card-panel">
+                    <div class="row">
+                        <a id="cerrar_tutoria_btn" class="btn red darken-4" href="/sesion/cerrar/<%= sesion %>/">
+                            Terminar tutoria
+                        </a>
+                    </div>
                     <div id="presentador_preguntas">
                         <ul class="collapsible" data-collapsible="accordion">
                             <% evaluaciones.forEach(function(eval) { %>
@@ -84,7 +85,7 @@
                 </div>
             </div>
             <!-- col s7 -->
-            <div id="pizarra" class="col s7">
+            <div id="pizarra" class="col s7 card-panel">
                 <select id="select-lenguajes">
                     <option value="plain_text" selected>Plain Text</option>
                     <option value="assembly_x86">Assembly x86</option>
@@ -107,9 +108,11 @@
 
                 </select>
                 <div style="width: 100%; min-height: 450px; height: 100%; font-size: 18px"  id="editor">Seleccione un lenguaje y escriba su codigo aqu&iacute;!</div>
+                <br>
             </div>
             <!-- col s4 : hide -->
-            <div id="div_mensajes" class="hide">
+            <div id="div_mensajes" class="hide card-panel">
+                <br>
                 <div class="col s12 text-center">
                     <form id="formChatSesionPresentador">
                         <div class="col s9">

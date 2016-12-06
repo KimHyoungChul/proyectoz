@@ -6,12 +6,16 @@
     <meta charset="UTF-8">
     <title>ProyectoZ</title>
 </head>
-<body>
+<body >
 <% include nav.ejs %>
-<div class="container">
+<div class="container" >
+    <br><br>
     <div class="row">
-        <div class="col s12">
-            <h3>Mis sesiones</h3>
+
+            <div class="col s10 offset-s1">
+                <div class="card-panel">
+
+            <h2 class="header teal-text" style="text-align: center">Mis Sesiones</h2>
             <% sesiones.forEach(function(sesion) { %>
             <%
                 var titulo = sesion.Tutor.Usuario.nombre+" "+sesion.Tutor.Usuario.apellido+", "+sesion.Tutor.Usuario.email;
@@ -72,6 +76,7 @@
             </div>
             <% }); %>
         </div>
+                </div>
     </div>
 </div>
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>

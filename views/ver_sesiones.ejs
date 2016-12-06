@@ -15,10 +15,14 @@
 <% include nav.ejs %>
 <div class="container">
     <div class="row">
+        <div class="col s8 offset-s2">
+            <div class="card-panel">
+
+                <h2 class="header teal-text" style="text-align: center">Mis Sesiones</h2>
         <% sesiones.forEach(function(sesion) { %>
         <%
-            var titulo = sesion.Tutor.Usuario.nombre+" "+sesion.Tutor.Usuario.apellido+", "+sesion.Tutor.Usuario.email;
-
+            var titulo = sesion.Solicitud.titulo ;
+            var profesor = sesion.Tutor.Usuario.nombre + " " + sesion.Tutor.Usuario.apellido;
             var fecha_sin_timezone = moment(sesion.fecha).format('YYYY-MM-DD');
             var momento_mostrado = moment(fecha_sin_timezone+' '+sesion.hora_inicio+'.001-04');
 
@@ -29,6 +33,8 @@
                 <span class="card-title">
                     <b><%= titulo %></b>
                 </span>
+                <br>
+                <h5><%= profesor %></h5>
                 <% var texto = sesion.estado == 'futura' ? 'Sera' : 'Fue'; %>
                 <p><%= texto %> impartida <%= momento_mostrado.fromNow() %></p>
             </div>
