@@ -17,7 +17,7 @@ module.exports = function(sequelize, DataTypes) {
                 db.estudiante.hasMany(db.solicitud, {as: 'Solicitudes', foreignKey: 'estudiante'});
                 db.estudiante.belongsTo(db.usuario, {as: 'Usuario', foreignKey: 'usuario'});
 
-                // db.estudiante.belongsToMany(db.opcion_evaluacion, {as: 'Respuestas', through: 'respuesta_evaluacion', foreignKey: 'estudiante'});
+                db.estudiante.belongsToMany(db.opcion_evaluacion, {as: 'Respuestas', through: 'respuesta_evaluacion', foreignKey: 'estudiante'});
                 db.estudiante.belongsToMany(db.solicitud, {as: 'Invitaciones', through: db.integrante_solicitud, foreignKey: 'estudiante'});
             }
         }

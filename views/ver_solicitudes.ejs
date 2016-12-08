@@ -10,9 +10,9 @@
 <% include nav.ejs %>
 <div class="container">
     <div class="row">
-        <h3>Ver Solicitudes</h3>
-        <div class="col s12">
-            <div class="col s6">
+        <div class="col s8 offset-s2">
+            <div class="card-panel">
+                <h2 class="header teal-text" style="text-align: center">Solicitudes</h2>
                 <% solicitudes.forEach(function(sol) {  %>
                 <div class="card green darken-4">
                     <div class="card-content white-text">
@@ -26,8 +26,8 @@
                     </div>
                 </div>
                 <% }); %>
-            </div>
-        </div>
+
+        </div></div>
     </div>
 </div>
 

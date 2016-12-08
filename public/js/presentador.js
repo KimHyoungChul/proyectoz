@@ -13,7 +13,7 @@ var last_cantidad_enviadas;
 
 
 $(document).ready(function () {
-
+	$('.modal').modal();
 	//solo seguir si se cuenta con camara web
 	navigator.getMedia=(navigator.getUserMedia ||
 						navigator.webkitGetUserMedia ||
@@ -53,7 +53,7 @@ $(document).ready(function () {
 			e.preventDefault();
 
 			enviarMensajeChat();
-		})
+		});
 
 
 
@@ -91,6 +91,19 @@ $(document).ready(function () {
 			var sesion_id = $(this).attr("sesion");
 			var evaluacion_id = $(this).attr("evaluacion");
 			var url = "/sesion/" + sesion_id + "/lanzar_evaluacion/" + evaluacion_id + "/";
+			var evaluacion_id = $(this).attr("evaluacion");
+			var html = '<div id="modal'+ evaluacion_id +'" class="modal bottom-sheet">'+
+				'<div class="modal-content">'+
+				'<h4>Resultados</h4>'+
+				'<table>'+
+				'<thead>'+
+				'<tr>'+
+				'<th data-field="id">Estudiante</th>'+
+				'<th data-field="name">Respuesta Seleccionada</th>'+
+				'<th data-field="price">Resultado</th>'+
+				'</tr> </thead> <tbody id="table'+evaluacion_id+'"> </tbody> </table> </div> </div>';
+			$('body').append(html);
+			$('#modal' + evaluacion_id).modal();
 
 			$.get(url, function (message) {
 				var parsedMessage = JSON.parse(message);
@@ -113,6 +126,18 @@ $(document).ready(function () {
 			var target_div = $(this).parent().parent().find(".coleccion_viewers");
 			var sesion_id = $(this).attr("sesion");
 			var evaluacion_id = $(this).attr("evaluacion");
+			var html = '<div id="modal'+ evaluacion_id +'" class="modal bottom-sheet">'+
+				'<div class="modal-content">'+
+				'<h4>Resultados</h4>'+
+			'<table>'+
+			'<thead>'+
+			'<tr>'+
+			'<th data-field="id">Estudiante</th>'+
+				'<th data-field="name">Respuesta Seleccionada</th>'+
+			'<th data-field="price">Resultado</th>'+
+			'</tr> </thead> <tbody id="table'+evaluacion_id+'"> </tbody> </table> </div> </div>';
+			$('body').append(html);
+			$('#modal' + evaluacion_id).modal();
 
 			crearListaEstudiantes(target_div, sesion_id, evaluacion_id);
 		});
@@ -166,7 +191,21 @@ ws.onmessage = function (message) {
 			sessionFinished = true;
 			break;
 		case 'evaluacionRespondida':
-			Materialize.toast(parsedMessage.usuario + ' ya respondio!', 4000);
+			if(parsedMessage.correcto){
+				Materialize.toast(parsedMessage.usuario + ' Ha respondido correctamente', 4000);
+			}
+			else{
+				Materialize.toast(parsedMessage.usuario + ' Ha respondido incorrectamente', 4000);
+			}
+			var html = '<tr> <td>'+parsedMessage.usuario+'</td> <td>'+parsedMessage.opcion+'</td> <td>';
+			if(parsedMessage.correcto){
+				html += '<span style="color: green">Correcto</span></td> </tr>'
+			}
+			else{
+				html += '<span style="color: red">Incorrecto</span></td> </tr>'
+			}
+			$('#table'+ parsedMessage.evaluacion).append(html);
+
 			break;
 		default:
 			console.error('Unrecognized message', parsedMessage);

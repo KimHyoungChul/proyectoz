@@ -36,7 +36,7 @@ $(document).ready(function () {
 		e.preventDefault();
 
 		enviarMensajeChat();
-	})
+	});
 
 	//chat stuff
 	var socket = io();
@@ -64,7 +64,7 @@ $(document).ready(function () {
 	});
 
     //node app stuff
-    question_modal = $("#question_modal_div");
+    question_modal = $("#question_modal_div").modal({dismissible: false});
     question_title = $("#question_title");
     question_radio_choices = $("#question_choices_div");
 
@@ -86,7 +86,7 @@ $(document).ready(function () {
                     var respuesta = JSON.parse(raw_answer);
 
                     if (respuesta.status === 'success') {
-                        question_modal.closeModal();
+                        question_modal.modal('close');
                     }
                     else {
                         alert('Hubo un error al enviar la respuesta: ' + respuesta.mensaje);
@@ -185,7 +185,7 @@ function mostrarEvaluacion(raw_evaluacion,raw_opciones) {
     });
     //manejar salida de formulario con ajax
     //abrir modal
-    question_modal.openModal({ dismissible: false });
+    question_modal.modal('open');
 }
 
 function terminarSesion() {

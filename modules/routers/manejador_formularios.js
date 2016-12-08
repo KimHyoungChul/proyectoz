@@ -230,22 +230,37 @@ module.exports = function (modules) {
                 //obtener identificador de usuario en sesion
                 var id_estudiante = req.session.usuario.id;
                 //crear nueva respuesta a evaluacion
-                models.respuesta_evaluacion.create({
-                    estudiante: id_estudiante,
-                    respuesta: respuesta_elegida
-                }).then(function (respuestaCreada) {
-                    //notificar a presenter que alquien ya le respondio
-                    var sesion = req.body.sesion;
-                    if(kurento.data.presenters[sesion] && kurento.data.presenters[sesion].ws) {
-                        kurento.data.presenters[sesion].ws.send(JSON.stringify({
-                            id: 'evaluacionRespondida',
-                            usuario: req.session.usuario.email
-                        }));
-                    }
+                models.opcion_evaluacion.find({
+                    where: {
+                        id: respuesta_elegida
+                    },
+                    include: [{
+                        model: models.evaluacion,
+                        as: "Evaluacion"
+                    }]
+                }).then(function (opcion) {
+                    var correcto = opcion.id === opcion.Evaluacion.respuesta_correcta;
+                    models.respuesta_evaluacion.create({
+                        estudiante: id_estudiante,
+                        respuesta: respuesta_elegida
+                    }).then(function (respuestaCreada) {
+                        //notificar a presenter que alquien ya le respondio
+                        var sesion = req.body.sesion;
+                        if(kurento.data.presenters[sesion] && kurento.data.presenters[sesion].ws) {
+                            kurento.data.presenters[sesion].ws.send(JSON.stringify({
+                                id: 'evaluacionRespondida',
+                                usuario: req.session.usuario.nombre,
+                                correcto: correcto,
+                                evaluacion: opcion.Evaluacion.id,
+                                opcion: opcion.texto_opcion
+                            }));
+                        }
 
-                    //enviar respuesta de submission
-                    res.send(JSON.stringify({status: 'success', mensaje: 'todo nitido'}));
+                        //enviar respuesta de submission
+                        res.send(JSON.stringify({status: 'success', mensaje: 'todo nitido'}));
+                    });
                 });
+
             }
             else {
                 //enviar respuesta de submission

@@ -33,6 +33,16 @@
                 <span class="card-title">
                     <b><%= titulo %></b>
                 </span>
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <% if(sesion.estado === 'en-proceso') { %>
+                <a href="/sesion/<%= sesion.id %>">
+                    <div class="chip white">
+                        <b>Ir a sesi&oacute;n</b>
+                    </div>
+                </a>
+                <% } %>
                 <br>
                 <h5><%= profesor %></h5>
                 <% var texto = sesion.estado == 'futura' ? 'Sera' : 'Fue'; %>

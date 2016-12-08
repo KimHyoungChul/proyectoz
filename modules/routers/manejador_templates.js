@@ -143,7 +143,7 @@ module.exports = function (modules) {
                 //cambiar estado de sesion si no se ha terminado ya
                 if(sesion.tutor === usuario.id && ['futura','en-proceso'].includes(sesion.estado)) {
                     //TODO descomentar cambio de estado en una sesion te de tutoria
-                    // sesion.estado = 'realizada';
+                    sesion.estado = 'realizada';
                     sesion.save().then(function(sesionActualizada) {
                         //enviar mensaje a cada viewer para que se vayan
                         kurento.data.presenters[sesion_id].viewers.forEach(function (viewer) {
