@@ -197,6 +197,15 @@ module.exports = function (modules) {
         res.contentType('json');
         var sesiones = [];
         models.sesion_tutoria.findAll({
+            where: {
+                $or:[
+                    {
+                        estado: 'futura'
+                    },{
+                        estado: 'en-proceso'
+                    }
+                ]
+            },
             include: [{
                 model: models.solicitud,
                 as: 'Solicitud',
@@ -223,6 +232,15 @@ module.exports = function (modules) {
                 callback();
             }, function () {
                 models.sesion_tutoria.findAll({
+                    where: {
+                        $or:[
+                            {
+                                estado: 'futura'
+                            },{
+                                estado: 'en-proceso'
+                            }
+                        ]
+                    },
                     include:[{
                         model: models.solicitud,
                         as: 'Solicitud',
@@ -262,8 +280,10 @@ module.exports = function (modules) {
                             estado: sesiones[i].estado,
                             tutor: sesiones[i].Tutor.Usuario.nombre + " " + sesiones[i].Tutor.Usuario.apellido,
                             titulo: sesiones[i].Solicitud.titulo,
-                            id: sesiones[i].id
+                            id: sesiones[i].id,
+                            en_curso: sesiones[i].estado === "en-proceso"
                         };
+
                         response.push(sesion);
 
 
