@@ -43,9 +43,14 @@
                     </div>
                 </a>
                 <% } %>
+                <a href="/workspace?sesion=<%= sesion.id %>">
+                    <div class="chip lime accent-1">
+                        <b>Workspace</b>
+                    </div>
+                </a>
                 <br>
                 <h5><%= profesor %></h5>
-                <% var texto = sesion.estado == 'futura' ? 'Sera' : 'Fue'; %>
+                <% var texto = sesion.estado == 'futura' ? 'Será' : 'Fue'; %>
                 <p><%= texto %> impartida <%= momento_mostrado.fromNow() %></p>
             </div>
             <div class="card-action">

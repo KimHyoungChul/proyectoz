@@ -18,7 +18,7 @@
             <h2 class="header teal-text" style="text-align: center">Mis Sesiones</h2>
             <% sesiones.forEach(function(sesion) { %>
             <%
-                var titulo = sesion.Tutor.Usuario.nombre+" "+sesion.Tutor.Usuario.apellido+", "+sesion.Tutor.Usuario.email;
+                var titulo = sesion.Solicitud.titulo;
 
                 var fecha_sin_timezone = moment(sesion.fecha).format('YYYY-MM-DD');
                 var momento_mostrado = moment(fecha_sin_timezone+' '+sesion.hora_inicio+'.001-04');
@@ -60,10 +60,10 @@
                     var texto = "";
 
                     if(sesion.estado === 'futura') {
-                        texto = "Sera impartida";
+                        texto = "Será impartida";
                     }
                     else {
-                        texto = "Esta siendo impartida desde";
+                        texto = "Está siendo impartida desde";
                     }
                 %>
                 <p><%= texto %> <%= momento_mostrado.fromNow() %></p>

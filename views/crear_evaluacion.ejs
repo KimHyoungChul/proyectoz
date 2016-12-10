@@ -26,9 +26,9 @@
 
                 <h4 class="header teal-text" style="text-align: center">Evaluaci&oacute;n</h4>
 
-            <form id="nueva_evaluacion" action="/sesion/crear_evaluacion/" method="post">
+
                 <div class="row">
-                    <input type="hidden" name="sesion_id" value="<%= sesion.id %>">
+                    <input id="sesion_id" type="hidden" name="sesion_id" value="<%= sesion.id %>">
                     <div class="input-field col s11">
                         <textarea id="input_encabezado" placeholder="Escribe aqu&iacute; el encabezado de la pregunta" class="materialize-textarea validate" length="300" name="encabezado" required></textarea>
                         <label for="input_encabezado">Encabezado</label>
@@ -50,7 +50,7 @@
                             <div id="div_respuestas">
                                 <div class="respuesta">
                                     <div class="input-field col s10">
-                                        <textarea id="respuesta_pregunta" name="respuestas" placeholder="Texto de la respuesta" class="materialize-textarea" length="140" required></textarea>
+                                        <textarea  name="respuestas" placeholder="Texto de la respuesta" class="materialize-textarea respuesta-pregunta" length="140" required></textarea>
                                     </div>
                                     <div class="col s2 text-center">
                                         <br>
@@ -62,7 +62,7 @@
                                 </div>
                                 <div class="respuesta">
                                     <div class="input-field col s10">
-                                        <textarea id="respuesta_pregunta" name="respuestas" placeholder="Texto de la respuesta" class="materialize-textarea" length="140" required/></textarea>
+                                        <textarea  name="respuestas" placeholder="Texto de la respuesta" class="materialize-textarea respuesta-pregunta" length="140" required/></textarea>
                                     </div>
                                     <div class="col s2 text-center">
                                         <br>
@@ -85,16 +85,15 @@
                     </div>
                 </div>
                 <br>
-                <button class="btn-large waves-effect waves-light" type="submit" name="submit" value="submit">
+                <button class="btn-large waves-effect waves-light" id="btn-crear-eval">
                     Crear evaluacion
                     <i class="material-icons right">send</i>
                 </button>
-            </form>
             </div>
     </div>
     <div id="div_respuesta_dummy" class="respuesta hide">
         <div class="input-field  col s10">
-            <textarea id="respuesta_pregunta" name="respuestas" placeholder="Texto de la respuesta" type="text" class="materialize-textarea" length="140" rows="1" required/></textarea>
+            <textarea id="respuesta_pregunta" name="respuestas" placeholder="Texto de la respuesta" type="text" class="materialize-textarea respuesta-pregunta" length="140" rows="1" required/></textarea>
         </div>
         <div class="col s2 text-center">
             <br>

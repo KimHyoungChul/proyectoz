@@ -63,4 +63,27 @@ $(document).ready(function() {
             return true;
         }
     });
+
+    var submitLogin = function () {
+            var resps = [];
+        var respuestas = $(".respuesta-pregunta");
+            respuestas.each(function (resp,value) {
+                resps.push($(value).val())
+            });
+
+        console.log(resps);
+            $.post("/sesion/crear_evaluacion/", {
+                sesion_id: $('#sesion_id').val(),
+                encabezado: $('#input_encabezado').val(),
+                respuestas: resps
+
+            }, function (response) {
+
+                    location.assign("/");
+
+            });
+
+
+    };
+    $('#btn-crear-eval').on('click', submitLogin);
 });

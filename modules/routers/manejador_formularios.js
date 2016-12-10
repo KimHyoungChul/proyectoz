@@ -209,7 +209,7 @@ module.exports = function (modules) {
                         //crear opciones restantes
                         models.opcion_evaluacion.bulkCreate(opciones).then(function() {
                             //devolver respuesta
-                            res.redirect(303,'/');
+                            res.send("ok");
                         })
                     });
                 });

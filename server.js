@@ -26,6 +26,10 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(function(req, res, next) {
+    res.locals.usuario = req.session.usuario;
+    next();
+});
 
 //declarando motor de templates
 app.set('view engine', 'ejs');
