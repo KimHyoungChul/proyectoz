@@ -85,64 +85,64 @@ if (process.env.AWS_KEY && process.env.AWS_SECRET && process.env.FIREBASE_TOKEN)
             require('./modules/routers/manejador_rest.js')(modules);
 
             //usuarios dummies (dev only)
-            _models.usuario.findOrCreate({
-                where: {email: 'u1@u1.u1'},
-                defaults: {
-                    email: 'u1@u1.u1',
-                    password: 'usuario1',
-                    nombre: 'usuario1',
-                    apellido: 'usuario1',
-                    genero: 'M',
-                    fecha_nacimiento: new Date('12-15-1996')
-                }
-            }).spread(function (user, created) {
-                _models.estudiante.findOrCreate({
-                    where: {id: 1},
-                    defaults: {
-                        institucion: 'IPISA',
-                        usuario: user.get('id')
-                    }
-                });
-            });
-            _models.usuario.findOrCreate({
-                where: {email: 'u3@u3.u3'},
-                defaults: {
-                    email: 'u3@u3.u3',
-                    password: 'usuario3',
-                    nombre: 'usuario3',
-                    apellido: 'usuario3',
-                    genero: 'F',
-                    fecha_nacimiento: new Date('11-6-1993')
-                }
-            }).spread(function (user, created) {
-                _models.estudiante.findOrCreate({
-                    where: {id: 2},
-                    defaults: {
-                        institucion: 'PASPLAND',
-                        usuario: user.get('id')
-                    }
-                });
-            });
-            _models.usuario.findOrCreate({
-                where: {email: 'u2@u2.u2'},
-                defaults: {
-                    email: 'u2@u2.u2',
-                    password: 'usuario2',
-                    nombre: 'usuario2',
-                    apellido: 'usuario2',
-                    genero: 'F',
-                    fecha_nacimiento: new Date('06-02-1994')
-                }
-            }).spread(function (user, created) {
-                _models.tutor.findOrCreate({
-                    where: {id: 1},
-                    defaults: {
-                        ocupacion: 'Estudiante',
-                        autorizado: false,
-                        usuario: user.get('id')
-                    }
-                });
-            });
+            // _models.usuario.findOrCreate({
+            //     where: {email: 'u1@u1.u1'},
+            //     defaults: {
+            //         email: 'u1@u1.u1',
+            //         password: 'usuario1',
+            //         nombre: 'usuario1',
+            //         apellido: 'usuario1',
+            //         genero: 'M',
+            //         fecha_nacimiento: new Date('12-15-1996')
+            //     }
+            // }).spread(function (user, created) {
+            //     _models.estudiante.findOrCreate({
+            //         where: {id: 1},
+            //         defaults: {
+            //             institucion: 'IPISA',
+            //             usuario: user.get('id')
+            //         }
+            //     });
+            // });
+            // _models.usuario.findOrCreate({
+            //     where: {email: 'u3@u3.u3'},
+            //     defaults: {
+            //         email: 'u3@u3.u3',
+            //         password: 'usuario3',
+            //         nombre: 'usuario3',
+            //         apellido: 'usuario3',
+            //         genero: 'F',
+            //         fecha_nacimiento: new Date('11-6-1993')
+            //     }
+            // }).spread(function (user, created) {
+            //     _models.estudiante.findOrCreate({
+            //         where: {id: 2},
+            //         defaults: {
+            //             institucion: 'PASPLAND',
+            //             usuario: user.get('id')
+            //         }
+            //     });
+            // });
+            // _models.usuario.findOrCreate({
+            //     where: {email: 'u2@u2.u2'},
+            //     defaults: {
+            //         email: 'u2@u2.u2',
+            //         password: 'usuario2',
+            //         nombre: 'usuario2',
+            //         apellido: 'usuario2',
+            //         genero: 'F',
+            //         fecha_nacimiento: new Date('06-02-1994')
+            //     }
+            // }).spread(function (user, created) {
+            //     _models.tutor.findOrCreate({
+            //         where: {id: 1},
+            //         defaults: {
+            //             ocupacion: 'Estudiante',
+            //             autorizado: false,
+            //             usuario: user.get('id')
+            //         }
+            //     });
+            // });
         });
     });
 }
