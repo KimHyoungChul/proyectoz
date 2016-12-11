@@ -702,6 +702,10 @@ module.exports = function (modules) {
             res.redirect(303,'/');
         }
     });
+    app.get('/logout/', function (req,res) {
+        req.session.destroy();
+        res.redirect("/login");
+    });
 
     app.get('/estudiantes/mis_invitaciones/', function(req,res) {
         var usuarioSesion = req.session.usuario;

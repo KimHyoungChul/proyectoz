@@ -39,8 +39,12 @@
                             Sesiones<i class="material-icons right">arrow_drop_down</i>
                         </a>
                     </li>
+                    <% if(usuario) { %>
+                    <li><a href="/logout/">Cerrar Sesi&oacute;n <i class="material-icons right">exit_to_app</i></a></li>
+                    <% }%>
                 </ul>
             <% } %>
+
         <% } else { %>
             <ul id="dropdown1" class="dropdown-content">
                 <li><a href="/estudiantes/crear/">Como Estudiante</a></li>
@@ -55,7 +59,11 @@
                         Registrarme<i class="material-icons right">arrow_drop_down</i>
                     </a>
                 </li>
+                <% if(usuario) { %>
+                <li><a href="collapsible.html">Cerrar Sesi&oacute;n <i class="material-icons right">exit_to_app</i></a></li>
+                <% }%>
             </ul>
         <% } %>
+
     </div>
 </nav>
